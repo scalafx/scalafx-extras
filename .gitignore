@@ -1,0 +1,26 @@
+syntax: glob
+
+*.class
+build/
+out/
+lib/
+.settings/
+.cache
+.metadata/
+.idea/
+.idea/*
+.gradle/
+.history
+target
+lib_managed
+project/boot
+project/target
+*.iml
+*.log
+*.bak
+.classpath
+.project
+*.orig
+.worksheet/
+*.sc
+.externalToolBuilders/

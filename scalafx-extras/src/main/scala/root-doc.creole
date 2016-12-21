@@ -1,0 +1,3 @@
+Helper methods and classes to simplify ScalaFX use.
+
+Basic helper methods are in the [[org.scalafx.extras `org.scalafx.extras`]] package.
