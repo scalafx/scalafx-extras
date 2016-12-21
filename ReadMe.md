@@ -8,6 +8,12 @@ Module `scalafx-extras-demos` has a demo StopWatch application that illustrates 
 
 ScalaFX Extras is still quite experimental and APIs may change significantly.
 
+To use ScalaFX Extras with SBT add following dependency:
+
+```
+libraryDependencies += "org.scalafx" %% "scalafx-extras" % "0.1.0-SNAPSHOT"
+```
+
 
 Discussion and Support
 ----------------------
