@@ -60,7 +60,7 @@
                 </Label>
                 <Label text=":">
                     <font>
-                        <Font size="96.0"/>
+                        <Font name="Lucida Sans Typewriter Regular" size="96.0"/>
                     </font>
                 </Label>
                 <Label fx:id="secondsLabel" alignment="CENTER" contentDisplay="CENTER" text="99" textAlignment="CENTER">
@@ -70,7 +70,7 @@
                 </Label>
                 <Label text=".">
                     <font>
-                        <Font size="96.0"/>
+                        <Font name="Lucida Sans Typewriter Regular" size="96.0"/>
                     </font>
                 </Label>
                 <Label fx:id="fractionLabel" alignment="CENTER" contentDisplay="CENTER" text="99"
