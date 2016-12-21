@@ -8,8 +8,11 @@ import java.net.URL
 // JAR_BUILT_BY      - Name to be added to Jar metadata field "Built-By" (defaults to System.getProperty("user.name")
 //
 
-val projectVersion = "0.1.0-SNAPSHOT"
+val projectVersion = "0.1.0"
 val versionTagDir = if (projectVersion.endsWith("SNAPSHOT")) "master" else "v" + projectVersion
+
+crossScalaVersions := Seq("2.11.8", "2.12.1")
+scalaVersion := crossScalaVersions { versions => versions.head }.value
 
 // ScalaFX project
 lazy val scalaFXExtrasProject = Project(
@@ -121,4 +124,11 @@ lazy val mavenCentralSettings = Seq(
       <url>https://github.com/scalafx/scalafx-extras</url>
       <connection>scm:git:https://github.com/scalafx/scalafx-extras.git</connection>
     </scm>
+      <developers>
+        <developer>
+          <id>jpsacha</id>
+          <name>Jarek Sacha</name>
+          <url>https://github.com/jpsacha</url>
+        </developer>
+      </developers>
 )
