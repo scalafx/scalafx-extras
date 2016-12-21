@@ -8,7 +8,7 @@ import java.net.URL
 // JAR_BUILT_BY      - Name to be added to Jar metadata field "Built-By" (defaults to System.getProperty("user.name")
 //
 
-val projectVersion = "0.1.0-SNAPSHOT"
+val projectVersion = "0.1.0"
 val versionTagDir = if (projectVersion.endsWith("SNAPSHOT")) "master" else "v" + projectVersion
 
 // ScalaFX project
