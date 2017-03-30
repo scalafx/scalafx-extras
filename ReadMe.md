@@ -11,7 +11,7 @@ ScalaFX Extras is still quite experimental and APIs may change significantly.
 To use ScalaFX Extras with SBT add following dependency:
 
 ```
-libraryDependencies += "org.scalafx" %% "scalafx-extras" % "0.1.0-SNAPSHOT"
+libraryDependencies += "org.scalafx" %% "scalafx-extras" % "0.1.0"
 ```
 
 
