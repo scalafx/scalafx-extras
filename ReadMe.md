@@ -1,6 +1,11 @@
 ScalaFX Extras
 ==============
 
+[![Build Status](https://travis-ci.org/scalafx/scalafx-extras.svg?branch=master)](https://travis-ci.org/scalafx/scalafx-extras)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.scalafx/scalafx-extras_2.11/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.scalafx/scalafx-extras_2.11)
+[![Scaladoc](http://javadoc-badge.appspot.com/org.scalafx/scalafx-extras_2.11.svg?label=scaladoc)](http://javadoc-badge.appspot.com/org.scalafx/scalafx-extras_2.11)
+
+
 Additions to ScalaFX that do not have corresponding concepts in JavaFX. The key parts are helper methods in `org.scalafx.extras` and support for a working with Model-View and FXML.
 
 Module `scalafx-extras-demos` has a demo StopWatch application that illustrates uses of the Model-View and FXML API.
