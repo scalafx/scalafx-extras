@@ -8,49 +8,43 @@ import java.net.URL
 // JAR_BUILT_BY      - Name to be added to Jar metadata field "Built-By" (defaults to System.getProperty("user.name")
 //
 
-val projectVersion = "0.1.0"
-val versionTagDir = if (projectVersion.endsWith("SNAPSHOT")) "master" else "v" + projectVersion
+val projectVersion = "0.1.1"
+val versionTagDir  = if (projectVersion.endsWith("SNAPSHOT")) "master" else "v" + projectVersion
 
-crossScalaVersions := Seq("2.11.8", "2.12.1")
-scalaVersion := crossScalaVersions { versions => versions.head }.value
+crossScalaVersions := Seq("2.11.12", "2.12.6")
+scalaVersion       := crossScalaVersions { versions => versions.head }.value
 
 // ScalaFX project
-lazy val scalaFXExtrasProject = Project(
-  id = "scalafx-extras",
-  base = file("scalafx-extras"),
-  settings = scalaFXExtrasSettings ++ Seq(
-    description := "The ScalaFX Extras",
-    fork in run := true,
-    scalacOptions in(Compile, doc) ++= Seq(
-      "-sourcepath", baseDirectory.value.toString,
-      "-doc-root-content", baseDirectory.value + "/src/main/scala/root-doc.creole",
-      "-doc-source-url", "https://github.com/SscalaFX-Extras/scalafx-extras/blob/" + versionTagDir + "/scalafx/€{FILE_PATH}.scala"
-    ) ++ (Option(System.getenv("GRAPHVIZ_DOT_PATH")) match {
-      case Some(path) => Seq("-diagrams", "-diagrams-dot-path", path)
-      case None => Seq.empty[String]
-    })
-  )
+lazy val scalaFXExtrasProject = (project in file("scalafx-extras")).settings(
+  scalaFXExtrasSettings,
+  description := "The ScalaFX Extras",
+  fork in run := true,
+  scalacOptions in(Compile, doc) ++= Seq(
+    "-sourcepath", baseDirectory.value.toString,
+    "-doc-root-content", baseDirectory.value + "/src/main/scala/root-doc.creole",
+    "-doc-source-url", "https://github.com/SscalaFX-Extras/scalafx-extras/blob/" + versionTagDir + "/scalafx/€{FILE_PATH}.scala"
+  ) ++ (Option(System.getenv("GRAPHVIZ_DOT_PATH")) match {
+    case Some(path) => Seq("-diagrams", "-diagrams-dot-path", path)
+    case None => Seq.empty[String]
+  })
 )
 
 // ScalaFX Demos project
-lazy val scalaFXExtrasDemosProject = Project(
-  id = "scalafx-extras-demos",
-  base = file("scalafx-extras-demos"),
-  settings = scalaFXExtrasSettings ++ Seq(
-    description := "The ScalaFX Extras demonstrations",
-    fork in run := true,
-    javaOptions ++= Seq(
-      "-Xmx512M",
-      "-Djavafx.verbose"
-    ),
-    addCompilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full),
-    publishArtifact := false
-  )
-) dependsOn (scalaFXExtrasProject % "compile;test->test")
+lazy val scalaFXExtrasDemosProject = (project in file("scalafx-extras-demos")).settings(
+  scalaFXExtrasSettings,
+  description := "The ScalaFX Extras demonstrations",
+  fork in run := true,
+  javaOptions ++= Seq(
+    "-Xmx512M",
+    "-Djavafx.verbose"
+  ),
+  addCompilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full),
+  publishArtifact := false
+).dependsOn(scalaFXExtrasProject % "compile;test->test")
 
 // Resolvers
 lazy val sonatypeNexusSnapshots = "Sonatype Nexus Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
-lazy val sonatypeNexusStaging = "Sonatype Nexus Staging" at "https://oss.sonatype.org/service/local/staging/deploy/maven2"
+lazy val sonatypeNexusStaging   = "Sonatype Nexus Staging" at "https://oss.sonatype.org/service/local/staging/deploy/maven2"
 
 // Add snapshots to root project to enable compilation with Scala SNAPSHOT compiler,
 // e.g., 2.11.0-SNAPSHOT
@@ -72,10 +66,10 @@ lazy val scalaFXExtrasSettings = Seq(
     "-source", "1.8",
     "-Xlint:deprecation"),
   libraryDependencies ++= Seq(
-    "org.scala-lang" % "scala-reflect" % scalaVersion.value,
-    "org.scalafx" %% "scalafx" % "8.0.102-R11",
-    "org.scalafx" %% "scalafxml-core-sfx8" % "0.3",
-    "org.scalatest" %% "scalatest" % "3.0.1" % "test"),
+    "org.scala-lang"  % "scala-reflect"       % scalaVersion.value,
+    "org.scalafx"    %% "scalafx"             % "8.0.144-R12",
+    "org.scalafx"    %% "scalafxml-core-sfx8" % "0.4",
+    "org.scalatest"  %% "scalatest"           % "3.0.5" % "test"),
   autoAPIMappings := true,
   manifestSetting,
   publishSetting,
