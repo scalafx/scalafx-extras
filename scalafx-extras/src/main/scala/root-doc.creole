@@ -1,3 +1,7 @@
 Helper methods and classes to simplify ScalaFX use.
 
-Basic helper methods are in the [[org.scalafx.extras `org.scalafx.extras`]] package.
+Package [[org.scalafx.extras `org.scalafx.extras`]] contains basic helper methods for running tasks on threads and
+showing messages.
+
+Package [[org.scalafx.extras.modelview `org.scalafx.extras.modelview`]] contains classes for creating with UI components
+based on FXML.

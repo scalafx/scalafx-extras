@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2016, ScalaFX Project
+ * Copyright (c) 2011-2018, ScalaFX Project
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -28,13 +28,16 @@
 package org.scalafx.extras.modelview
 
 import javafx.scene.Node
-
 import scalafx.Includes._
 import scalafx.beans.property.ObjectProperty
 import scalafx.stage.Window
 
 /**
-  * User interface view's model.
+  * Trait for for implementing component logic.
+  * Is not aware how the UI structure is implemented.
+  * Contains references to parent and parentWindow to help display dialogs.
+  *
+  * See more details in the [[org.scalafx.extras.modelview `org.scalafx.extras.modelview`]] documentation.
   */
 trait Model {
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2016, ScalaFX Project
+ * Copyright (c) 2011-2018, ScalaFX Project
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -30,7 +30,6 @@ package org.scalafx.extras.modelview
 import java.io.IOException
 
 import org.scalafx.extras._
-
 import scalafx.Includes._
 import scalafx.scene.{Parent, Scene}
 import scalafx.stage.{Stage, WindowEvent}
@@ -38,8 +37,18 @@ import scalafxml.core.{ControllerDependencyResolver, ExplicitDependencies, FXMLV
 
 
 /**
-  * A component defined by an FXML file.
-  * The component contains two parts the UI model and the UI view, they are implemented by additional classes.
+  * The ModelViewComponent implementation is very simple,
+  * it only needs instance of the model and information about location of the FXML resource.
+  *
+  * See more details in the [[org.scalafx.extras.modelview `org.scalafx.extras.modelview`]] documentation.
+  *
+  * Example
+  * {{{
+  * import org.scalafx.extras.modelview.ModelViewComponent
+  *
+  * class StopWatchComponent(val model: StopWatchModel = new StopWatchModel())
+  *   extends ModelViewComponent("/org/scalafx/extras/modelview/stopwatch/StopWatchView.fxml")
+  * }}}
   */
 abstract class ModelViewComponent(fxmlFilePath: String) {
 
@@ -67,10 +76,10 @@ abstract class ModelViewComponent(fxmlFilePath: String) {
     runTask(
       name = s"$caption model.startUp",
       task = new javafx.concurrent.Task[Unit] {
-        override def call() = model.startUp()
+        override def call(): Unit = model.startUp()
 
-        override def failed() {
-          val message = s"Unexpected while initializing view for '$title'."
+        override def failed(): Unit = {
+          val message = s"Error while initializing view for '$title'."
           showException(title, message, exceptionProperty.get(), stage)
         }
       }

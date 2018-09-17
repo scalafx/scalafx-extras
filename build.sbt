@@ -8,8 +8,9 @@ import java.net.URL
 // JAR_BUILT_BY      - Name to be added to Jar metadata field "Built-By" (defaults to System.getProperty("user.name")
 //
 
-val projectVersion = "0.1.1"
+val projectVersion = "0.2.0-SNAPSHOT"
 val versionTagDir  = if (projectVersion.endsWith("SNAPSHOT")) "master" else "v" + projectVersion
+//val scalaVersions =
 
 crossScalaVersions := Seq("2.11.12", "2.12.6")
 scalaVersion       := crossScalaVersions { versions => versions.head }.value
@@ -38,32 +39,29 @@ lazy val scalaFXExtrasDemosProject = (project in file("scalafx-extras-demos")).s
     "-Xmx512M",
     "-Djavafx.verbose"
   ),
-  addCompilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full),
+  addCompilerPlugin("org.scalamacros" % "paradise" % "2.1.1" cross CrossVersion.full),
   publishArtifact := false
 ).dependsOn(scalaFXExtrasProject % "compile;test->test")
 
 // Resolvers
-lazy val sonatypeNexusSnapshots = "Sonatype Nexus Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
-lazy val sonatypeNexusStaging   = "Sonatype Nexus Staging" at "https://oss.sonatype.org/service/local/staging/deploy/maven2"
-
 // Add snapshots to root project to enable compilation with Scala SNAPSHOT compiler,
 // e.g., 2.11.0-SNAPSHOT
-resolvers += sonatypeNexusSnapshots
+resolvers += Resolver.sonatypeRepo("snapshots")
 
 // Common settings
 lazy val scalaFXExtrasSettings = Seq(
   organization := "org.scalafx",
   version := projectVersion,
-  crossScalaVersions := Seq("2.11.8", "2.12.1"),
-  scalaVersion := crossScalaVersions { versions => versions.head }.value,
+  crossScalaVersions := crossScalaVersions.value,
+  scalaVersion := scalaVersion.value,
   scalacOptions ++= Seq("-unchecked", "-deprecation", "-Xcheckinit", "-encoding", "utf8", "-feature"),
   scalacOptions in(Compile, doc) ++= Opts.doc.title("ScalaFX Extras API"),
   scalacOptions in(Compile, doc) ++= Opts.doc.version(projectVersion),
   scalacOptions in(Compile, doc) += s"-doc-external-doc:${scalaInstance.value.libraryJar}#http://www.scala-lang.org/api/${scalaVersion.value}/",
   scalacOptions in(Compile, doc) ++= Seq("-doc-footer", s"ScalaFX Extras API v.$projectVersion"),
   javacOptions ++= Seq(
-    "-target", "1.8",
-    "-source", "1.8",
+//    "-target", "1.8",
+//    "-source", "1.8",
     "-Xlint:deprecation"),
   libraryDependencies ++= Seq(
     "org.scala-lang"  % "scala-reflect"       % scalaVersion.value,
@@ -75,7 +73,7 @@ lazy val scalaFXExtrasSettings = Seq(
   publishSetting,
   fork in Test := true,
   parallelExecution in Test := false,
-  resolvers += sonatypeNexusSnapshots,
+  resolvers += Resolver.sonatypeRepo("snapshots"),
   // print junit-style XML for CI
   testOptions in Test += {
     val t = (target in Test).value
@@ -99,13 +97,13 @@ lazy val manifestSetting = packageOptions += {
   )
 }
 
-lazy val publishSetting = publishTo := version {
-  version: String =>
-    if (version.trim.endsWith("SNAPSHOT"))
-      Some(sonatypeNexusSnapshots)
-    else
-      Some(sonatypeNexusStaging)
-}.value
+lazy val publishSetting = publishTo := {
+  val nexus = "https://oss.sonatype.org/"
+  if (isSnapshot.value)
+    Some("snapshots" at nexus + "content/repositories/snapshots")
+  else
+    Some("releases"  at nexus + "service/local/staging/deploy/maven2")
+}
 
 // Metadata needed by Maven Central
 // See also http://maven.apache.org/pom.html#Developers
