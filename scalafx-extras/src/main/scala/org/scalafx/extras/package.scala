@@ -29,9 +29,9 @@ package org.scalafx
 
 import java.io.{PrintWriter, StringWriter}
 import java.util.concurrent
+
 import javafx.embed.swing.JFXPanel
 import javafx.{concurrent => jfxc}
-
 import scalafx.Includes._
 import scalafx.application.Platform
 import scalafx.scene.Node
@@ -47,10 +47,12 @@ package object extras {
 
   /**
     * Attempt to initialize JavaFX Toolkit. This is only needed when application is not
-    * started by `JFXApp` are JavaFX `Application`.
+    * started by `JFXApp` or JavaFX `Application`.
     *
     * When JavaFX toolkit is not initialized and you attempt to use JavaFX components you will get exception:
     * `java.lang.IllegalStateException: Toolkit not initialized`.
+    *
+    * In JavaFX 9 and newer you can use `Platform.startup(() -> {})`.
     */
   def initFX(): Unit = {
     // Make sure that JavaFX Toolkit is not shutdown implicitly, it may not be possible to restart it.
@@ -60,7 +62,9 @@ package object extras {
   }
 
   /**
-    * Run operation `op` on FX application thread. Return without waiting for the operation to complete.
+    * Run operation `op` on FX application thread.
+    * If on FX Application thread it will wait for operation to compete,
+    * if not on FX Application thread it will return without waiting for the operation to complete.
     *
     * @param op operation to be performed.
     */
