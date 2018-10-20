@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2016, ScalaFX Project
+ * Copyright (c) 2011-2018, ScalaFX Project
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -29,7 +29,6 @@ package org.scalafx.extras.modelview.stopwatch
 
 
 import org.scalafx.extras.modelview.View
-
 import scalafx.Includes._
 import scalafx.scene.control.{Button, Label}
 import scalafxml.core.macros.sfxml
@@ -64,15 +63,9 @@ class StopWatchView(minutesLabel: Label,
   stopButton.disable <== !model.running
   resetButton.disable <== model.running
 
-  startButton.onAction = handle {
-    model.onStart()
-  }
-  stopButton.onAction = handle {
-    model.onStop()
-  }
-  resetButton.onAction = handle {
-    model.onReset()
-  }
+  startButton.onAction = () => model.onStart()
+  stopButton.onAction = () => model.onStop()
+  resetButton.onAction = () => model.onReset()
 
   private def format2d(t: Number) = f"${t.longValue()}%02d"
 }

@@ -32,7 +32,7 @@ import java.io.IOException
 import org.scalafx.extras._
 import scalafx.Includes._
 import scalafx.scene.{Parent, Scene}
-import scalafx.stage.{Stage, WindowEvent}
+import scalafx.stage.Stage
 import scalafxml.core.{ControllerDependencyResolver, ExplicitDependencies, FXMLView}
 
 
@@ -68,7 +68,7 @@ abstract class ModelViewComponent(fxmlFilePath: String) {
     val stage = new Stage() {
       title = caption
       scene = new Scene(view)
-      onCloseRequest = (we: WindowEvent) => model.shutDown()
+      onCloseRequest = () => model.shutDown()
     }
 
     // Initialize model
