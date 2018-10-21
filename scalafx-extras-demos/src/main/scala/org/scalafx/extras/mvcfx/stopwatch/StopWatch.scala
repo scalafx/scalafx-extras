@@ -25,14 +25,12 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.scalafx.extras.modelview.stopwatch
+package org.scalafx.extras.mvcfx.stopwatch
 
-import org.scalafx.extras.modelview.ModelViewComponent
+import org.scalafx.extras.mvcfx.MVCfx
 
 /**
   * StopWatch generator/loader.
   */
-class StopWatchComponent(val model: StopWatchModel = new StopWatchModel())
-  extends ModelViewComponent("/org/scalafx/extras/modelview/stopwatch/StopWatchView.fxml") {
-
-}
+class StopWatch(val model: StopWatchModel = new StopWatchModel())
+  extends MVCfx("/org/scalafx/extras/mvcfx/stopwatch/StopWatch.fxml")

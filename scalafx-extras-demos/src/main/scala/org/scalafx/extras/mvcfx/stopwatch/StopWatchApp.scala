@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2018, ScalaFX Project
+ * Copyright (c) 2011-2016, ScalaFX Project
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,36 +25,27 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.scalafx.extras.modelview
+package org.scalafx.extras.mvcfx.stopwatch
 
-import javafx.scene.Node
-import scalafx.Includes._
-import scalafx.beans.property.ObjectProperty
-import scalafx.stage.Window
-import scalafx.stage.Window.sfxWindow2jfx
+import scalafx.application.JFXApp
+import scalafx.application.JFXApp.PrimaryStage
+import scalafx.scene.Scene
+import scalafx.scene.layout.BorderPane
+
+import scala.language.implicitConversions
 
 /**
-  * Trait for for implementing component logic.
-  * Is not aware how the UI structure is implemented.
-  * Contains references to parent and parentWindow to help display dialogs.
-  *
-  * See more details in the [[org.scalafx.extras.modelview `org.scalafx.extras.modelview`]] documentation.
+  * StopWatch application demo.
   */
-trait Model {
+object StopWatchApp extends JFXApp {
 
-  /**
-    * Parent node of the view. Can be null.
-    */
-  val parent: ObjectProperty[Node] = new ObjectProperty(this, "parent", null)
-
-  /**
-    * Window of the parent node. Can be null.
-    */
-  def parentWindow: Option[Window] =
-    Option(parent.value).flatMap(n => Option(n.scene()).map(s => sfxWindow2jfx(s.window())))
-
-  def startUp(): Unit = {}
-
-  def shutDown(): Unit = {}
+  stage = new PrimaryStage {
+    scene = new Scene {
+      title = "StopWatch"
+      root = new BorderPane {
+        center = new StopWatch().view
+      }
+    }
+  }
 
 }

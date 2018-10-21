@@ -25,7 +25,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.scalafx.extras.modelview
+package org.scalafx.extras.mvcfx
 
 import java.io.IOException
 
@@ -37,23 +37,34 @@ import scalafxml.core.{ControllerDependencyResolver, ExplicitDependencies, FXMLV
 
 
 /**
-  * The ModelViewComponent implementation is very simple,
+  * MVCfx is the "root" class for creation of UI components using MVCfx pattern.
+  * It instantiates and binds together the model, the controller, and the view (FXML).
+  *
+  * The implementation of a class that extends MVCfx is very simple,
   * it only needs instance of the model and information about location of the FXML resource.
-  *
-  * See more details in the [[org.scalafx.extras.modelview `org.scalafx.extras.modelview`]] documentation.
-  *
-  * Example
+  * For example:
   * {{{
-  * import org.scalafx.extras.modelview.ModelViewComponent
+  * import org.scalafx.extras.mvcfx.MVCfx
   *
-  * class StopWatchComponent(val model: StopWatchModel = new StopWatchModel())
-  *   extends ModelViewComponent("/org/scalafx/extras/modelview/stopwatch/StopWatchView.fxml")
+  * class StopWatch(val model: StopWatchModel = new StopWatchModel())
+  *   extends MVCfx("/org/scalafx/extras/mvcfx/stopwatch/StopWatch.fxml")
   * }}}
+  *
+  * The implementation will include:
+  * * StopWatch extends MVCfx
+  * * StopWatchModel extends ModelFX
+  * * StopWatchController extends ControllerFX
+  * * StopWatch.fxml
+  *
+  * The complete example in in demo module.
+  *
+  * See more details on MVCfx see [[org.scalafx.extras.mvcfx `org.scalafx.extras.mvcfx`]] documentation.
+  *
   */
-abstract class ModelViewComponent(fxmlFilePath: String) {
+abstract class MVCfx(fxmlFilePath: String) {
 
   /** UI model for this component. */
-  def model: Model
+  def model: ModelFX
 
   /** Top level UI node for this component. */
   val view: Parent = createFXMLView()

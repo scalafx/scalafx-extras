@@ -29,12 +29,12 @@ package org.scalafx.extras.showmessage
 
 import com.typesafe.scalalogging.Logger
 import org.scalafx.extras._
-import org.scalafx.extras.modelview.Model
+import org.scalafx.extras.mvcfx.ModelFX
 
 /**
-  * ShowMessage behaviour Model.
+  * ShowMessage behaviour ModelFX.
   */
-class ShowMessageDemoModel extends Model with ShowMessage {
+class ShowMessageDemoModel extends ModelFX with ShowMessage {
 
   private val Title = "ShowMessage Demo"
 

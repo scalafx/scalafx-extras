@@ -27,7 +27,7 @@
 
 package org.scalafx.extras.showmessage
 
-import org.scalafx.extras.modelview.View
+import org.scalafx.extras.mvcfx.ControllerFX
 import scalafx.Includes._
 import scalafx.scene.control.Button
 import scalafxml.core.macros.sfxml
@@ -43,7 +43,7 @@ class ShowMessageDemoController(showConfirmationButton: Button,
                                 showWarningButton: Button,
                                 showErrorButton: Button,
                                 showExceptionButton: Button,
-                                model: ShowMessageDemoModel) extends View {
+                                model: ShowMessageDemoModel) extends ControllerFX {
 
   showConfirmationButton.onAction = () => model.onShowConfirmation()
   showConfirmationYNCButton.onAction = () => model.onShowConfirmationYesNoCancel()

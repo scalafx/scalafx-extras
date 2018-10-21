@@ -39,7 +39,7 @@ import scala.language.implicitConversions
 /**
   * ShowMessage application demo.
   * The application is very simple but, for realistic illustration of [[org.scalafx.extras.ShowMessage ShowMessage]] usage
-  * it is using the [[org.scalafx.extras.modelview Model-Controller]] pattern.
+  * it is using the [[org.scalafx.extras.mvcfx ModelFX-ControllerFX]] pattern.
   */
 object ShowMessageDemoApp extends JFXApp {
 

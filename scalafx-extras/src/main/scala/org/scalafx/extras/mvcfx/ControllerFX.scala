@@ -25,47 +25,42 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.scalafx.extras.modelview.stopwatch
-
-
-import org.scalafx.extras.modelview.View
-import scalafx.Includes._
-import scalafx.scene.control.{Button, Label}
-import scalafxml.core.macros.sfxml
+package org.scalafx.extras.mvcfx
 
 /**
-  * StopWatch UI view.
-  * It is intended to create bindings between UI definition loaded fro FXML configuration and the UI model
+  * The ControllerFX creates connection of the FXML to Scala code and underlying ModelFX for
+  * the application logic.
+  *
+  * Constructor argument names correspond to controls defined in FXML and the model.
+  * The constructor is used by ScalaFXML macro to automatically expose FXML controls in
+  * Scala code of the view class.
+  *
+  * See more details in the [[org.scalafx.extras.mvcfx `org.scalafx.extras.mvcfx`]] documentation.
+  *
+  * Example:
+  * {{{
+  * import org.scalafx.extras.mvcfx.ControllerFX
+  *
+  * import scalafx.Includes._
+  * import scalafx.scene.control.{Button, Label}
+  * import scalafxml.core.macros.sfxml
+  *
+  * @sfxml
+  * class StopWatchController(minutesLabel: Label,
+  *                           secondsLabel: Label,
+  *                           fractionLabel: Label,
+  *                           startButton: Button,
+  *                           stopButton: Button,
+  *                           resetButton: Button,
+  *                           model: StopWatchModel) extends ControllerFX {
+  * ...
+  *   startButton.disable <== model.running
+  *   stopButton.disable <== !model.running
+  *   resetButton.disable <== model.running
+  * ...
+  * }
+  * }}}
   */
-@sfxml
-class StopWatchView(minutesLabel: Label,
-                    secondsLabel: Label,
-                    fractionLabel: Label,
-                    startButton: Button,
-                    stopButton: Button,
-                    resetButton: Button,
-                    model: StopWatchModel) extends View {
+trait ControllerFX {
 
-  minutesLabel.text.value = format2d(model.minutes.longValue)
-  model.minutes.onChange { (_, _, newValue) =>
-    minutesLabel.text.value = format2d(newValue.longValue)
-  }
-  secondsLabel.text.value = format2d(model.seconds.longValue())
-  model.seconds.onChange { (_, _, newValue) =>
-    secondsLabel.text.value = format2d(newValue.longValue())
-  }
-  fractionLabel.text.value = format2d(model.secondFraction.longValue() / 10)
-  model.secondFraction.onChange { (_, _, newValue) =>
-    fractionLabel.text.value = format2d(newValue.longValue() / 10)
-  }
-
-  startButton.disable <== model.running
-  stopButton.disable <== !model.running
-  resetButton.disable <== model.running
-
-  startButton.onAction = () => model.onStart()
-  stopButton.onAction = () => model.onStop()
-  resetButton.onAction = () => model.onReset()
-
-  private def format2d(t: Number) = f"${t.longValue()}%02d"
 }

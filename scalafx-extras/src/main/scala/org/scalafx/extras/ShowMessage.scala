@@ -35,7 +35,7 @@ import scalafx.stage.Window
   * Mixin that adds ability to easily show message dialogs.
   * A logger can be provided, so when the error or warning dialogs are shown, they are also logged.
   *
-  * A ShowMessage mixin will typically be used with the [[org.scalafx.extras.modelview.Model Model]].
+  * A ShowMessage mixin will typically be used with the [[org.scalafx.extras.mvcfx.ModelFX ModelFX]].
   *
   * @author Jarek Sacha
   */

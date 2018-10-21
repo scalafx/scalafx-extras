@@ -25,21 +25,19 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.scalafx.extras.modelview.stopwatch
+package org.scalafx.extras.mvcfx.stopwatch
 
 import javafx.{concurrent => jfxc}
-
 import org.scalafx.extras._
-import org.scalafx.extras.modelview.Model
-
+import org.scalafx.extras.mvcfx.ModelFX
 import scalafx.Includes._
 import scalafx.beans.property.{LongProperty, ReadOnlyBooleanProperty, ReadOnlyBooleanWrapper}
 
 
 /**
-  * StopWatch behaviour Model.
+  * StopWatch behaviour ModelFX.
   */
-class StopWatchModel extends Model {
+class StopWatchModel extends ModelFX {
 
 
   private val _running = ReadOnlyBooleanWrapper(false)
