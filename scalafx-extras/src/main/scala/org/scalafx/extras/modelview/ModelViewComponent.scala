@@ -80,7 +80,7 @@ abstract class ModelViewComponent(fxmlFilePath: String) {
 
         override def failed(): Unit = {
           val message = s"Error while initializing view for '$title'."
-          showException(title, message, exceptionProperty.get(), stage)
+          showException(title, message, exceptionProperty.get(), Option(stage))
         }
       }
     )

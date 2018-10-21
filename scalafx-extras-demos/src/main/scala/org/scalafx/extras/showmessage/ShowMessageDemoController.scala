@@ -25,36 +25,30 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.scalafx.extras.modelview
+package org.scalafx.extras.showmessage
 
-import javafx.scene.Node
+import org.scalafx.extras.modelview.View
 import scalafx.Includes._
-import scalafx.beans.property.ObjectProperty
-import scalafx.stage.Window
-import scalafx.stage.Window.sfxWindow2jfx
+import scalafx.scene.control.Button
+import scalafxml.core.macros.sfxml
 
 /**
-  * Trait for for implementing component logic.
-  * Is not aware how the UI structure is implemented.
-  * Contains references to parent and parentWindow to help display dialogs.
-  *
-  * See more details in the [[org.scalafx.extras.modelview `org.scalafx.extras.modelview`]] documentation.
+  * ShowMessage UI view.
+  * It is intended to create bindings between UI definition loaded fro FXML configuration and the UI model
   */
-trait Model {
+@sfxml
+class ShowMessageDemoController(showConfirmationButton: Button,
+                                showConfirmationYNCButton: Button,
+                                showInformationButton: Button,
+                                showWarningButton: Button,
+                                showErrorButton: Button,
+                                showExceptionButton: Button,
+                                model: ShowMessageDemoModel) extends View {
 
-  /**
-    * Parent node of the view. Can be null.
-    */
-  val parent: ObjectProperty[Node] = new ObjectProperty(this, "parent", null)
-
-  /**
-    * Window of the parent node. Can be null.
-    */
-  def parentWindow: Option[Window] =
-    Option(parent.value).flatMap(n => Option(n.scene()).map(s => sfxWindow2jfx(s.window())))
-
-  def startUp(): Unit = {}
-
-  def shutDown(): Unit = {}
-
+  showConfirmationButton.onAction = () => model.onShowConfirmation()
+  showConfirmationYNCButton.onAction = () => model.onShowConfirmationYesNoCancel()
+  showInformationButton.onAction = () => model.onShowInformation()
+  showWarningButton.onAction = () => model.onShowWarning()
+  showErrorButton.onAction = () => model.onShowError()
+  showExceptionButton.onAction = () => model.onShowException()
 }

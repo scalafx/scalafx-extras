@@ -25,36 +25,13 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.scalafx.extras.modelview
-
-import javafx.scene.Node
-import scalafx.Includes._
-import scalafx.beans.property.ObjectProperty
-import scalafx.stage.Window
-import scalafx.stage.Window.sfxWindow2jfx
+package org.scalafx.extras
 
 /**
-  * Trait for for implementing component logic.
-  * Is not aware how the UI structure is implemented.
-  * Contains references to parent and parentWindow to help display dialogs.
-  *
-  * See more details in the [[org.scalafx.extras.modelview `org.scalafx.extras.modelview`]] documentation.
+  * Logging operations used by ShowMessage. Enables ShowMessage to use loggers preferred by the user.
   */
-trait Model {
-
-  /**
-    * Parent node of the view. Can be null.
-    */
-  val parent: ObjectProperty[Node] = new ObjectProperty(this, "parent", null)
-
-  /**
-    * Window of the parent node. Can be null.
-    */
-  def parentWindow: Option[Window] =
-    Option(parent.value).flatMap(n => Option(n.scene()).map(s => sfxWindow2jfx(s.window())))
-
-  def startUp(): Unit = {}
-
-  def shutDown(): Unit = {}
-
+trait ShowMessageLogger {
+  def warn(message: String): Unit
+  def error(message: String): Unit
+  def error(message: String, t: Throwable): Unit
 }

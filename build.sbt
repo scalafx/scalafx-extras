@@ -40,7 +40,11 @@ lazy val scalaFXExtrasDemosProject = (project in file("scalafx-extras-demos")).s
     "-Djavafx.verbose"
   ),
   addCompilerPlugin("org.scalamacros" % "paradise" % "2.1.1" cross CrossVersion.full),
-  publishArtifact := false
+  publishArtifact := false,
+  libraryDependencies ++= Seq(
+    "com.typesafe.scala-logging" %% "scala-logging"   % "3.9.0",
+    "ch.qos.logback"              % "logback-classic" % "1.2.3"
+  )
 ).dependsOn(scalaFXExtrasProject % "compile;test->test")
 
 // Resolvers

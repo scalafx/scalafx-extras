@@ -25,36 +25,31 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.scalafx.extras.modelview
+package org.scalafx.extras.showmessage
 
-import javafx.scene.Node
 import scalafx.Includes._
-import scalafx.beans.property.ObjectProperty
-import scalafx.stage.Window
-import scalafx.stage.Window.sfxWindow2jfx
+import scalafx.application.JFXApp
+import scalafx.application.JFXApp.PrimaryStage
+import scalafx.scene.Scene
+import scalafx.scene.image.Image
+import scalafx.scene.layout.BorderPane
+
+import scala.language.implicitConversions
 
 /**
-  * Trait for for implementing component logic.
-  * Is not aware how the UI structure is implemented.
-  * Contains references to parent and parentWindow to help display dialogs.
-  *
-  * See more details in the [[org.scalafx.extras.modelview `org.scalafx.extras.modelview`]] documentation.
+  * ShowMessage application demo.
+  * The application is very simple but, for realistic illustration of [[org.scalafx.extras.ShowMessage ShowMessage]] usage
+  * it is using the [[org.scalafx.extras.modelview Model-Controller]] pattern.
   */
-trait Model {
+object ShowMessageDemoApp extends JFXApp {
 
-  /**
-    * Parent node of the view. Can be null.
-    */
-  val parent: ObjectProperty[Node] = new ObjectProperty(this, "parent", null)
-
-  /**
-    * Window of the parent node. Can be null.
-    */
-  def parentWindow: Option[Window] =
-    Option(parent.value).flatMap(n => Option(n.scene()).map(s => sfxWindow2jfx(s.window())))
-
-  def startUp(): Unit = {}
-
-  def shutDown(): Unit = {}
-
+  stage = new PrimaryStage {
+    scene = new Scene {
+      icons += new Image("/org/scalafx/extras/sfx.png")
+      title = "ShowMessage Demo"
+      root = new BorderPane {
+        center = new ShowMessageDemo().view
+      }
+    }
+  }
 }
