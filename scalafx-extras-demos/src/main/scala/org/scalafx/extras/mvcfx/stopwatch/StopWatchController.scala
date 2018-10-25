@@ -34,7 +34,7 @@ import scalafx.scene.control.{Button, Label}
 import scalafxml.core.macros.sfxml
 
 /**
-  * StopWatch UI view.
+  * StopWatch UI view controller.
   * It is intended to create bindings between UI definition loaded fro FXML configuration and the UI model
   */
 @sfxml
