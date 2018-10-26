@@ -27,6 +27,8 @@
 
 package org.scalafx.extras
 
+import java.util.concurrent.Future
+
 import org.scalafx.extras.BusyWorker.SimpleTask
 import scalafx.Includes._
 import scalafx.application.JFXApp
@@ -72,6 +74,13 @@ object BusyWorkerDemo extends JFXApp {
               progress() = 1
               "Done"
             }
+            override def onFinish(result: Future[String], successful: Boolean): Unit = {
+              // Any onFinish after running a task would happen here.
+              println(s"Task completion was successful: '$successful'")
+              if (successful) {
+                println(s"Task produced result: '${result.get()}'")
+              }
+            }
           }
         )
         maxWidth = Double.MaxValue
@@ -81,6 +90,35 @@ object BusyWorkerDemo extends JFXApp {
           println("Task 2")
           Thread.sleep(3000)
         }
+        maxWidth = Double.MaxValue
+      },
+      new Button("Task failing with exception (on 7)") {
+        onAction = () => busyWorker.doTask("Task 1")(
+          new SimpleTask[String] {
+            override def call(): String = {
+              val maxItems = 10
+              for (i <- 1 to maxItems) {
+                println(i)
+                message() = s"Processing item $i/$maxItems"
+                progress() = (i - 1) / 10.0
+                Thread.sleep(250)
+
+                if (i == 7) {
+                  throw new Exception("Simulating task failure.")
+                }
+              }
+              progress() = 1
+              "Done"
+            }
+            override def onFinish(result: Future[String], successful: Boolean): Unit = {
+              // Any onFinish after running a task would happen here.
+              println(s"Task completion was successful: '$successful'")
+              if (successful) {
+                println(s"Task produced result: '${result.get()}'")
+              }
+            }
+          }
+        )
         maxWidth = Double.MaxValue
       }
     ).map(_.delegate)

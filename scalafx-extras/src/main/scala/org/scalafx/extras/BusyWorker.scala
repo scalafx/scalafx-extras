@@ -34,6 +34,7 @@ import org.scalafx.extras.BusyWorker.SimpleTask
 import scalafx.Includes._
 import scalafx.application.Platform
 import scalafx.beans.property._
+import scalafx.concurrent.Worker
 import scalafx.scene.{Cursor, Node}
 import scalafx.stage.Window
 
@@ -57,10 +58,32 @@ object BusyWorker {
     */
   trait SimpleTask[R] {
 
+    /**
+      * Message that can be updated while task is executed.
+      */
     val message: StringProperty = new StringProperty(this, "message", "")
+    /**
+      * Progress indicator that can be updated when task is executed.
+      */
     val progress: DoubleProperty = new DoubleProperty(this, "progress", 0)
 
+    /**
+      * Perform the main actions of this task.
+      */
     def call(): R
+
+    /**
+      * Perform some actions after after `call()` completed.
+      * This is executed regardless of success or failure of `call()`.
+      * Use this to prevent blocking while waiting for `call()` to finish.
+      * The default implementation does nothing.
+      *
+      * @param result     a future containing result returned by `call()`.
+      *                   The result can be obtained using `result.get()`.
+      *                   Only valid if `call()` completed successfully.
+      * @param successful will be `true` if call completed successfully (without exceptions and was not cancelled).
+      */
+    def onFinish(result: Future[R], successful: Boolean): Unit = {}
   }
 
 }
@@ -75,7 +98,6 @@ object BusyWorker {
   * Below is an example of using using BusyWorker that updates a progress message and progress indicator.
   * The full example can be found in the `BusyWorkerDemo` of the ScalaFX Extras Demo project.
   * {{{
-  *
   *   val buttonPane: Pane = ...
   *   val progressLabel: Label = ...
   *   val progressBar: ProgressBar = ...
@@ -103,48 +125,85 @@ object BusyWorker {
   *         )
   * }}}
   *
-  *
-  * {{{
-  *
-  * }}}
-  *
-  * @param parent            parent window used for unexpected error dialogs.
-  * @param title             title used for unexpected error dialogs.
-  * @param busyDisabledNodes nodes that will be disabled when performing a task,
-  *                          if not specified it will be set to root pane of the `parentWindow`.
   * @author Jarek Sacha
   */
 class BusyWorker private(val title: String,
-                         val parent: Option[Window] = None,
-                         val busyDisabledNodes: Seq[jfxs.Node] = Seq[jfxs.Node]()) extends ShowMessage {
+                         private var _parentWindow: Option[Window] = None,
+                         private var _disabledNodes: Seq[jfxs.Node] = Seq.empty[jfxs.Node]) extends ShowMessage {
 
-  def this(title: String, parent: Window) = this(title, parent = Option(parent), busyDisabledNodes = Seq.empty[jfxs.Node])
-
-  def this(title: String, parent: Option[Window]) = this(title, parent = parent, busyDisabledNodes = Seq.empty[jfxs.Node])
-
-  def this(title: String, busyDisabledNode: Node) = this(title, parent = None, busyDisabledNodes = Seq(busyDisabledNode))
-
-  /** Creates a busy worker with a title and nodes to disable when performing tasks.
+  /**
+    * Creates a busy worker with a title and nodes to disable when performing tasks.
+    * The root node of the parentWindow will be disabled when task is being executed.
     *
-    * The input is a collection of JavaFX nodes.
-    * If you have a sequence of ScalaFX nodes, you may need to map them to underlying JavaFX nodes (delegates).
+    * The input is a collection of JavaFX or ScalaFX nodes.
     * {{{
-    *   val nodes = Seq[scalafx.scene.Node] = ...
-    *   new BusyWorker("My Task", nodes.map(_.delegate))
+    *   val parent: Window = ...
+    *   val busyWorker = new BusyWorker("My Task", parent))
     * }}}
     *
-    * @param title             title used for unexpected error dialogs.
-    * @param busyDisabledNodes nodes that will be disabled when performing a task,
-    *                          if not specified it will be set to root pane of the `parentWindow`.
+    * @param title  title used for unexpected error dialogs.
+    * @param parent window that will be used to display dialogs (if any).
     */
-  def this(title: String, busyDisabledNodes: Seq[jfxs.Node]) = this(title, parent = None, busyDisabledNodes = busyDisabledNodes)
-  //  def this(title: String, busyDisabledNodes: Seq[Node]) = this(title, parent = None, busyDisabledNodes = busyDisabledNodes.map(_.delegate))
+  def this(title: String, parent: Window) =
+    this(title, _parentWindow = Option(parent), _disabledNodes = Seq.empty[jfxs.Node])
 
-  override def parentWindow: Option[Window] = parent match {
-    case Some(_) => parent
+  /**
+    * Creates a busy worker with a title and nodes to disable when performing tasks.
+    * The root node of the parentWindow will be disabled when task is being executed.
+    *
+    * The input is a collection of JavaFX or ScalaFX nodes.
+    * {{{
+    *   val parent: Option[Window] = ...
+    *   val busyWorker = new BusyWorker("My Task", parent))
+    * }}}
+    *
+    * @param title  title used for unexpected error dialogs.
+    * @param parent window that will be used to display dialogs (if any).
+    */
+  def this(title: String, parent: Option[Window]) =
+    this(title, _parentWindow = parent, _disabledNodes = Seq.empty[jfxs.Node])
+
+  /**
+    * Creates a busy worker with a title and nodes to disable when performing tasks.
+    * The parent window is the parent window of the node.
+    *
+    * The input is a collection of JavaFX or ScalaFX nodes.
+    * {{{
+    *   val node: scalafx.scene.Node] = ...
+    *   val busyWorker = new BusyWorker("My Task", node))
+    * }}}
+    *
+    * @param title        title used for unexpected error dialogs.
+    * @param disabledNode node that will be disabled when performing a task, cannot be null.
+    */
+  def this(title: String, disabledNode: Node) =
+    this(title, _parentWindow = None, _disabledNodes = Seq(disabledNode))
+
+  /**
+    * Creates a busy worker with a title and nodes to disable when performing tasks.
+    * The parent window is the parent window of the first node.
+    *
+    * The input is a collection of JavaFX or ScalaFX nodes.
+    * {{{
+    *   val nodes = Seq[scalafx.scene.Node] = ...
+    *   val busyWorker = new BusyWorker("My Task", nodes))
+    * }}}
+    *
+    * @param title         title used for unexpected error dialogs.
+    * @param disabledNodes nodes that will be disabled when performing a task,
+    *                      if not specified it will be set to root pane of the `parentWindow`.
+    */
+  def this(title: String, disabledNodes: Seq[jfxs.Node]) =
+    this(title, _parentWindow = None, _disabledNodes = disabledNodes)
+
+  def disabledNodes: Seq[jfxs.Node] = _disabledNodes
+  def disabledNodes_=(implicit v: Seq[jfxs.Node]): Unit = _disabledNodes = v
+
+  override def parentWindow: Option[Window] = _parentWindow match {
+    case Some(_) => _parentWindow
     case None =>
-      if (busyDisabledNodes.nonEmpty) {
-        busyDisabledNodes.map {
+      if (disabledNodes.nonEmpty) {
+        disabledNodes.map {
           n =>
             val w: Window = n.scene().window()
             w
@@ -154,8 +213,12 @@ class BusyWorker private(val title: String,
       }
   }
 
-  //  require(nodeToDisable.nonEmpty,
-  //    s"Cannot determine value for `nodeToDisable`. busyDisabledNode=$busyDisabledNodes, parentWindow=$parentWindow.")
+  def parentWindow_=(v: Option[Window]): Unit = {
+    _parentWindow = v
+  }
+  def parentWindow_=(v: Window): Unit = {
+    _parentWindow = Option(v)
+  }
 
   private val _progressValue = new ReadOnlyDoubleWrapper(this, "progressValue", 0)
   private val _progressMessage = new ReadOnlyStringWrapper(this, "progressMessage", "")
@@ -225,15 +288,7 @@ class BusyWorker private(val title: String,
     * @return `Future` that can be used to retrieve result produced the workload, if any.
     */
   def doTask[R](implicit task: SimpleTask[R]): Future[R] = {
-    val t = new javafx.concurrent.Task[R] {
-      override def call(): R = {
-        task.call()
-      }
-
-      task.message.onChange((_, _, newValue) => updateMessage(newValue))
-      task.progress.onChange((_, _, newValue) => updateProgress(newValue.doubleValue(), 1.0))
-    }
-    _doTask(t, title)
+    doTask(title)(task)
   }
 
 
@@ -287,7 +342,7 @@ class BusyWorker private(val title: String,
     * @return `Future` that can be used to retrieve result produced the workload, if any.
     */
   def doTask[R](name: String)(implicit task: SimpleTask[R]): Future[R] = {
-    val t = new javafx.concurrent.Task[R] {
+    val jfxTask = new javafx.concurrent.Task[R] {
       override def call(): R = {
         task.call()
       }
@@ -295,10 +350,20 @@ class BusyWorker private(val title: String,
       task.message.onChange((_, _, newValue) => updateMessage(newValue))
       task.progress.onChange((_, _, newValue) => updateProgress(newValue.doubleValue(), 1.0))
     }
-    _doTask(t, name)
+    _doTask(jfxTask, task.onFinish, name)
   }
 
-  private def _doTask[R](task: javafx.concurrent.Task[R], name: String = title): Future[R] = {
+  /**
+    *
+    * @param task    task to run
+    * @param cleanup operation to perform after task completed (success or failure)
+    * @param name    name of the thread on which to run the task/
+    * @tparam R type of the task return value
+    * @return future representing value returned by the task.
+    */
+  private def _doTask[R](task: javafx.concurrent.Task[R],
+                         cleanup: (Future[R], Boolean) => Unit,
+                         name: String = title): Future[R] = {
 
     if (busy()) {
       throw new IllegalStateException("Internal error: Cannot run two workload at the same time. " +
@@ -317,22 +382,27 @@ class BusyWorker private(val title: String,
         onFX {
           _progressValue() = 0
           _progressMessage() = ""
-          nodeToDisable.foreach { node =>
+          nodesToDisable.foreach { node =>
             node.disable = false
-            node.scene().root().cursor = Cursor.Default
+            // Use Option to guard against null values
+            Option(node.scene()).map(_.root()).foreach(_.cursor = Cursor.Default)
           }
           busy() = false
           _busyWorkloadName = "[None]"
         }
       }
+
+      cleanup(task, task.state.value == Worker.State.Succeeded.delegate)
     }
 
+    // Prepare task for execution
     onFX {
       _progressMessage <== task.messageProperty()
       _progressValue <== task.progressProperty()
-      nodeToDisable.foreach { node =>
+      nodesToDisable.foreach { node =>
         node.disable = true
-        node.scene().root().cursor = Cursor.Wait
+        // Use Option to guard against null values
+        Option(node.scene()).map(_.root()).foreach(_.cursor = Cursor.Default)
       }
     }
 
@@ -349,6 +419,7 @@ class BusyWorker private(val title: String,
       resetProgress()
     }
 
+    // Run task on a separate thread
     val th = new Thread(task, name)
     th.setDaemon(true)
     th.start()
@@ -356,7 +427,7 @@ class BusyWorker private(val title: String,
     task
   }
 
-  private def nodeToDisable: Seq[jfxs.Node] = if (busyDisabledNodes.nonEmpty) busyDisabledNodes else {
-    parentWindow.map(_.scene().root()).toSeq
+  private def nodesToDisable: Seq[jfxs.Node] = if (disabledNodes.nonEmpty) disabledNodes else {
+    parentWindow.map(_.scene()).map(_.root()).toSeq
   }
 }
