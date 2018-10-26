@@ -15,9 +15,10 @@ val scalaVersions = Seq("2.11.12", "2.12.7")
 crossScalaVersions := scalaVersions
 scalaVersion       := crossScalaVersions { versions => versions.head }.value
 
-// ScalaFX project
-lazy val scalaFXExtrasProject = (project in file("scalafx-extras")).settings(
+// ScalaFX Extras project
+lazy val scalaFXExtras = (project in file("scalafx-extras")).settings(
   scalaFXExtrasSettings,
+  name := "scalafx-extras",
   description := "The ScalaFX Extras",
   fork in run := true,
   scalacOptions in(Compile, doc) ++= Seq(
@@ -30,9 +31,10 @@ lazy val scalaFXExtrasProject = (project in file("scalafx-extras")).settings(
   }) ++ (if(scalaVersion.value.startsWith("2.11")) Seq("-Xexperimental") else Seq.empty[String])
 )
 
-// ScalaFX Demos project
-lazy val scalaFXExtrasDemosProject = (project in file("scalafx-extras-demos")).settings(
+// ScalaFX Extras Demos project
+lazy val scalaFXExtrasDemos = (project in file("scalafx-extras-demos")).settings(
   scalaFXExtrasSettings,
+  name := "scalafx-extras-demos",
   description := "The ScalaFX Extras demonstrations",
   fork in run := true,
   javaOptions ++= Seq(
@@ -45,7 +47,7 @@ lazy val scalaFXExtrasDemosProject = (project in file("scalafx-extras-demos")).s
     "com.typesafe.scala-logging" %% "scala-logging"   % "3.9.0",
     "ch.qos.logback"              % "logback-classic" % "1.2.3"
   )
-).dependsOn(scalaFXExtrasProject % "compile;test->test")
+).dependsOn(scalaFXExtras % "compile;test->test")
 
 // Resolvers
 // Add snapshots to root project to enable compilation with Scala SNAPSHOT compiler,
