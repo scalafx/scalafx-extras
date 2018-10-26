@@ -40,7 +40,7 @@ class ShowMessageDemoModel extends ModelFX with ShowMessage {
 
   // Connect your custom logger to ShowMessageLogger (this is optional).
   private val _logger = Logger[ShowMessageDemoModel]
-  override def logger: Option[ShowMessageLogger] = Some(
+  override def messageLogger: Option[ShowMessageLogger] = Some(
     new ShowMessageLogger {
       override def warn(message: String): Unit = _logger.warn(message)
       override def error(message: String): Unit = _logger.warn(message)

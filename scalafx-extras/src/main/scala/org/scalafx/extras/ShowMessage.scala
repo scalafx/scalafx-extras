@@ -33,7 +33,7 @@ import scalafx.stage.Window
 
 /**
   * Mixin that adds ability to easily show message dialogs.
-  * A logger can be provided, so when the error or warning dialogs are shown, they are also logged.
+  * A messageLogger can be provided, so when the error or warning dialogs are shown, they are also logged.
   *
   * A ShowMessage mixin will typically be used with the [[org.scalafx.extras.mvcfx.ModelFX ModelFX]].
   *
@@ -44,11 +44,11 @@ trait ShowMessage {
   /**
     * Parent window for a dialog. Dialogs are shown modal, the window will be blocked while dialog is displayed.
     */
-  def parentWindow: Option[Window]
+  protected def parentWindow: Option[Window]
   /**
     * Logger to use for error and warning dialogs.
     */
-  def logger: Option[ShowMessageLogger] = None
+  protected def messageLogger: Option[ShowMessageLogger] = None
 
   /**
     * Show error dialog
@@ -58,7 +58,7 @@ trait ShowMessage {
     * @param content main content text.
     */
   def showError(title: String, header: String, content: String = ""): Unit = {
-    logger.foreach(_.error(s"<$title> $header $content"))
+    messageLogger.foreach(_.error(s"<$title> $header $content"))
     // Rename to avoid name clashes
     val dialogTitle = title
 
@@ -80,7 +80,7 @@ trait ShowMessage {
     * @param t       exception to be displayed in the dialog
     */
   def showException(title: String, message: String, t: Throwable): Unit = {
-    logger.foreach(_.error(s"<$title> $message", t))
+    messageLogger.foreach(_.error(s"<$title> $message", t))
     org.scalafx.extras.showException(title, message, t, parentWindow)
   }
 
@@ -92,7 +92,7 @@ trait ShowMessage {
     * @param content main content text.
     */
   def showInformation(title: String, header: String, content: String): Unit = {
-    //    logger.info(s"<$title> $header $content")
+    //    messageLogger.info(s"<$title> $header $content")
     // Rename to avoid name clashes
     val dialogTitle = title
 
@@ -114,7 +114,7 @@ trait ShowMessage {
     * @param content main content text.
     */
   def showWarning(title: String, header: String, content: String): Unit = {
-    logger.foreach(_.warn(s"<$title> $header $content"))
+    messageLogger.foreach(_.warn(s"<$title> $header $content"))
     // Rename to avoid name clashes
     val dialogTitle = title
 
