@@ -16,9 +16,11 @@ In contrast to ScalaFX core, the Extras do not have direct corresponding concept
    1. [Helper Methods](#helper-methods)
    1. [Simpler Display of Dialogs](#simpler-display-of-dialogs)
    1. [Simpler Use of FXML with MVCfx Pattern](#simpler-use-of-fxml-with-mvcfx-pattern)
+   1. [Image Display Component](#imagedisplay-component)
 0. [Demos](#demos)
    1. [StopWatch Application](#stopwatch-application)
    1. [ShowMessage Demo](#showmessage-demo)
+   1. [ImageDisplay Demo](#imagedisplay-demo)
 0. [Status](#status)
 0. [Discussion and Support](#discussion-and-support)
 0. [License](#license)
@@ -100,6 +102,12 @@ Package `org.scalafx.extras.mvcfx` contains classes for creating with UI compone
 
 The demos module has a complete example of a simple application: `StopWatchApp`.
 
+### ImageDisplay Component
+
+ImageDisplay Component is an image view with ability to zoom in, zoom out, zoom to fit. 
+It can also automatically resizes to parent size.
+
+
 Demos
 -----
 
@@ -110,7 +118,12 @@ Module `scalafx-extras-demos` contains examples of using ScalaFX Extras.
 `StopWatchApp` is an application that illustrates uses of the MVCfx: a Model-Controller and SFXML/FXML API.
 
 ### ShowMessage Demo
-* `ShowMessageDemoApp`: full example of using `ShowMessage` and MVCfx.
+`ShowMessageDemoApp` is a full example of using `ShowMessage` and MVCfx.
+
+### ImageDisplay Demo
+
+`ImageDisplayDemoApp` a simple example of an application that can display images, 
+with ability to zoom in, zoom out, and fit to current window. Illustrates use of the `ImageDisplay` component.
 
 Status
 ------

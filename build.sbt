@@ -70,6 +70,7 @@ lazy val scalaFXExtrasSettings = Seq(
     "-source", "1.8",
     "-Xlint:deprecation"),
   libraryDependencies ++= Seq(
+    "com.beachape"   %% "enumeratum"          % "1.5.13",
     "org.scala-lang"  % "scala-reflect"       % scalaVersion.value,
     "org.scalafx"    %% "scalafx"             % "8.0.181-R13",
     "org.scalafx"    %% "scalafxml-core-sfx8" % "0.4",
