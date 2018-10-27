@@ -409,7 +409,7 @@ class BusyWorker private(val title: String,
       nodesToDisable.foreach { node =>
         node.disable = true
         // Use Option to guard against null values
-        Option(node.scene()).map(_.root()).foreach(_.cursor = Cursor.Default)
+        Option(node.scene()).map(_.root()).foreach(_.cursor = Cursor.Wait)
       }
     }
 

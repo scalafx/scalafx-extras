@@ -43,8 +43,8 @@ class ShowMessageDemoModel extends ModelFX with ShowMessage {
   override def messageLogger: Option[ShowMessageLogger] = Some(
     new ShowMessageLogger {
       override def warn(message: String): Unit = _logger.warn(message)
-      override def error(message: String): Unit = _logger.warn(message)
-      override def error(message: String, t: Throwable): Unit = _logger.warn(message, t)
+      override def error(message: String): Unit = _logger.error(message)
+      override def error(message: String, t: Throwable): Unit = _logger.error(message, t)
     }
   )
 

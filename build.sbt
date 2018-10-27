@@ -8,7 +8,7 @@ import java.net.URL
 // JAR_BUILT_BY      - Name to be added to Jar metadata field "Built-By" (defaults to System.getProperty("user.name")
 //
 
-val projectVersion = "0.2.0-SNAPSHOT"
+val projectVersion = "0.2.0"
 val versionTagDir  = if (projectVersion.endsWith("SNAPSHOT")) "master" else "v" + projectVersion
 val scalaVersions = Seq("2.11.12", "2.12.7")
 
