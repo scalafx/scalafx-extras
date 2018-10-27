@@ -89,8 +89,14 @@ object BusyWorker {
 }
 
 /**
-  * Runs a workload on a separate thread. While workload is performed property `busy` is set to true.
-  * Only one workload can be run at the time. `workload` needs to handle its own exceptions.
+  * BusyWorker helps running UI tasks a separate threads (other than the JavaFX Application thread).
+  * It will show busy cursor and disable specified nodes while task is performed.
+  * It gives an option to show progress and status messages.
+  * `BusyWorker` run tasks and takes care of handling handling exceptions and displaying error dialogs.
+  * There is also option to perform custom finish actions after task is completed.
+  *
+  * While task is performed property `busy` is set to true.
+  * Only one task, for a given worker, can be run at the time.
   * When a task in being performed `busyDisabledNode` will be disabled and its cursor will be set to `Wait`/`Busy` cursor.
   *
   * Progress and messages from the running task can be monitored using `progressValue` and `progressMessage` properties.
@@ -123,6 +129,7 @@ object BusyWorker {
   *             }
   *           }
   *         )
+  *   }
   * }}}
   *
   * @author Jarek Sacha

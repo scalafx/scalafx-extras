@@ -96,6 +96,59 @@ class MyUIModel extends Model with ShowMessage {
 ```  
 The demos module has a complete example of an simple application in `ShowMessageDemoApp`.
 
+### BusyWorker
+
+BusyWorker helps running UI tasks a separate threads (other than the JavaFX Application thread). 
+It will show busy cursor and disable specified nodes while task is performed.
+It gives an option to show progress and status messages. 
+`BusyWorker` run tasks and takes care of handling handling exceptions and displaying error dialogs.
+There is also option to perform custom finish actions after task is completed.
+
+A simple case of using `BusyWorker`. 
+When the task is running, it will disable the root pane of the `parentWindow` to indicate that a task is performed.
+It will also change the cursor in the root pane to busy. 
+When task is done, the cursor will be changed back to default and root pane will enabled back.
+
+```scala
+new BusyWorker("Simple Task", parentWindow).doTask{
+  Thread.sleep(1000)
+  print(1 + 1)
+}
+```
+
+A little bit more elaborated example that updates a progress message and progress indicator.
+The full example can be found in the `BusyWorkerDemo`.
+```scala
+  val buttonPane: Pane = ...
+  val progressLabel: Label = ...
+  val progressBar: ProgressBar = ...
+
+  val busyWorker = new BusyWorker("BusyWorker Demo", buttonPane) {
+    progressLabel.text <== progressMessage
+    progressBar.progress <== progressValue
+  }
+
+  val button = new Button("Click Me") {
+        onAction = () => busyWorker.doTask("Task 1")(
+          new SimpleTask[String] {
+            override def call(): String = {
+              val maxItems = 10
+              for (i <- 1 to maxItems) {
+                println(i)
+                message() = s"Processing item $i/$maxItems"
+                progress() = (i - 1) / 10.0
+                Thread.sleep(250)
+              }
+              progress() = 1
+              "Done"
+            }
+          }
+        )
+  }
+```
+
+
+
 ### Simpler Use of FXML with MVCfx Pattern
 
 Package `org.scalafx.extras.mvcfx` contains classes for creating with UI components based on FXML.
@@ -119,6 +172,9 @@ Module `scalafx-extras-demos` contains examples of using ScalaFX Extras.
 
 ### ShowMessage Demo
 `ShowMessageDemoApp` is a full example of using `ShowMessage` and MVCfx.
+
+### BusyWorker Demo
+`BusyWorkerDemo` illustrated different aspects of using `BusyWorker`.
 
 ### ImageDisplay Demo
 
