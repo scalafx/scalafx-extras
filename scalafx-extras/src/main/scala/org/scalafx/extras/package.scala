@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2016, ScalaFX Project
+ * Copyright (c) 2011-2018, ScalaFX Project
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -29,9 +29,9 @@ package org.scalafx
 
 import java.io.{PrintWriter, StringWriter}
 import java.util.concurrent
+
 import javafx.embed.swing.JFXPanel
 import javafx.{concurrent => jfxc}
-
 import scalafx.Includes._
 import scalafx.application.Platform
 import scalafx.scene.Node
@@ -47,10 +47,12 @@ package object extras {
 
   /**
     * Attempt to initialize JavaFX Toolkit. This is only needed when application is not
-    * started by `JFXApp` are JavaFX `Application`.
+    * started by `JFXApp` or JavaFX `Application`.
     *
     * When JavaFX toolkit is not initialized and you attempt to use JavaFX components you will get exception:
     * `java.lang.IllegalStateException: Toolkit not initialized`.
+    *
+    * In JavaFX 9 and newer you can use `Platform.startup(() -> {})`.
     */
   def initFX(): Unit = {
     // Make sure that JavaFX Toolkit is not shutdown implicitly, it may not be possible to restart it.
@@ -60,7 +62,9 @@ package object extras {
   }
 
   /**
-    * Run operation `op` on FX application thread. Return without waiting for the operation to complete.
+    * Run operation `op` on FX application thread.
+    * If on FX Application thread it will wait for operation to compete,
+    * if not on FX Application thread it will return without waiting for the operation to complete.
     *
     * @param op operation to be performed.
     */
@@ -79,6 +83,9 @@ package object extras {
     * If the current thread is the FX application, the operation will be run on it.
     *
     * @param op operation to be performed.
+    * @throws java.util.concurrent.CancellationException - if the computation was cancelled
+    * @throws java.lang.InterruptedException             - if the current thread was interrupted while waiting
+    * @throws java.util.concurrent.ExecutionException    - if the computation threw an exception
     */
   def onFXAndWait[R](op: => R): R = {
     if (Platform.isFxApplicationThread) {
@@ -87,13 +94,20 @@ package object extras {
       val callable = new concurrent.Callable[R] {
         override def call(): R = op
       }
-      // TODO: deal with exceptions
-      //      try {
       val future = new concurrent.FutureTask(callable)
       Platform.runLater(future)
       future.get()
-      //      }
     }
+  }
+
+  /**
+    * Runs an operation `op` on a separate thread. Exceptions during execution are ignored.
+    * Similar to [[org.scalafx.extras#run]], with default name for the thread: "offFX".
+    *
+    * @param op operation to be performed.
+    */
+  def offFX[R](op: => R): Unit = {
+    run(op, "offFX")
   }
 
   /**
@@ -101,6 +115,9 @@ package object extras {
     * If the current thread is not the FX application, the operation will be run on it (no new thread will ne created).
     *
     * @param op operation to be performed.
+    * @throws java.util.concurrent.CancellationException - if the computation was cancelled
+    * @throws java.lang.InterruptedException             - if the current thread was interrupted while waiting
+    * @throws java.util.concurrent.ExecutionException    - if the computation threw an exception
     */
   def offFXAndWait[R](op: => R): R = {
     if (!Platform.isFxApplicationThread) {
@@ -109,39 +126,48 @@ package object extras {
       val callable = new concurrent.Callable[R] {
         override def call(): R = op
       }
-      // TODO: deal with exceptions
-      //      try {
       val future = new concurrent.FutureTask(callable)
       val th = new Thread(future)
       th.setDaemon(true)
       th.start()
       future.get()
-      //      }
     }
   }
 
   /**
     * Show a modal dialog with an expandable details about an exception (stack trace).
     *
-    * @param title   dialog title
-    * @param message message shown in the dialog header.
-    * @param t       exception.
-    * @param owner   owner window that will be blacked by the dialog. Can be `null`.
+    * @param title       dialog title
+    * @param message     message shown in the dialog header.
+    * @param t           exception.
+    * @param ownerWindow owner window that will be blacked by the dialog. Can be `null`.
     */
-  def showException(title: String, message: String, t: Throwable, owner: Node): Unit = {
-    val parentWindow = Option(owner).flatMap(n => Option(n.scene()).map(s => s.window())).orNull
+  def showException(title: String, message: String, t: Throwable, ownerWindow: Node): Unit = {
+    val parentWindow = Option(ownerWindow).flatMap(n => Option(n.scene()).map(s => jfxWindow2sfx(s.window())))
     showException(title, message, t, parentWindow)
   }
 
   /**
     * Show a modal dialog with an expandable details about an exception (stack trace).
     *
-    * @param title   dialog title
-    * @param message message shown in the dialog header.
-    * @param t       exception.
-    * @param owner   owner window that will be blacked by the dialog. Can be `null`.
+    * @param title       dialog title
+    * @param message     message shown in the dialog header.
+    * @param t           exception.
+    * @param ownerWindow owner window that will be blacked by the dialog. Can be `null` to match JavaFX convention.
     */
-  def showException(title: String, message: String, t: Throwable, owner: Window = null): Unit = {
+  def showException(title: String, message: String, t: Throwable, ownerWindow: Window): Unit = {
+    showException(title, message, t, Option(ownerWindow))
+  }
+
+  /**
+    * Show a modal dialog with an expandable details about an exception (stack trace).
+    *
+    * @param title       dialog title
+    * @param message     message shown in the dialog header.
+    * @param t           exception.
+    * @param ownerWindow owner window that will be blacked by the dialog.
+    */
+  def showException(title: String, message: String, t: Throwable, ownerWindow: Option[Window] = None): Unit = {
     t.printStackTrace()
 
     // Rename to avoid name clashes
@@ -172,7 +198,7 @@ package object extras {
 
     onFXAndWait {
       new Alert(AlertType.Error) {
-        initOwner(owner)
+        initOwner(ownerWindow.orNull)
         title = dialogTitle
         headerText = message
         contentText = Option(t.getMessage).getOrElse("")
@@ -185,6 +211,9 @@ package object extras {
 
   /**
     * Run task on a named daemon thread.
+    *
+    * @param task to run
+    * @param name name for the thread to run the operation. Useful for debugging.
     */
   def runTask[T](task: javafx.concurrent.Task[T], name: String): Unit = {
     val th = new Thread(task, name)
@@ -194,6 +223,9 @@ package object extras {
 
   /**
     * Runs an operation `op` on a separate thread. Exceptions during execution are ignored.
+    *
+    * @param op   operation to run
+    * @param name name for the thread to run the operation. Useful for debugging.
     */
   def run[R](op: => R, name: String): Unit = {
 
@@ -202,6 +234,5 @@ package object extras {
     }
 
     runTask(task, name)
-
   }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2016, ScalaFX Project
+ * Copyright (c) 2011-2018, ScalaFX Project
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,14 +25,36 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.scalafx.extras.modelview.stopwatch
+package org.scalafx.extras.mvcfx
 
-import org.scalafx.extras.modelview.ModelViewComponent
+import javafx.scene.Node
+import scalafx.Includes._
+import scalafx.beans.property.ObjectProperty
+import scalafx.stage.Window
+import scalafx.stage.Window.sfxWindow2jfx
 
 /**
-  * StopWatch generator/loader.
+  * Trait for for implementing component logic.
+  * Is not aware how the UI structure is implemented.
+  * Contains references to parent and parentWindow to help display dialogs.
+  *
+  * See more details in the [[org.scalafx.extras.mvcfx `org.scalafx.extras.mvcfx`]] documentation.
   */
-class StopWatchComponent(val model: StopWatchModel = new StopWatchModel())
-  extends ModelViewComponent("/org/scalafx/extras/modelview/stopwatch/StopWatchView.fxml") {
+trait ModelFX {
+
+  /**
+    * Parent node of the view. Can be null.
+    */
+  val parent: ObjectProperty[Node] = new ObjectProperty(this, "parent", null)
+
+  /**
+    * Window of the parent node. Can be null.
+    */
+  def parentWindow: Option[Window] =
+    Option(parent.value).flatMap(n => Option(n.scene()).map(s => sfxWindow2jfx(s.window())))
+
+  def startUp(): Unit = {}
+
+  def shutDown(): Unit = {}
 
 }

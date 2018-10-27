@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2016, ScalaFX Project
+ * Copyright (c) 2011-2018, ScalaFX Project
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,11 +25,13 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.scalafx.extras.modelview
+package org.scalafx.extras
 
 /**
-  * User interface view.
+  * Logging operations used by ShowMessage. Enables ShowMessage to use loggers preferred by the user.
   */
-trait View {
-
+trait ShowMessageLogger {
+  def warn(message: String): Unit
+  def error(message: String): Unit
+  def error(message: String, t: Throwable): Unit
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2016, ScalaFX Project
+ * Copyright (c) 2011-2018, ScalaFX Project
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,34 +25,31 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.scalafx.extras.modelview
-
-import javafx.scene.Node
+package org.scalafx.extras.mvcfx.stopwatch
 
 import scalafx.Includes._
-import scalafx.beans.property.ObjectProperty
-import scalafx.stage.Window
+import scalafx.application.JFXApp
+import scalafx.application.JFXApp.PrimaryStage
+import scalafx.scene.Scene
+import scalafx.scene.image.Image
+import scalafx.scene.layout.BorderPane
+
+import scala.language.implicitConversions
 
 /**
-  * User interface view's model.
+  * StopWatchApp is an application illustrating use of [[org.scalafx.extras.mvcfx ModelFX-ControllerFX]] pattern,
+  * where layout of the UI is loaded from FXML definition and behaviour is defined in a model.
   */
-trait Model {
+object StopWatchApp extends JFXApp {
 
-  /**
-    * Parent node of the view. Can be null.
-    */
-  val parent: ObjectProperty[Node] = new ObjectProperty(this, "parent", null)
-
-  /**
-    * Window of the parent node. Can be null.
-    */
-  def parentWindow: Window = {
-    val r = Option(parent.value).flatMap(n => Option(n.scene()).map(s => s.window())).orNull
-    r
+  stage = new PrimaryStage {
+    scene = new Scene {
+      icons += new Image("/org/scalafx/extras/sfx.png")
+      title = "StopWatch"
+      root = new BorderPane {
+        center = new StopWatch().view
+      }
+    }
   }
-
-  def startUp(): Unit = {}
-
-  def shutDown(): Unit = {}
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2016, ScalaFX Project
+ * Copyright (c) 2011-2018, ScalaFX Project
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,26 +25,30 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.scalafx.extras.modelview.stopwatch
+package org.scalafx.extras.showmessage
 
-import scala.language.implicitConversions
-import scalafx.application.JFXApp
-import scalafx.application.JFXApp.PrimaryStage
-import scalafx.scene.Scene
-import scalafx.scene.layout.BorderPane
+import org.scalafx.extras.mvcfx.ControllerFX
+import scalafx.Includes._
+import scalafx.scene.control.Button
+import scalafxml.core.macros.sfxml
 
 /**
-  * StopWatch application demo.
+  * ShowMessage UI view.
+  * It is intended to create bindings between UI definition loaded fro FXML configuration and the UI model
   */
-object StopWatchApp extends JFXApp {
+@sfxml
+class ShowMessageDemoController(showConfirmationButton: Button,
+                                showConfirmationYNCButton: Button,
+                                showInformationButton: Button,
+                                showWarningButton: Button,
+                                showErrorButton: Button,
+                                showExceptionButton: Button,
+                                model: ShowMessageDemoModel) extends ControllerFX {
 
-  stage = new PrimaryStage {
-    scene = new Scene {
-      title = "StopWatch"
-      root = new BorderPane {
-        center = new StopWatchComponent().view
-      }
-    }
-  }
-
+  showConfirmationButton.onAction = () => model.onShowConfirmation()
+  showConfirmationYNCButton.onAction = () => model.onShowConfirmationYesNoCancel()
+  showInformationButton.onAction = () => model.onShowInformation()
+  showWarningButton.onAction = () => model.onShowWarning()
+  showErrorButton.onAction = () => model.onShowError()
+  showExceptionButton.onAction = () => model.onShowException()
 }

@@ -25,54 +25,12 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.scalafx.extras.modelview.stopwatch
+package org.scalafx.extras.mvcfx.stopwatch
 
-
-import org.scalafx.extras.modelview.View
-
-import scalafx.Includes._
-import scalafx.scene.control.{Button, Label}
-import scalafxml.core.macros.sfxml
+import org.scalafx.extras.mvcfx.MVCfx
 
 /**
-  * StopWatch UI view.
-  * It is intended to create bindings between UI definition loaded fro FXML configuration and the UI model
+  * StopWatch generator/loader.
   */
-@sfxml
-class StopWatchView(minutesLabel: Label,
-                    secondsLabel: Label,
-                    fractionLabel: Label,
-                    startButton: Button,
-                    stopButton: Button,
-                    resetButton: Button,
-                    model: StopWatchModel) extends View {
-
-  minutesLabel.text.value = format2d(model.minutes.longValue)
-  model.minutes.onChange { (_, _, newValue) =>
-    minutesLabel.text.value = format2d(newValue.longValue)
-  }
-  secondsLabel.text.value = format2d(model.seconds.longValue())
-  model.seconds.onChange { (_, _, newValue) =>
-    secondsLabel.text.value = format2d(newValue.longValue())
-  }
-  fractionLabel.text.value = format2d(model.secondFraction.longValue() / 10)
-  model.secondFraction.onChange { (_, _, newValue) =>
-    fractionLabel.text.value = format2d(newValue.longValue() / 10)
-  }
-
-  startButton.disable <== model.running
-  stopButton.disable <== !model.running
-  resetButton.disable <== model.running
-
-  startButton.onAction = handle {
-    model.onStart()
-  }
-  stopButton.onAction = handle {
-    model.onStop()
-  }
-  resetButton.onAction = handle {
-    model.onReset()
-  }
-
-  private def format2d(t: Number) = f"${t.longValue()}%02d"
-}
+class StopWatch(val model: StopWatchModel = new StopWatchModel())
+  extends MVCfx("/org/scalafx/extras/mvcfx/stopwatch/StopWatch.fxml")

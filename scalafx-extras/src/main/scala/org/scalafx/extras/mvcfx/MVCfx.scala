@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2016, ScalaFX Project
+ * Copyright (c) 2011-2018, ScalaFX Project
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,26 +25,46 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.scalafx.extras.modelview
+package org.scalafx.extras.mvcfx
 
 import java.io.IOException
 
 import org.scalafx.extras._
-
 import scalafx.Includes._
 import scalafx.scene.{Parent, Scene}
-import scalafx.stage.{Stage, WindowEvent}
+import scalafx.stage.Stage
 import scalafxml.core.{ControllerDependencyResolver, ExplicitDependencies, FXMLView}
 
 
 /**
-  * A component defined by an FXML file.
-  * The component contains two parts the UI model and the UI view, they are implemented by additional classes.
+  * MVCfx is the "root" class for creation of UI components using MVCfx pattern.
+  * It instantiates and binds together the model, the controller, and the view (FXML).
+  *
+  * The implementation of a class that extends MVCfx is very simple,
+  * it only needs instance of the model and information about location of the FXML resource.
+  * For example:
+  * {{{
+  * import org.scalafx.extras.mvcfx.MVCfx
+  *
+  * class StopWatch(val model: StopWatchModel = new StopWatchModel())
+  *   extends MVCfx("/org/scalafx/extras/mvcfx/stopwatch/StopWatch.fxml")
+  * }}}
+  *
+  * The implementation will include:
+  * * StopWatch extends MVCfx
+  * * StopWatchModel extends ModelFX
+  * * StopWatchController extends ControllerFX
+  * * StopWatch.fxml
+  *
+  * The complete example in in demo module.
+  *
+  * See more details on MVCfx see [[org.scalafx.extras.mvcfx `org.scalafx.extras.mvcfx`]] documentation.
+  *
   */
-abstract class ModelViewComponent(fxmlFilePath: String) {
+abstract class MVCfx(fxmlFilePath: String) {
 
   /** UI model for this component. */
-  def model: Model
+  def model: ModelFX
 
   /** Top level UI node for this component. */
   val view: Parent = createFXMLView()
@@ -59,7 +79,7 @@ abstract class ModelViewComponent(fxmlFilePath: String) {
     val stage = new Stage() {
       title = caption
       scene = new Scene(view)
-      onCloseRequest = (we: WindowEvent) => model.shutDown()
+      onCloseRequest = () => model.shutDown()
     }
 
     // Initialize model
@@ -67,11 +87,11 @@ abstract class ModelViewComponent(fxmlFilePath: String) {
     runTask(
       name = s"$caption model.startUp",
       task = new javafx.concurrent.Task[Unit] {
-        override def call() = model.startUp()
+        override def call(): Unit = model.startUp()
 
-        override def failed() {
-          val message = s"Unexpected while initializing view for '$title'."
-          showException(title, message, exceptionProperty.get(), stage)
+        override def failed(): Unit = {
+          val message = s"Error while initializing view for '$title'."
+          showException(title, message, exceptionProperty.get(), Option(stage))
         }
       }
     )
