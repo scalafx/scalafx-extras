@@ -15,11 +15,13 @@ In contrast to ScalaFX core, the Extras do not have direct corresponding concept
 0. [Features](#features)
    1. [Helper Methods](#helper-methods)
    1. [Simpler Display of Dialogs](#simpler-display-of-dialogs)
+   1. [BusyWorker](#busyworker)
    1. [Simpler Use of FXML with MVCfx Pattern](#simpler-use-of-fxml-with-mvcfx-pattern)
    1. [Image Display Component](#imagedisplay-component)
 0. [Demos](#demos)
    1. [StopWatch Application](#stopwatch-application)
    1. [ShowMessage Demo](#showmessage-demo)
+   1. [BusyWorker Demo](#busyworker-demo)
    1. [ImageDisplay Demo](#imagedisplay-demo)
 0. [Status](#status)
 0. [Discussion and Support](#discussion-and-support)
@@ -110,7 +112,7 @@ It will also change the cursor in the root pane to busy.
 When task is done, the cursor will be changed back to default and root pane will enabled back.
 
 ```scala
-new BusyWorker("Simple Task", parentWindow).doTask{
+new BusyWorker("Simple Task", parentWindow).doTask {
   Thread.sleep(1000)
   print(1 + 1)
 }
