@@ -11,7 +11,7 @@ before_install:
   - "sh -e /etc/init.d/xvfb start"
 
 jdk:
-  - oraclejdk8
+- oraclejdk11
   
 install: true
 
@@ -32,4 +32,4 @@ notifications:
 addons:
   apt:
     packages:
-      - oracle-java8-installer
+    - oracle-java11-installer
