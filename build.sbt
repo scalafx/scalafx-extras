@@ -10,15 +10,26 @@ import java.net.URL
 
 val projectVersion = "0.2.1-SNAPSHOT"
 val versionTagDir  = if (projectVersion.endsWith("SNAPSHOT")) "master" else "v" + projectVersion
-val scalaVersions = Seq("2.11.12", "2.12.7")
+val scalaVersions  = Seq("2.11.12", "2.12.7")
 
 crossScalaVersions := scalaVersions
 scalaVersion       := crossScalaVersions { versions => versions.head }.value
 
+lazy val OSName = System.getProperty("os.name") match {
+  case n if n.startsWith("Linux")   => "linux"
+  case n if n.startsWith("Mac")     => "mac"
+  case n if n.startsWith("Windows") => "win"
+  case _                            => throw new Exception("Unknown platform!")
+}
+  
+lazy val JavaFXModuleNames = Seq("base", "controls", "fxml", "graphics", "media", "swing", "web")
+lazy val JavaFXModuleLibs: Seq[ModuleID] = 
+  JavaFXModuleNames.map(m => "org.openjfx" % s"javafx-$m" % "11" classifier OSName)
+
 // ScalaFX Extras project
 lazy val scalaFXExtras = (project in file("scalafx-extras")).settings(
   scalaFXExtrasSettings,
-  name := "scalafx-extras",
+  name        := "scalafx-extras",
   description := "The ScalaFX Extras",
   fork in run := true,
   scalacOptions in(Compile, doc) ++= Seq(
@@ -34,7 +45,7 @@ lazy val scalaFXExtras = (project in file("scalafx-extras")).settings(
 // ScalaFX Extras Demos project
 lazy val scalaFXExtrasDemos = (project in file("scalafx-extras-demos")).settings(
   scalaFXExtrasSettings,
-  name := "scalafx-extras-demos",
+  name        := "scalafx-extras-demos",
   description := "The ScalaFX Extras demonstrations",
   fork in run := true,
   javaOptions ++= Seq(
@@ -56,10 +67,10 @@ resolvers += Resolver.sonatypeRepo("snapshots")
 
 // Common settings
 lazy val scalaFXExtrasSettings = Seq(
-  organization := "org.scalafx",
-  version := projectVersion,
+  organization       := "org.scalafx",
+  version            := projectVersion,
   crossScalaVersions := scalaVersions,
-  scalaVersion := crossScalaVersions { versions => versions.head }.value,
+  scalaVersion       := crossScalaVersions { versions => versions.head }.value,
   scalacOptions ++= Seq("-unchecked", "-deprecation", "-Xcheckinit", "-encoding", "utf8", "-feature"),
   scalacOptions in(Compile, doc) ++= Opts.doc.title("ScalaFX Extras API"),
   scalacOptions in(Compile, doc) ++= Opts.doc.version(projectVersion),
@@ -72,9 +83,10 @@ lazy val scalaFXExtrasSettings = Seq(
   libraryDependencies ++= Seq(
     "com.beachape"   %% "enumeratum"          % "1.5.13",
     "org.scala-lang"  % "scala-reflect"       % scalaVersion.value,
-    "org.scalafx"    %% "scalafx"             % "8.0.181-R13",
+    "org.scalafx"    %% "scalafx"             % "11-R16",
     "org.scalafx"    %% "scalafxml-core-sfx8" % "0.4",
-    "org.scalatest"  %% "scalatest"           % "3.0.5" % "test"),
+    "org.scalatest"  %% "scalatest"           % "3.0.5" % "test"
+  ) ++ JavaFXModuleLibs,
   autoAPIMappings := true,
   manifestSetting,
   publishSetting,
@@ -92,15 +104,15 @@ lazy val scalaFXExtrasSettings = Seq(
 lazy val manifestSetting = packageOptions += {
   Package.ManifestAttributes(
     "Created-By" -> "Simple Build Tool",
-    "Built-By" -> Option(System.getenv("JAR_BUILT_BY")).getOrElse(System.getProperty("user.name")),
-    "Build-Jdk" -> System.getProperty("java.version"),
-    "Specification-Title" -> name.value,
-    "Specification-Version" -> version.value,
-    "Specification-Vendor" -> organization.value,
-    "Implementation-Title" -> name.value,
-    "Implementation-Version" -> version.value,
+    "Built-By"                 -> Option(System.getenv("JAR_BUILT_BY")).getOrElse(System.getProperty("user.name")),
+    "Build-Jdk"                -> System.getProperty("java.version"),
+    "Specification-Title"      -> name.value,
+    "Specification-Version"    -> version.value,
+    "Specification-Vendor"     -> organization.value,
+    "Implementation-Title"     -> name.value,
+    "Implementation-Version"   -> version.value,
     "Implementation-Vendor-Id" -> organization.value,
-    "Implementation-Vendor" -> organization.value
+    "Implementation-Vendor"    -> organization.value
   )
 }
 
@@ -115,10 +127,10 @@ lazy val publishSetting = publishTo := {
 // Metadata needed by Maven Central
 // See also http://maven.apache.org/pom.html#Developers
 lazy val mavenCentralSettings = Seq(
-  homepage := Some(new URL("http://www.scalafx.org/")),
+  homepage  := Some(new URL("http://www.scalafx.org/")),
   startYear := Some(2016),
-  licenses := Seq(("BSD", new URL("https://github.com/scalafx/scalafx-extras/blob/master/LICENSE.txt"))),
-  pomExtra :=
+  licenses  := Seq(("BSD", new URL("https://github.com/scalafx/scalafx-extras/blob/master/LICENSE.txt"))),
+  pomExtra  :=
     <scm>
       <url>https://github.com/scalafx/scalafx-extras</url>
       <connection>scm:git:https://github.com/scalafx/scalafx-extras.git</connection>
