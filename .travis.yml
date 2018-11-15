@@ -11,7 +11,7 @@ before_install:
   - "sh -e /etc/init.d/xvfb start"
 
 jdk:
-  - oraclejdk8
+- oraclejdk11
   
 install: true
 
@@ -28,8 +28,3 @@ notifications:
   email:
     - scalafx-build@googlegroups.com
 
-# Work around for default old version of Java provided by Travis CI
-addons:
-  apt:
-    packages:
-      - oracle-java8-installer
