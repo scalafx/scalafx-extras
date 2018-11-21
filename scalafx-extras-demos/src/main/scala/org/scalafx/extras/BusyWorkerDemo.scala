@@ -86,14 +86,14 @@ object BusyWorkerDemo extends JFXApp {
         maxWidth = Double.MaxValue
       },
       new Button("Task with simple progress indicator") {
-        onAction = () => busyWorker.doTask("Task 2") {
+        onAction = () => busyWorker.doTask("Task 2") { () =>
           println("Task 2")
           Thread.sleep(3000)
         }
         maxWidth = Double.MaxValue
       },
       new Button("Task failing with exception (on 7)") {
-        onAction = () => busyWorker.doTask("Task 1")(
+        onAction = () => busyWorker.doTask("Task 3")(
           new SimpleTask[String] {
             override def call(): String = {
               val maxItems = 10
@@ -119,6 +119,15 @@ object BusyWorkerDemo extends JFXApp {
             }
           }
         )
+        maxWidth = Double.MaxValue
+      },
+      new Button("Print execution thread") {
+        onAction = () => busyWorker.doTask("Task 4") { () =>
+          println("1: Thread '" + Thread.currentThread().getName + "'")
+          println("2: Thread '" + Thread.currentThread().getName + "'")
+          println("3: Thread '" + Thread.currentThread().getName + "'")
+          println("4: Thread '" + Thread.currentThread().getName + "'")
+        }
         maxWidth = Double.MaxValue
       }
     ).map(_.delegate)

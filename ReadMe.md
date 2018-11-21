@@ -112,7 +112,7 @@ It will also change the cursor in the root pane to busy.
 When task is done, the cursor will be changed back to default and root pane will enabled back.
 
 ```scala
-new BusyWorker("Simple Task", parentWindow).doTask {
+new BusyWorker("Simple Task", parentWindow).doTask { () =>
   Thread.sleep(1000)
   print(1 + 1)
 }

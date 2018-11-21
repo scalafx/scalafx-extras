@@ -8,12 +8,13 @@ import java.net.URL
 // JAR_BUILT_BY      - Name to be added to Jar metadata field "Built-By" (defaults to System.getProperty("user.name")
 //
 
-val projectVersion = "0.2.1"
+val projectVersion = "0.2.2-SNAPSHOT"
 val versionTagDir  = if (projectVersion.endsWith("SNAPSHOT")) "master" else "v" + projectVersion
-val scalaVersions  = Seq("2.11.12", "2.12.7")
+val _scalaVersions = Seq("2.12.7")
+val _scalaVersion = _scalaVersions.head
 
-crossScalaVersions := scalaVersions
-scalaVersion       := crossScalaVersions { versions => versions.head }.value
+crossScalaVersions := _scalaVersions
+scalaVersion := _scalaVersion
 
 lazy val OSName = System.getProperty("os.name") match {
   case n if n.startsWith("Linux")   => "linux"
@@ -31,7 +32,6 @@ lazy val scalaFXExtras = (project in file("scalafx-extras")).settings(
   scalaFXExtrasSettings,
   name        := "scalafx-extras",
   description := "The ScalaFX Extras",
-  fork in run := true,
   scalacOptions in(Compile, doc) ++= Seq(
     "-sourcepath", baseDirectory.value.toString,
     "-doc-root-content", baseDirectory.value + "/src/main/scala/root-doc.creole",
@@ -39,7 +39,7 @@ lazy val scalaFXExtras = (project in file("scalafx-extras")).settings(
   ) ++ (Option(System.getenv("GRAPHVIZ_DOT_PATH")) match {
     case Some(path) => Seq("-diagrams", "-diagrams-dot-path", path)
     case None => Seq.empty[String]
-  }) ++ (if(scalaVersion.value.startsWith("2.11")) Seq("-Xexperimental") else Seq.empty[String])
+  }) ++ (if (_scalaVersion.startsWith("2.11")) Seq("-Xexperimental") else Seq.empty[String])
 )
 
 // ScalaFX Extras Demos project
@@ -47,7 +47,6 @@ lazy val scalaFXExtrasDemos = (project in file("scalafx-extras-demos")).settings
   scalaFXExtrasSettings,
   name        := "scalafx-extras-demos",
   description := "The ScalaFX Extras demonstrations",
-  fork in run := true,
   javaOptions ++= Seq(
     "-Xmx512M",
     "-Djavafx.verbose"
@@ -69,16 +68,17 @@ resolvers += Resolver.sonatypeRepo("snapshots")
 lazy val scalaFXExtrasSettings = Seq(
   organization       := "org.scalafx",
   version            := projectVersion,
-  crossScalaVersions := scalaVersions,
-  scalaVersion       := crossScalaVersions { versions => versions.head }.value,
+  crossScalaVersions := _scalaVersions,
+  scalaVersion := _scalaVersion,
   scalacOptions ++= Seq("-unchecked", "-deprecation", "-Xcheckinit", "-encoding", "utf8", "-feature"),
+  scalacOptions in(Compile, doc) ++= (if (_scalaVersion.startsWith("2.11")) Seq("-Xexperimental") else Seq.empty[String]),
   scalacOptions in(Compile, doc) ++= Opts.doc.title("ScalaFX Extras API"),
   scalacOptions in(Compile, doc) ++= Opts.doc.version(projectVersion),
   scalacOptions in(Compile, doc) += s"-doc-external-doc:${scalaInstance.value.libraryJar}#http://www.scala-lang.org/api/${scalaVersion.value}/",
   scalacOptions in(Compile, doc) ++= Seq("-doc-footer", s"ScalaFX Extras API v.$projectVersion"),
   javacOptions ++= Seq(
-    "-target", "1.8",
-    "-source", "1.8",
+    //    "-target", "1.8",
+    //    "-source", "1.8",
     "-Xlint:deprecation"),
   libraryDependencies ++= Seq(
     "com.beachape"   %% "enumeratum"          % "1.5.13",
@@ -90,6 +90,7 @@ lazy val scalaFXExtrasSettings = Seq(
   autoAPIMappings := true,
   manifestSetting,
   publishSetting,
+  fork in run := true,
   fork in Test := true,
   parallelExecution in Test := false,
   resolvers += Resolver.sonatypeRepo("snapshots"),

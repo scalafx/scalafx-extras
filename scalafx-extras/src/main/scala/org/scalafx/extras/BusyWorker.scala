@@ -43,11 +43,6 @@ import scala.runtime.NonLocalReturnControl
 
 object BusyWorker {
 
-  //noinspection ConvertExpressionToSAM
-  implicit def apply[R](op: => R): SimpleTask[R] = new SimpleTask[R] {
-    def call(): R = op
-  }
-
   implicit def apply(nodes: Seq[Node]): Seq[jfxs.Node] = nodes.map(_.delegate)
 
   /**
@@ -252,7 +247,7 @@ class BusyWorker private(val title: String,
     *
     * Example of running a task without waiting to complete, using a lambda
     * {{{
-    *   worker.doTask{
+    *   worker.doTask{ () =>
     *      // Some workload code, does not produce value ot it is discard
     *      Thread.sleep(1000)
     *      print(1 + 1)
@@ -262,7 +257,7 @@ class BusyWorker private(val title: String,
     * Example of stating a task (with a lambda) and waiting till it finishes and returns a result
     * {{{
     *   // This code will return before workload is completed
-    *   val future = worker.doTask{
+    *   val future = worker.doTask{ () =>
     *      // Some workload code producing final value
     *      Thread.sleep(1000)
     *      1 + 1
@@ -294,7 +289,7 @@ class BusyWorker private(val title: String,
     * @param task actions to perform, can be provided a as a lambda op: => R, see examples above.
     * @return `Future` that can be used to retrieve result produced the workload, if any.
     */
-  def doTask[R](implicit task: SimpleTask[R]): Future[R] = {
+  def doTask[R](task: SimpleTask[R]): Future[R] = {
     doTask(title)(task)
   }
 
@@ -305,7 +300,7 @@ class BusyWorker private(val title: String,
     *
     * Example of running a task without waiting to complete, using a lambda
     * {{{
-    *   worker.doTask("My Task") {
+    *   worker.doTask("My Task") { () =>
     *      // Some workload code, does not produce value ot it is discard
     *      Thread.sleep(1000)
     *      print(1 + 1)
@@ -315,7 +310,7 @@ class BusyWorker private(val title: String,
     * Example of stating a task (with a lambda) and waiting till it finishes and returns a result
     * {{{
     *   // This code will return before workload is completed
-    *   val future = worker.doTask("My Task") {
+    *   val future = worker.doTask("My Task") { () =>
     *      // Some workload code producing final value
     *      Thread.sleep(1000)
     *      1 + 1
@@ -348,7 +343,7 @@ class BusyWorker private(val title: String,
     * @param task actions to perform, can be provided a as a lambda op: => R, see examples above.
     * @return `Future` that can be used to retrieve result produced the workload, if any.
     */
-  def doTask[R](name: String)(implicit task: SimpleTask[R]): Future[R] = {
+  def doTask[R](name: String)(task: SimpleTask[R]): Future[R] = {
     val jfxTask = new javafx.concurrent.Task[R] {
       override def call(): R = {
         task.call()
