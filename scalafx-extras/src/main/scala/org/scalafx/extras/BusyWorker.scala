@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2018, ScalaFX Project
+ * Copyright (c) 2011-2019, ScalaFX Project
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -39,7 +39,7 @@ import scalafx.scene.{Cursor, Node}
 import scalafx.stage.Window
 
 import scala.language.implicitConversions
-import scala.runtime.NonLocalReturnControl
+import scala.util.control.NonFatal
 
 object BusyWorker {
 
@@ -412,9 +412,7 @@ class BusyWorker private(val title: String,
     task.onCancelled = () => resetProgress()
     task.onFailed = () => {
       task.getException match {
-        case _: NonLocalReturnControl[_] =>
-        // `NonLocalReturnControl` seems to be thrown by Scala in control statement context rather than error.
-        case t: Throwable =>
+        case NonFatal(t) =>
           val message = s"Unexpected error while performing a UI task: '$name'. " // + Option(t.getMessage).getOrElse("")
           showException(title, message, t)
       }
