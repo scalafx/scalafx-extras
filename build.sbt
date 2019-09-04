@@ -10,7 +10,7 @@ import java.net.URL
 
 val projectVersion = "0.3.1-SNAPSHOT"
 val versionTagDir  = if (projectVersion.endsWith("SNAPSHOT")) "master" else "v" + projectVersion
-val _scalaVersions = Seq("2.12.7")
+val _scalaVersions = Seq("2.12.9")
 val _scalaVersion = _scalaVersions.head
 
 crossScalaVersions := _scalaVersions
@@ -24,8 +24,8 @@ lazy val OSName = System.getProperty("os.name") match {
 }
   
 lazy val JavaFXModuleNames = Seq("base", "controls", "fxml", "graphics", "media", "swing", "web")
-lazy val JavaFXModuleLibs: Seq[ModuleID] = 
-  JavaFXModuleNames.map(m => "org.openjfx" % s"javafx-$m" % "11" classifier OSName)
+lazy val JavaFXModuleLibs: Seq[ModuleID] =
+  JavaFXModuleNames.map(m => "org.openjfx" % s"javafx-$m" % "12.0.2" classifier OSName)
 
 // ScalaFX Extras project
 lazy val scalaFXExtras = (project in file("scalafx-extras")).settings(
@@ -54,7 +54,7 @@ lazy val scalaFXExtrasDemos = (project in file("scalafx-extras-demos")).settings
   addCompilerPlugin("org.scalamacros" % "paradise" % "2.1.1" cross CrossVersion.full),
   publishArtifact := false,
   libraryDependencies ++= Seq(
-    "com.typesafe.scala-logging" %% "scala-logging"   % "3.9.0",
+    "com.typesafe.scala-logging" %% "scala-logging" % "3.9.2",
     "ch.qos.logback"              % "logback-classic" % "1.2.3"
   )
 ).dependsOn(scalaFXExtras % "compile;test->test")
@@ -83,9 +83,9 @@ lazy val scalaFXExtrasSettings = Seq(
   libraryDependencies ++= Seq(
     "com.beachape"   %% "enumeratum"          % "1.5.13",
     "org.scala-lang"  % "scala-reflect"       % scalaVersion.value,
-    "org.scalafx"    %% "scalafx"             % "11-R16",
+    "org.scalafx" %% "scalafx" % "12.0.1-R17",
     "org.scalafx"    %% "scalafxml-core-sfx8" % "0.4",
-    "org.scalatest"  %% "scalatest"           % "3.0.5" % "test"
+    "org.scalatest" %% "scalatest" % "3.0.8" % "test"
   ) ++ JavaFXModuleLibs,
   autoAPIMappings := true,
   manifestSetting,
