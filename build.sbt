@@ -124,7 +124,6 @@ lazy val scalaFXExtrasSettings = Seq(
   },
   autoAPIMappings := true,
   manifestSetting,
-  publishTo := sonatypePublishToBundle.value,
   fork in run := true,
   fork in Test := true,
   parallelExecution in Test := false,
@@ -152,22 +151,19 @@ lazy val manifestSetting = packageOptions += {
   )
 }
 
+import xerial.sbt.Sonatype._
+
 // Metadata needed by Maven Central
 // See also http://maven.apache.org/pom.html#Developers
 lazy val mavenCentralSettings = Seq(
   homepage  := Some(new URL("http://www.scalafx.org/")),
   startYear := Some(2016),
   licenses  := Seq(("BSD", new URL("https://github.com/scalafx/scalafx-extras/blob/master/LICENSE.txt"))),
-  pomExtra  :=
-    <scm>
-      <url>https://github.com/scalafx/scalafx-extras</url>
-      <connection>scm:git:https://github.com/scalafx/scalafx-extras.git</connection>
-    </scm>
-      <developers>
-        <developer>
-          <id>jpsacha</id>
-          <name>Jarek Sacha</name>
-          <url>https://github.com/jpsacha</url>
-        </developer>
-      </developers>
+  sonatypeProfileName := "org.scalafx",
+  sonatypeProjectHosting := Some(GitHubHosting("org.scalafx", "scalafx-extras", "jpsacha@gmail.com")),
+  publishMavenStyle := true,
+  publishTo := sonatypePublishToBundle.value,
+  developers := List(
+    Developer(id="jpsacha", name="Jarek Sacha", email="jpsacha@gmail.com", url=url("https://github.com/jpsacha"))
+  )
 )
