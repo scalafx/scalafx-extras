@@ -124,7 +124,7 @@ lazy val scalaFXExtrasSettings = Seq(
   },
   autoAPIMappings := true,
   manifestSetting,
-  publishSetting,
+  publishTo := sonatypePublishToBundle.value,
   fork in run := true,
   fork in Test := true,
   parallelExecution in Test := false,
@@ -150,14 +150,6 @@ lazy val manifestSetting = packageOptions += {
     "Implementation-Vendor-Id" -> organization.value,
     "Implementation-Vendor"    -> organization.value
   )
-}
-
-lazy val publishSetting = publishTo := {
-  val nexus = "https://oss.sonatype.org/"
-  if (isSnapshot.value)
-    Some("snapshots" at nexus + "content/repositories/snapshots")
-  else
-    Some("releases"  at nexus + "service/local/staging/deploy/maven2")
 }
 
 // Metadata needed by Maven Central
