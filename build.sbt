@@ -1,5 +1,8 @@
 import java.net.URL
 
+import scala.xml.transform.{RewriteRule, RuleTransformer}
+import scala.xml.{Node => XmlNode, NodeSeq => XmlNodeSeq, _}
+
 // @formatter:off
 
 //
@@ -10,7 +13,7 @@ import java.net.URL
 
 val projectVersion = "0.3.1-SNAPSHOT"
 val versionTagDir  = if (projectVersion.endsWith("SNAPSHOT")) "master" else "v" + projectVersion
-val _scalaVersions = Seq("2.12.9")
+val _scalaVersions = Seq("2.13.0", "2.12.9")
 val _scalaVersion = _scalaVersions.head
 
 crossScalaVersions := _scalaVersions
@@ -27,6 +30,13 @@ lazy val JavaFXModuleNames = Seq("base", "controls", "fxml", "graphics", "media"
 lazy val JavaFXModuleLibs: Seq[ModuleID] =
   JavaFXModuleNames.map(m => "org.openjfx" % s"javafx-$m" % "12.0.2" classifier OSName)
 
+def isScala2_13plus(scalaVersion: String): Boolean = {
+  CrossVersion.partialVersion(scalaVersion) match {
+    case Some((2, n)) if n >= 13 => true
+    case _ => false
+  }
+}
+
 // ScalaFX Extras project
 lazy val scalaFXExtras = (project in file("scalafx-extras")).settings(
   scalaFXExtrasSettings,
@@ -39,7 +49,7 @@ lazy val scalaFXExtras = (project in file("scalafx-extras")).settings(
   ) ++ (Option(System.getenv("GRAPHVIZ_DOT_PATH")) match {
     case Some(path) => Seq("-diagrams", "-diagrams-dot-path", path)
     case None => Seq.empty[String]
-  }) ++ (if (_scalaVersion.startsWith("2.11")) Seq("-Xexperimental") else Seq.empty[String])
+  })
 )
 
 // ScalaFX Extras Demos project
@@ -51,10 +61,10 @@ lazy val scalaFXExtrasDemos = (project in file("scalafx-extras-demos")).settings
     "-Xmx512M",
     "-Djavafx.verbose"
   ),
-  addCompilerPlugin("org.scalamacros" % "paradise" % "2.1.1" cross CrossVersion.full),
+  scalacOptions ++= Seq("-deprecation"),
   publishArtifact := false,
   libraryDependencies ++= Seq(
-    "com.typesafe.scala-logging" %% "scala-logging" % "3.9.2",
+    "com.typesafe.scala-logging" %% "scala-logging"   % "3.9.2",
     "ch.qos.logback"              % "logback-classic" % "1.2.3"
   )
 ).dependsOn(scalaFXExtras % "compile;test->test")
@@ -76,6 +86,16 @@ lazy val scalaFXExtrasSettings = Seq(
   scalacOptions in(Compile, doc) ++= Opts.doc.version(projectVersion),
   scalacOptions in(Compile, doc) += s"-doc-external-doc:${scalaInstance.value.libraryJar}#http://www.scala-lang.org/api/${scalaVersion.value}/",
   scalacOptions in(Compile, doc) ++= Seq("-doc-footer", s"ScalaFX Extras API v.$projectVersion"),
+  // If using Scala 2.13 or better, enable macro processing through compiler option
+  scalacOptions += (if (isScala2_13plus(scalaVersion.value)) "-Ymacro-annotations" else ""),
+  // If using Scala 2.12 or lower, enable macro processing through compiler plugin
+  libraryDependencies ++= (
+    if (!isScala2_13plus(scalaVersion.value))
+      Seq(compilerPlugin(
+        "org.scalamacros" % "paradise" % "2.1.1" cross CrossVersion.full))
+    else
+      Seq.empty[sbt.ModuleID]
+    ),
   javacOptions ++= Seq(
     //    "-target", "1.8",
     //    "-source", "1.8",
@@ -83,10 +103,25 @@ lazy val scalaFXExtrasSettings = Seq(
   libraryDependencies ++= Seq(
     "com.beachape"   %% "enumeratum"          % "1.5.13",
     "org.scala-lang"  % "scala-reflect"       % scalaVersion.value,
-    "org.scalafx" %% "scalafx" % "12.0.1-R17",
-    "org.scalafx"    %% "scalafxml-core-sfx8" % "0.4",
-    "org.scalatest" %% "scalatest" % "3.0.8" % "test"
+    "org.scalafx"    %% "scalafx"             % "12.0.2-R18",
+    "org.scalafx"    %% "scalafxml-core-sfx8" % "0.5",
+    "org.scalatest"  %% "scalatest"           % "3.0.8" % "test"
   ) ++ JavaFXModuleLibs,
+  // Use `pomPostProcess` to remove dependencies marked as "provided" from publishing in POM
+  // This is to avoid dependency on wrong OS version JavaFX libraries
+  // See also [https://stackoverflow.com/questions/27835740/sbt-exclude-certain-dependency-only-during-publish]
+  pomPostProcess := { node: XmlNode =>
+    new RuleTransformer(new RewriteRule {
+      override def transform(node: XmlNode): XmlNodeSeq = node match {
+        case e: Elem if e.label == "dependency" && e.child.exists(c => c.label == "scope" && c.text == "provided") =>
+          val organization = e.child.filter(_.label == "groupId").flatMap(_.text).mkString
+          val artifact = e.child.filter(_.label == "artifactId").flatMap(_.text).mkString
+          val version = e.child.filter(_.label == "version").flatMap(_.text).mkString
+          Comment(s"provided dependency $organization#$artifact;$version has been omitted")
+        case _ => node
+      }
+    }).transform(node).head
+  },
   autoAPIMappings := true,
   manifestSetting,
   publishSetting,
