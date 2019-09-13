@@ -100,16 +100,18 @@ The demos module has a complete example of an simple application in `ShowMessage
 
 ### BusyWorker
 
-BusyWorker helps running UI tasks a separate threads (other than the JavaFX Application thread). 
-It will show busy cursor and disable specified nodes while task is performed.
+BusyWorker helps running a UI task on separate threads (other than the JavaFX Application thread). 
+It will show busy cursor and disable specified nodes while the task is performed.
 It gives an option to show progress and status messages. 
-`BusyWorker` run tasks and takes care of handling handling exceptions and displaying error dialogs.
-There is also option to perform custom finish actions after task is completed.
+`BusyWorker` takes care of handling handling exceptions and displaying error dialogs.
+It provides for an option to perform custom finish actions after task is completed.
 
-A simple case of using `BusyWorker`. 
-When the task is running, it will disable the root pane of the `parentWindow` to indicate that a task is performed.
-It will also change the cursor in the root pane to busy. 
-When task is done, the cursor will be changed back to default and root pane will enabled back.
+#### Example 1
+
+Below is a simple example of using `BusyWorker`. 
+When the task is running, `BusyWorker` will disable the root pane of the `parentWindow` to indicate that a task is performed.
+It will also change the cursor in the root pane to "busy". 
+When task is done, the cursor will be changed back to default and root pane will be enabled back.
 
 ```scala
 new BusyWorker("Simple Task", parentWindow).doTask { () =>
@@ -118,8 +120,9 @@ new BusyWorker("Simple Task", parentWindow).doTask { () =>
 }
 ```
 
-A little bit more elaborated example that updates a progress message and progress indicator.
-The full example can be found in the `BusyWorkerDemo`.
+#### Examnple 2
+
+Her is a little bit more elaborated example. It updates a progress message and progress indicator.
 ```scala
   val buttonPane: Pane = ...
   val progressLabel: Label = ...
@@ -148,14 +151,15 @@ The full example can be found in the `BusyWorkerDemo`.
         )
   }
 ```
-
+The full code example can be found in the 
+[BusyWorkerDemo][BusyWorkerDemo].
 
 
 ### Simpler Use of FXML with MVCfx Pattern
 
 Package `org.scalafx.extras.mvcfx` contains classes for creating with UI components based on FXML.
 
-The demos module has a complete example of a simple application: `StopWatchApp`.
+The demos module has a complete example of a simple application: [StopWatchApp][StopWatchDemo].
 
 ### ImageDisplay Component
 
@@ -166,22 +170,32 @@ It can also automatically resizes to parent size.
 Demos
 -----
 
-Module `scalafx-extras-demos` contains examples of using ScalaFX Extras.
+Module [scalafx-extras-demos][scalafx-extras-demos] contains examples of using ScalaFX Extras.
 
 ### StopWatch Application
 
-`StopWatchApp` is an application that illustrates uses of the MVCfx: a Model-Controller and SFXML/FXML API.
+[StopWatchApp][StopWatchDemo] is an application that illustrates uses of the MVCfx: a Model-Controller and SFXML/FXML API.
+
+![StopWatch Demo](notes/assets/StopWatchDemo.gif)
 
 ### ShowMessage Demo
-`ShowMessageDemoApp` is a full example of using `ShowMessage` and MVCfx.
+
+[ShowMessageDemoApp][ShowMessageDemo] is a full example of using `ShowMessage` and MVCfx.
+
+![ShowMessage Demo](notes/assets/ShowMessageDemo.gif)
 
 ### BusyWorker Demo
-`BusyWorkerDemo` illustrated different aspects of using `BusyWorker`.
+
+[BusyWorkerDemo][BusyWorkerDemo] illustrated different aspects of using `BusyWorker`.
+
+![BusyWorker Demo](notes/assets/BusyWorkerDemo.gif)
 
 ### ImageDisplay Demo
 
-`ImageDisplayDemoApp` a simple example of an application that can display images, 
+[ImageDisplayDemoApp][ImageDisplayDemo] a simple example of an application that can display images, 
 with ability to zoom in, zoom out, and fit to current window. Illustrates use of the `ImageDisplay` component.
+
+![Image Display Demo](notes/assets/ImageDisplayDemo.gif)
 
 Status
 ------
@@ -200,3 +214,9 @@ License
 -------
 
 BSD-3-Clause ScalaFX license.
+
+[scalafx-extras-demos]: scalafx-extras-demos
+[BusyWorkerDemo]: scalafx-extras-demos/src/main/scala/org/scalafx/extras/BusyWorkerDemo.scala
+[ImageDisplayDemo]: scalafx-extras-demos\src\main\scala\org\scalafx\extras\image\ImageDisplayDemoApp.scala
+[ShowMessageDemo]: scalafx-extras-demos\src\main\scala\org\scalafx\extras\showmessage
+[StopWatchDemo]: scalafx-extras-demos\src\main\scala\org\scalafx\extras\mvcfx\stopwatch
