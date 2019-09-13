@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2018, ScalaFX Project
+ * Copyright (c) 2011-2019, ScalaFX Project
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -30,6 +30,8 @@ package org.scalafx.extras.showmessage
 import com.typesafe.scalalogging.Logger
 import org.scalafx.extras._
 import org.scalafx.extras.mvcfx.ModelFX
+
+import scala.util.control.NonFatal
 
 /**
   * ShowMessage behaviour ModelFX.
@@ -86,7 +88,7 @@ class ShowMessageDemoModel extends ModelFX with ShowMessage {
     try {
       throw new Exception("A demo exception 1.")
     } catch {
-      case e: Exception => showException(Title, "A sample exception was thrown.", e)
+      case NonFatal(e) => showException(Title, "A sample exception was thrown.", e)
     }
   }
 }

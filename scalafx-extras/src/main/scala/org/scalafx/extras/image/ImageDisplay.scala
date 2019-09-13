@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2018, ScalaFX Project
+ * Copyright (c) 2011-2019, ScalaFX Project
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -150,7 +150,8 @@ class ImageDisplay() {
     * Image rotation in degrees. Default value is 0 (no rotation).
     */
   def rotation: Double = imageView.rotate()
-  def rotation_=(r: Double) {
+
+  def rotation_=(r: Double): Unit = {
     imageView.rotate() = r
   }
 

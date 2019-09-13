@@ -2,28 +2,20 @@ sudo: false
 
 language: scala
 scala:
-#- 2.11.12
-- 2.12.7
+  - 2.12.9
+  - 2.13.0
 
-before_install:
-  - "export DISPLAY=:99.0"
-  - "sh -e /etc/init.d/xvfb start"
+dist: xenial
+services:
+  - xvfb
 
 jdk:
 - oraclejdk11
-  
+- oraclejdk12
+
 install: true
 
 script:
   - java -version
   - sbt test
-
-branches:
-  only:
-    - master
-    - stable
-
-notifications:
-  email:
-    - scalafx-build@googlegroups.com
 
