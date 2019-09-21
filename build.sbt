@@ -11,13 +11,17 @@ import scala.xml.{Node => XmlNode, NodeSeq => XmlNodeSeq, _}
 // JAR_BUILT_BY      - Name to be added to Jar metadata field "Built-By" (defaults to System.getProperty("user.name")
 //
 
-val projectVersion = "0.3.1"
-val versionTagDir  = if (projectVersion.endsWith("SNAPSHOT")) "master" else "v" + projectVersion
+val projectVersion = "0.3.2.1-SNAPSHOT"
+val versionTagDir  = if (projectVersion.endsWith("SNAPSHOT")) "master" else "v." + projectVersion
 val _scalaVersions = Seq("2.13.0", "2.12.9")
-val _scalaVersion = _scalaVersions.head
+val _scalaVersion  = _scalaVersions.head
 
-crossScalaVersions := _scalaVersions
-scalaVersion := _scalaVersion
+version             := projectVersion
+crossScalaVersions  := _scalaVersions
+scalaVersion        := _scalaVersion
+publishArtifact     := false
+skip in publish     := true
+sonatypeProfileName := "org.scalafx"
 
 lazy val OSName = System.getProperty("os.name") match {
   case n if n.startsWith("Linux")   => "linux"
@@ -28,7 +32,7 @@ lazy val OSName = System.getProperty("os.name") match {
   
 lazy val JavaFXModuleNames = Seq("base", "controls", "fxml", "graphics", "media", "swing", "web")
 lazy val JavaFXModuleLibs: Seq[ModuleID] =
-  JavaFXModuleNames.map(m => "org.openjfx" % s"javafx-$m" % "12.0.2" classifier OSName)
+  JavaFXModuleNames.map(m => "org.openjfx" % s"javafx-$m" % "12.0.2" % "provided" classifier OSName)
 
 def isScala2_13plus(scalaVersion: String): Boolean = {
   CrossVersion.partialVersion(scalaVersion) match {
@@ -46,10 +50,12 @@ lazy val scalaFXExtras = (project in file("scalafx-extras")).settings(
     "-sourcepath", baseDirectory.value.toString,
     "-doc-root-content", baseDirectory.value + "/src/main/scala/root-doc.creole",
     "-doc-source-url", "https://github.com/SscalaFX-Extras/scalafx-extras/blob/" + versionTagDir + "/scalafx/€{FILE_PATH}.scala"
-  ) ++ (Option(System.getenv("GRAPHVIZ_DOT_PATH")) match {
-    case Some(path) => Seq("-diagrams", "-diagrams-dot-path", path)
-    case None => Seq.empty[String]
-  })
+  ),
+  scalacOptions in(Compile, doc) ++= (
+    Option(System.getenv("GRAPHVIZ_DOT_PATH")) match {
+      case Some(path) => Seq("-diagrams", "-diagrams-dot-path", path)
+      case None => Seq.empty[String]
+    })
 )
 
 // ScalaFX Extras Demos project
@@ -81,7 +87,6 @@ lazy val scalaFXExtrasSettings = Seq(
   crossScalaVersions := _scalaVersions,
   scalaVersion := _scalaVersion,
   scalacOptions ++= Seq("-unchecked", "-deprecation", "-Xcheckinit", "-encoding", "utf8", "-feature"),
-  scalacOptions in(Compile, doc) ++= (if (_scalaVersion.startsWith("2.11")) Seq("-Xexperimental") else Seq.empty[String]),
   scalacOptions in(Compile, doc) ++= Opts.doc.title("ScalaFX Extras API"),
   scalacOptions in(Compile, doc) ++= Opts.doc.version(projectVersion),
   scalacOptions in(Compile, doc) += s"-doc-external-doc:${scalaInstance.value.libraryJar}#http://www.scala-lang.org/api/${scalaVersion.value}/",

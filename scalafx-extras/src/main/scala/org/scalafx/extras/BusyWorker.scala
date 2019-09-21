@@ -46,12 +46,46 @@ object BusyWorker {
   implicit def apply(nodes: Seq[Node]): Seq[jfxs.Node] = nodes.map(_.delegate)
 
   /**
-    * A simple wrapper for a task that mas a status message property and a progress property.
+    * A simple wrapper for a task that has a status message property and a progress property.
     * Intended for use with [[org.scalafx.extras.BusyWorker#doTask(java.lang.String, org.scalafx.extras.BusyWorker.SimpleTask) BusyWorker#doTask]] method
     *
     * @tparam R returned value type.
     */
   trait SimpleTask[R] {
+
+
+    /**
+      * Method called whenever the state of the Task has transitioned to the SCHEDULED state.
+      * This method is invoked on the FX Application Thread after any listeners of the state property and after the
+      * Task has been fully transitioned to the new state.
+      */
+    def onScheduled(): Unit = {}
+
+    /**
+      * Method called whenever the state of the Task has transitioned to the RUNNING state.
+      * This method is invoked on the FX Application Thread after any listeners of the state property and after the
+      * Task has been fully transitioned to the new state.
+      */
+    def onRunning(): Unit = {}
+
+    /**
+      * called whenever the state of the Task has transitioned to the SUCCEEDED state. This method is invoked on the FX Application Thread after any listeners of the state property and after the Task has been fully transitioned to the new state.
+      */
+    def onSucceeded(): Unit = {}
+
+    /**
+      * Method called whenever the state of the Task has transitioned to the CANCELLED state.
+      * This method is invoked on the FX Application Thread after any listeners of the state property and after the
+      * Task has been fully transitioned to the new state.
+      */
+    def onCancelled(): Unit = {}
+
+    /**
+      * Method called whenever the state of the Task has transitioned to the FAILED state.
+      * This method is invoked on the FX Application Thread after any listeners of the state property and after the
+      * Task has been fully transitioned to the new state.
+      */
+    def onFailed(): Unit = {}
 
     /**
       * Message that can be updated while task is executed.
@@ -199,6 +233,7 @@ class BusyWorker private(val title: String,
     this(title, _parentWindow = None, _disabledNodes = disabledNodes)
 
   def disabledNodes: Seq[jfxs.Node] = _disabledNodes
+
   def disabledNodes_=(implicit v: Seq[jfxs.Node]): Unit = _disabledNodes = v
 
   override def parentWindow: Option[Window] = _parentWindow match {
@@ -218,6 +253,7 @@ class BusyWorker private(val title: String,
   def parentWindow_=(v: Option[Window]): Unit = {
     _parentWindow = v
   }
+
   def parentWindow_=(v: Window): Unit = {
     _parentWindow = Option(v)
   }
@@ -345,12 +381,21 @@ class BusyWorker private(val title: String,
     */
   def doTask[R](name: String)(task: SimpleTask[R]): Future[R] = {
     val jfxTask = new javafx.concurrent.Task[R] {
-      override def call(): R = {
-        task.call()
-      }
+      override def call(): R = task.call()
+
+      override def scheduled(): Unit = task.onScheduled()
+
+      override def running(): Unit = task.onRunning()
+
+      override def succeeded(): Unit = task.onSucceeded()
+
+      override def cancelled(): Unit = task.onCancelled()
+
+      override def failed(): Unit = task.onFailed()
 
       task.message.onChange((_, _, newValue) => updateMessage(newValue))
       task.progress.onChange((_, _, newValue) => updateProgress(newValue.doubleValue(), 1.0))
+
     }
     _doTask(jfxTask, task.onFinish, name)
   }
