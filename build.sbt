@@ -81,7 +81,6 @@ lazy val scalaFXExtrasSettings = Seq(
   crossScalaVersions := _scalaVersions,
   scalaVersion := _scalaVersion,
   scalacOptions ++= Seq("-unchecked", "-deprecation", "-Xcheckinit", "-encoding", "utf8", "-feature"),
-  scalacOptions in(Compile, doc) ++= (if (_scalaVersion.startsWith("2.11")) Seq("-Xexperimental") else Seq.empty[String]),
   scalacOptions in(Compile, doc) ++= Opts.doc.title("ScalaFX Extras API"),
   scalacOptions in(Compile, doc) ++= Opts.doc.version(projectVersion),
   scalacOptions in(Compile, doc) += s"-doc-external-doc:${scalaInstance.value.libraryJar}#http://www.scala-lang.org/api/${scalaVersion.value}/",
