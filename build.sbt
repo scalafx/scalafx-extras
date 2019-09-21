@@ -16,8 +16,12 @@ val versionTagDir  = if (projectVersion.endsWith("SNAPSHOT")) "master" else "v."
 val _scalaVersions = Seq("2.13.0", "2.12.9")
 val _scalaVersion  = _scalaVersions.head
 
-crossScalaVersions := _scalaVersions
-scalaVersion       := _scalaVersion
+version             := projectVersion
+crossScalaVersions  := _scalaVersions
+scalaVersion        := _scalaVersion
+publishArtifact     := false
+skip in publish     := true
+sonatypeProfileName := "org.scalafx"
 
 lazy val OSName = System.getProperty("os.name") match {
   case n if n.startsWith("Linux")   => "linux"
@@ -46,10 +50,12 @@ lazy val scalaFXExtras = (project in file("scalafx-extras")).settings(
     "-sourcepath", baseDirectory.value.toString,
     "-doc-root-content", baseDirectory.value + "/src/main/scala/root-doc.creole",
     "-doc-source-url", "https://github.com/SscalaFX-Extras/scalafx-extras/blob/" + versionTagDir + "/scalafx/€{FILE_PATH}.scala"
-  ) ++ (Option(System.getenv("GRAPHVIZ_DOT_PATH")) match {
-    case Some(path) => Seq("-diagrams", "-diagrams-dot-path", path)
-    case None => Seq.empty[String]
-  })
+  ),
+  scalacOptions in(Compile, doc) ++= (
+    Option(System.getenv("GRAPHVIZ_DOT_PATH")) match {
+      case Some(path) => Seq("-diagrams", "-diagrams-dot-path", path)
+      case None => Seq.empty[String]
+    })
 )
 
 // ScalaFX Extras Demos project
