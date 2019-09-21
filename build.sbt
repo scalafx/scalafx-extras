@@ -28,7 +28,7 @@ lazy val OSName = System.getProperty("os.name") match {
   
 lazy val JavaFXModuleNames = Seq("base", "controls", "fxml", "graphics", "media", "swing", "web")
 lazy val JavaFXModuleLibs: Seq[ModuleID] =
-  JavaFXModuleNames.map(m => "org.openjfx" % s"javafx-$m" % "12.0.2" classifier OSName)
+  JavaFXModuleNames.map(m => "org.openjfx" % s"javafx-$m" % "12.0.2" % "provided" classifier OSName)
 
 def isScala2_13plus(scalaVersion: String): Boolean = {
   CrossVersion.partialVersion(scalaVersion) match {
