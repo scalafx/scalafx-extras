@@ -12,12 +12,12 @@ import scala.xml.{Node => XmlNode, NodeSeq => XmlNodeSeq, _}
 //
 
 val projectVersion = "0.3.2.1-SNAPSHOT"
-val versionTagDir  = if (projectVersion.endsWith("SNAPSHOT")) "master" else "v" + projectVersion
+val versionTagDir  = if (projectVersion.endsWith("SNAPSHOT")) "master" else "v." + projectVersion
 val _scalaVersions = Seq("2.13.0", "2.12.9")
-val _scalaVersion = _scalaVersions.head
+val _scalaVersion  = _scalaVersions.head
 
 crossScalaVersions := _scalaVersions
-scalaVersion := _scalaVersion
+scalaVersion       := _scalaVersion
 
 lazy val OSName = System.getProperty("os.name") match {
   case n if n.startsWith("Linux")   => "linux"
