@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2019, ScalaFX Project
+ * Copyright (c) 2011-2020, ScalaFX Project
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -460,6 +460,9 @@ class BusyWorker private(val title: String,
         case NonFatal(t) =>
           val message = s"Unexpected error while performing a UI task: '$name'. " // + Option(t.getMessage).getOrElse("")
           showException(title, message, t)
+        case t =>
+          // Propagate fatal errors
+          throw t
       }
       resetProgress()
     }
