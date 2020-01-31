@@ -11,10 +11,11 @@ import scala.xml.{Node => XmlNode, NodeSeq => XmlNodeSeq, _}
 // JAR_BUILT_BY      - Name to be added to Jar metadata field "Built-By" (defaults to System.getProperty("user.name")
 //
 
-val projectVersion = "0.3.2.6-SNAPSHOT"
-val versionTagDir  = if (projectVersion.endsWith("SNAPSHOT")) "master" else "v." + projectVersion
-val _scalaVersions = Seq("2.13.1", "2.12.10")
-val _scalaVersion  = _scalaVersions.head
+val projectVersion  = "0.3.2.6-SNAPSHOT"
+val versionTagDir   = if (projectVersion.endsWith("SNAPSHOT")) "master" else "v." + projectVersion
+val _scalaVersions  = Seq("2.13.1", "2.12.10")
+val _scalaVersion   = _scalaVersions.head
+val _scalaFXVersion = "12.0.2"
 
 version             := projectVersion
 crossScalaVersions  := _scalaVersions
@@ -31,8 +32,11 @@ lazy val OSName = System.getProperty("os.name") match {
 }
   
 lazy val JavaFXModuleNames = Seq("base", "controls", "fxml", "graphics", "media", "swing", "web")
+lazy val JavaFXModuleLibsProvided: Seq[ModuleID] =
+  JavaFXModuleNames.map(m => "org.openjfx" % s"javafx-$m" % _scalaFXVersion % "provided" classifier OSName)
 lazy val JavaFXModuleLibs: Seq[ModuleID] =
-  JavaFXModuleNames.map(m => "org.openjfx" % s"javafx-$m" % "12.0.2" % "provided" classifier OSName)
+  JavaFXModuleNames.map(m => "org.openjfx" % s"javafx-$m" % _scalaFXVersion classifier OSName)
+
 
 def isScala2_13plus(scalaVersion: String): Boolean = {
   CrossVersion.partialVersion(scalaVersion) match {
@@ -68,11 +72,12 @@ lazy val scalaFXExtrasDemos = (project in file("scalafx-extras-demos")).settings
     "-Djavafx.verbose"
   ),
   scalacOptions ++= Seq("-deprecation"),
+  libraryDependencies ++= JavaFXModuleLibs,
   publishArtifact := false,
   libraryDependencies ++= Seq(
     "com.typesafe.scala-logging" %% "scala-logging"   % "3.9.2",
     "ch.qos.logback"              % "logback-classic" % "1.2.3"
-  )
+  ),
 ).dependsOn(scalaFXExtras % "compile;test->test")
 
 // Resolvers
@@ -111,7 +116,7 @@ lazy val scalaFXExtrasSettings = Seq(
     "org.scalafx"    %% "scalafx"             % "12.0.2-R18",
     "org.scalafx"    %% "scalafxml-core-sfx8" % "0.5",
     "org.scalatest"  %% "scalatest"           % "3.1.0" % "test"
-  ) ++ JavaFXModuleLibs,
+  ) ++ JavaFXModuleLibsProvided,
   // Use `pomPostProcess` to remove dependencies marked as "provided" from publishing in POM
   // This is to avoid dependency on wrong OS version JavaFX libraries
   // See also [https://stackoverflow.com/questions/27835740/sbt-exclude-certain-dependency-only-during-publish]
