@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2019, ScalaFX Project
+ * Copyright (c) 2011-2020, ScalaFX Project
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -53,7 +53,7 @@ class Pong {
   private val startButtonVisible = BooleanProperty(true)
 
   private val keyFrame = KeyFrame(10 ms, onFinished = {
-    event: ActionEvent =>
+    _: ActionEvent =>
       checkForCollision()
       val horzPixels = if (ball.movingRight) 1 else -1
       val vertPixels = if (ball.movingDown) 1 else -1
@@ -71,7 +71,7 @@ class Pong {
     text = "Start!"
     visible <== startButtonVisible
     onAction = {
-      event: ActionEvent =>
+      _: ActionEvent =>
         startButtonVisible() = false
         pongAnimation.playFromStart()
         pongComponents.requestFocus()
@@ -138,7 +138,7 @@ class Pong {
     }
   }
 
-  private val timer = AnimationTimer { t =>
+  private val timer = AnimationTimer { _ =>
     val paddleSpeed = 3
 
     def updatePaddle(paddle: Paddle): Unit = {
