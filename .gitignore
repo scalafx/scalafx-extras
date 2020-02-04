@@ -24,3 +24,4 @@ project/target
 .worksheet/
 *.sc
 .externalToolBuilders/
+/_local_/
