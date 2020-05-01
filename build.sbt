@@ -11,9 +11,9 @@ import scala.xml.{Node => XmlNode, NodeSeq => XmlNodeSeq, _}
 // JAR_BUILT_BY      - Name to be added to Jar metadata field "Built-By" (defaults to System.getProperty("user.name")
 //
 
-val projectVersion  = "0.3.3"
+val projectVersion  = "0.3.3.1-SNAPSHOT"
 val versionTagDir   = if (projectVersion.endsWith("SNAPSHOT")) "master" else "v." + projectVersion
-val _scalaVersions  = Seq("2.13.1", "2.12.10")
+val _scalaVersions  = Seq("2.13.1", "2.12.11")
 val _scalaVersion   = _scalaVersions.head
 val _scalaFXVersion = "12.0.2"
 
@@ -115,7 +115,7 @@ lazy val scalaFXExtrasSettings = Seq(
     "org.scala-lang"  % "scala-reflect"       % scalaVersion.value,
     "org.scalafx"    %% "scalafx"             % "12.0.2-R18",
     "org.scalafx"    %% "scalafxml-core-sfx8" % "0.5",
-    "org.scalatest"  %% "scalatest"           % "3.1.0" % "test"
+    "org.scalatest"  %% "scalatest"           % "3.1.1" % "test"
   ) ++ JavaFXModuleLibsProvided,
   // Use `pomPostProcess` to remove dependencies marked as "provided" from publishing in POM
   // This is to avoid dependency on wrong OS version JavaFX libraries
