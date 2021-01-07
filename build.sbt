@@ -1,5 +1,4 @@
 import java.net.URL
-
 import scala.xml.transform.{RewriteRule, RuleTransformer}
 import scala.xml.{Node => XmlNode, NodeSeq => XmlNodeSeq, _}
 
@@ -11,11 +10,11 @@ import scala.xml.{Node => XmlNode, NodeSeq => XmlNodeSeq, _}
 // JAR_BUILT_BY      - Name to be added to Jar metadata field "Built-By" (defaults to System.getProperty("user.name")
 //
 
-val projectVersion  = "0.3.4.1-SNAPSHOT"
+val projectVersion  = "0.3.4.2-SNAPSHOT"
 val versionTagDir   = if (projectVersion.endsWith("SNAPSHOT")) "master" else "v." + projectVersion
-val _scalaVersions  = Seq("2.13.1", "2.12.11")
+val _scalaVersions  = Seq("2.13.4", "2.12.12")
 val _scalaVersion   = _scalaVersions.head
-val _javaFXVersion = "14.0.1"
+val _javaFXVersion = "15.0.1"
 
 version             := projectVersion
 crossScalaVersions  := _scalaVersions
@@ -111,11 +110,11 @@ lazy val scalaFXExtrasSettings = Seq(
     //    "-source", "1.8",
     "-Xlint:deprecation"),
   libraryDependencies ++= Seq(
-    "com.beachape"   %% "enumeratum"          % "1.6.0",
+    "com.beachape"   %% "enumeratum"          % "1.6.1",
     "org.scala-lang"  % "scala-reflect"       % scalaVersion.value,
-    "org.scalafx"    %% "scalafx"             % "14-R19",
+    "org.scalafx"    %% "scalafx"             % "15.0.1-R20",
     "org.scalafx"    %% "scalafxml-core-sfx8" % "0.5",
-    "org.scalatest"  %% "scalatest"           % "3.1.2" % "test"
+    "org.scalatest"  %% "scalatest"           % "3.2.3" % "test"
   ) ++ JavaFXModuleLibsProvided,
   // Use `pomPostProcess` to remove dependencies marked as "provided" from publishing in POM
   // This is to avoid dependency on wrong OS version JavaFX libraries
