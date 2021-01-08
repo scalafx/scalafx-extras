@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2020, ScalaFX Project
+ * Copyright (c) 2011-2021, ScalaFX Project
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -27,8 +27,6 @@
 
 package org.scalafx.extras
 
-import java.util.concurrent.Future
-
 import javafx.{scene => jfxs}
 import org.scalafx.extras.BusyWorker.SimpleTask
 import scalafx.Includes._
@@ -38,6 +36,7 @@ import scalafx.concurrent.Worker
 import scalafx.scene.{Cursor, Node}
 import scalafx.stage.Window
 
+import java.util.concurrent.Future
 import scala.language.implicitConversions
 import scala.util.control.NonFatal
 
@@ -432,7 +431,7 @@ class BusyWorker private(val title: String,
           nodesToDisable.foreach { node =>
             node.disable = false
             // Use Option to guard against null values
-            Option(node.scene()).map(_.root()).foreach(_.cursor = Cursor.Default)
+            Option(node.scene()).foreach(_.cursor = Cursor.Default)
           }
           busy() = false
           _busyWorkloadName = "[None]"
@@ -449,7 +448,7 @@ class BusyWorker private(val title: String,
       nodesToDisable.foreach { node =>
         node.disable = true
         // Use Option to guard against null values
-        Option(node.scene()).map(_.root()).foreach(_.cursor = Cursor.Wait)
+        Option(node.scene()).foreach(_.cursor = Cursor.Wait)
       }
     }
 
