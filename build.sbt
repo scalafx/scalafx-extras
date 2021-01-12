@@ -10,7 +10,7 @@ import scala.xml.{Node => XmlNode, NodeSeq => XmlNodeSeq, _}
 // JAR_BUILT_BY      - Name to be added to Jar metadata field "Built-By" (defaults to System.getProperty("user.name")
 //
 
-val projectVersion  = "0.3.6"
+val projectVersion  = "0.3.6.1-SNAPSHOT"
 val versionTagDir   = if (projectVersion.endsWith("SNAPSHOT")) "master" else "v." + projectVersion
 val _scalaVersions  = Seq("2.13.4", "2.12.12")
 val _scalaVersion   = _scalaVersions.head
