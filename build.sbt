@@ -112,7 +112,7 @@ lazy val scalaFXExtrasSettings = Seq(
   libraryDependencies ++= Seq(
     "com.beachape"   %% "enumeratum"          % "1.6.1",
     "org.scala-lang"  % "scala-reflect"       % scalaVersion.value,
-    "org.scalafx"    %% "scalafx"             % "15.0.1-R20",
+    "org.scalafx"    %% "scalafx"             % "15.0.1-R21",
     "org.scalafx"    %% "scalafxml-core-sfx8" % "0.5",
     "org.scalatest"  %% "scalatest"           % "3.2.3" % "test"
   ) ++ JavaFXModuleLibsProvided,
