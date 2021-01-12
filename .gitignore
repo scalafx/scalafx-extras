@@ -25,3 +25,4 @@ project/target
 *.sc
 .externalToolBuilders/
 /_local_/
+/.bsp/
