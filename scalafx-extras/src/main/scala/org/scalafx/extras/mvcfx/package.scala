@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2018, ScalaFX Project
+ * Copyright (c) 2011-2021, ScalaFX Project
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -249,17 +249,19 @@ package org.scalafx.extras
   * package org.scalafx.extras.mvcfx.stopwatch
   *
   * import scala.language.implicitConversions
-  * import scalafx.application.JFXApp
-  * import scalafx.application.JFXApp.PrimaryStage
+  * import scalafx.application.JFXApp3
+  * import scalafx.application.JFXApp3.PrimaryStage
   * import scalafx.scene.Scene
   * import scalafx.scene.layout.BorderPane
   *
-  * object StopWatchApp extends JFXApp {
-  *   stage = new PrimaryStage {
-  *     scene = new Scene {
-  *       title = "StopWatch"
-  *       root = new BorderPane {
-  *         center = new StopWatch().view
+  * object StopWatchApp extends JFXApp3 {
+  *   override def start(): Unit = {
+  *     stage = new PrimaryStage {
+  *       scene = new Scene {
+  *         title = "StopWatch"
+  *         root = new BorderPane {
+  *           center = new StopWatch().view
+  *         }
   *       }
   *     }
   *   }

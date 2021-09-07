@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2020, ScalaFX Project
+ * Copyright (c) 2011-2021, ScalaFX Project
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -27,9 +27,8 @@
 
 package org.scalafx.extras.mvcfx.stopwatch
 
-import scalafx.Includes._
-import scalafx.application.JFXApp
-import scalafx.application.JFXApp.PrimaryStage
+import scalafx.application.JFXApp3
+import scalafx.application.JFXApp3.PrimaryStage
 import scalafx.scene.Scene
 import scalafx.scene.image.Image
 import scalafx.scene.layout.BorderPane
@@ -40,16 +39,17 @@ import scala.language.implicitConversions
   * StopWatchApp is an application illustrating use of [[org.scalafx.extras.mvcfx ModelFX-ControllerFX]] pattern,
   * where layout of the UI is loaded from FXML definition and behaviour is defined in a model.
   */
-object StopWatchApp extends JFXApp {
+object StopWatchApp extends JFXApp3 {
 
-  stage = new PrimaryStage {
-    icons += new Image("/org/scalafx/extras/sfx.png")
-    title = "StopWatch"
-    scene = new Scene {
-      root = new BorderPane {
-        center = new StopWatch().view
+  override def start(): Unit = {
+    stage = new PrimaryStage {
+      icons += new Image("/org/scalafx/extras/sfx.png")
+      title = "StopWatch"
+      scene = new Scene {
+        root = new BorderPane {
+          center = new StopWatch().view
+        }
       }
     }
   }
-
 }

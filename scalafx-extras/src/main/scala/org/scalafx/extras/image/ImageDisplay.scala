@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2020, ScalaFX Project
+ * Copyright (c) 2011-2021, ScalaFX Project
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -36,46 +36,47 @@ import scalafx.scene.layout.{Pane, StackPane}
 import scalafx.scene.paint.Color
 import scalafx.scene.shape.Rectangle
 
-
 /**
   * Displays an image view with ability to zoom in, zoom out, zoom to fit. It can also automatically resizes to parent size.
   * When `zoomToFit` is set to `true` the image is sized to fit the parent scroll pane.
   *
   * Sample usage (full detains in `ImageDisplayDemoApp`)
   * {{{
-  * object ImageDisplayDemoApp extends JFXApp {
+  * object ImageDisplayDemoApp extends JFXApp3 {
   *
-  *   private val imageDisplay = new ImageDisplay()
+  *   override def start(): Unit = {
   *
-  *   stage = new PrimaryStage {
-  *     scene = new Scene(640, 480) {
-  *       title = "ImageDisplay Demo"
-  *       root = new BorderPane {
-  *         top = new ToolBar {
-  *           items = Seq(
-  *             new Button("Open...") {
-  *               onAction = () => onFileOpen()
-  *             },
-  *             new Button("Zoom In") {
-  *               onAction = () => imageDisplay.zoomIn()
-  *               disable <== imageDisplay.zoomToFit
-  *             },
-  *             new Button("Zoom Out") {
-  *               onAction = () => imageDisplay.zoomOut()
-  *               disable <== imageDisplay.zoomToFit
-  *             },
-  *             new ToggleButton("Zoom to fit") {
-  *               selected <==> imageDisplay.zoomToFit
-  *             }
-  *           )
+  *     private val imageDisplay = new ImageDisplay()
+  *
+  *     stage = new PrimaryStage {
+  *       scene = new Scene(640, 480) {
+  *         title = "ImageDisplay Demo"
+  *         root = new BorderPane {
+  *           top = new ToolBar {
+  *             items = Seq(
+  *               new Button("Open...") {
+  *                 onAction = () => onFileOpen()
+  *               },
+  *               new Button("Zoom In") {
+  *                 onAction = () => imageDisplay.zoomIn()
+  *                 disable <== imageDisplay.zoomToFit
+  *               },
+  *               new Button("Zoom Out") {
+  *                 onAction = () => imageDisplay.zoomOut()
+  *                 disable <== imageDisplay.zoomToFit
+  *               },
+  *               new ToggleButton("Zoom to fit") {
+  *                 selected <==> imageDisplay.zoomToFit
+  *               }
+  *             )
+  *           }
+  *           center = imageDisplay.view
   *         }
-  *         center = imageDisplay.view
   *       }
   *     }
   *   }
   * }
   * }}}
-  *
   */
 class ImageDisplay() {
 
@@ -110,18 +111,19 @@ class ImageDisplay() {
     }
   }
 
-
   /**
     * Controls image zoom when `zoomToFit` is off. Value of 1 mean no scaling.
     * Values larger than 1 make image larger. Values smaller than 1 make image smaller.
     */
   val zoom: ObjectProperty[ZoomScale] = ObjectProperty[ZoomScale](this, "Zoom", ZoomScale.Zoom100Perc)
+
   /**
     * When set to `true` the image fits to the size of the available view, maintaining its aspect ratio.
     */
   val zoomToFit: BooleanProperty = BooleanProperty(value = false)
 
   private val _actualZoom = ReadOnlyDoubleWrapper(1d)
+
   /**
     * Actual zoom value.
     * It should be the same as `zoom` when `zoomToFit==false`, it may be different if `zoomToFit==true`
@@ -132,7 +134,6 @@ class ImageDisplay() {
     * Optional rectangular ROI to be displayed on the image
     */
   val roi: ObjectProperty[Option[Rectangle]] = ObjectProperty[Option[Rectangle]](None)
-
 
   /**
     * ScalaFX node in containing this image display UI.
@@ -200,21 +201,20 @@ class ImageDisplay() {
     updateFit()
 
     // Update fit when zoom or control size changes
-    Seq(zoom, zoomToFit, scrollPane.width, scrollPane.height, imageView.image).
-      foreach(_.onInvalidate {
-        updateFit()
-      })
+    Seq(zoom, zoomToFit, scrollPane.width, scrollPane.height, imageView.image).foreach(_.onInvalidate {
+      updateFit()
+    })
   }
 
   private def updateFit(): Unit = {
     Option(imageView.image()).foreach { image =>
-
-      val (w, h) = if (zoomToFit()) {
-        val bounds = scrollPane.viewportBounds()
-        (bounds.width, bounds.height)
-      } else {
-        (zoom().scale * image.width(), zoom().scale * image.height())
-      }
+      val (w, h) =
+        if (zoomToFit()) {
+          val bounds = scrollPane.viewportBounds()
+          (bounds.width, bounds.height)
+        } else {
+          (zoom().scale * image.width(), zoom().scale * image.height())
+        }
 
       // Correct for rotation
       val r = new Rectangle {
@@ -231,4 +231,3 @@ class ImageDisplay() {
     }
   }
 }
-
