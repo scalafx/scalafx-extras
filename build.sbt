@@ -12,15 +12,15 @@ import scala.xml.{Node => XmlNode, NodeSeq => XmlNodeSeq, _}
 
 val projectVersion  = "0.3.6.1-SNAPSHOT"
 val versionTagDir   = if (projectVersion.endsWith("SNAPSHOT")) "master" else "v." + projectVersion
-val _scalaVersions  = Seq("2.13.4", "2.12.12")
+val _scalaVersions  = Seq("2.13.6", "2.12.14")
 val _scalaVersion   = _scalaVersions.head
-val _javaFXVersion = "15.0.1"
+val _javaFXVersion = "16"
 
 version             := projectVersion
 crossScalaVersions  := _scalaVersions
 scalaVersion        := _scalaVersion
 publishArtifact     := false
-skip in publish     := true
+publish / skip      := true
 sonatypeProfileName := "org.scalafx"
 
 lazy val OSName = System.getProperty("os.name") match {
@@ -49,12 +49,12 @@ lazy val scalaFXExtras = (project in file("scalafx-extras")).settings(
   scalaFXExtrasSettings,
   name        := "scalafx-extras",
   description := "The ScalaFX Extras",
-  scalacOptions in(Compile, doc) ++= Seq(
+  Compile / doc / scalacOptions ++= Seq(
     "-sourcepath", baseDirectory.value.toString,
     "-doc-root-content", baseDirectory.value + "/src/main/scala/root-doc.creole",
     "-doc-source-url", "https://github.com/SscalaFX-Extras/scalafx-extras/blob/" + versionTagDir + "/scalafx/€{FILE_PATH}.scala"
   ),
-  scalacOptions in(Compile, doc) ++= (
+  Compile / doc / scalacOptions ++= (
     Option(System.getenv("GRAPHVIZ_DOT_PATH")) match {
       case Some(path) => Seq("-diagrams", "-diagrams-dot-path", path)
       case None => Seq.empty[String]
@@ -74,8 +74,8 @@ lazy val scalaFXExtrasDemos = (project in file("scalafx-extras-demos")).settings
   libraryDependencies ++= JavaFXModuleLibs,
   publishArtifact := false,
   libraryDependencies ++= Seq(
-    "com.typesafe.scala-logging" %% "scala-logging"   % "3.9.2",
-    "ch.qos.logback"              % "logback-classic" % "1.2.3"
+    "com.typesafe.scala-logging" %% "scala-logging"   % "3.9.4",
+    "ch.qos.logback"              % "logback-classic" % "1.2.5"
   ),
 ).dependsOn(scalaFXExtras % "compile;test->test")
 
@@ -91,10 +91,10 @@ lazy val scalaFXExtrasSettings = Seq(
   crossScalaVersions := _scalaVersions,
   scalaVersion := _scalaVersion,
   scalacOptions ++= Seq("-unchecked", "-deprecation", "-Xcheckinit", "-encoding", "utf8", "-feature"),
-  scalacOptions in(Compile, doc) ++= Opts.doc.title("ScalaFX Extras API"),
-  scalacOptions in(Compile, doc) ++= Opts.doc.version(projectVersion),
-  scalacOptions in(Compile, doc) += s"-doc-external-doc:${scalaInstance.value.libraryJars.head}#http://www.scala-lang.org/api/${scalaVersion.value}/",
-  scalacOptions in(Compile, doc) ++= Seq("-doc-footer", s"ScalaFX Extras API v.$projectVersion"),
+  Compile / doc / scalacOptions ++= Opts.doc.title("ScalaFX Extras API"),
+  Compile / doc / scalacOptions ++= Opts.doc.version(projectVersion),
+  Compile / doc / scalacOptions += s"-doc-external-doc:${scalaInstance.value.libraryJars.head}#http://www.scala-lang.org/api/${scalaVersion.value}/",
+  Compile / doc / scalacOptions ++= Seq("-doc-footer", s"ScalaFX Extras API v.$projectVersion"),
   // If using Scala 2.13 or better, enable macro processing through compiler option
   scalacOptions += (if (isScala2_13plus(scalaVersion.value)) "-Ymacro-annotations" else ""),
   // If using Scala 2.12 or lower, enable macro processing through compiler plugin
@@ -110,11 +110,11 @@ lazy val scalaFXExtrasSettings = Seq(
     //    "-source", "1.8",
     "-Xlint:deprecation"),
   libraryDependencies ++= Seq(
-    "com.beachape"   %% "enumeratum"          % "1.6.1",
+    "com.beachape"   %% "enumeratum"          % "1.7.0",
     "org.scala-lang"  % "scala-reflect"       % scalaVersion.value,
-    "org.scalafx"    %% "scalafx"             % "15.0.1-R21",
+    "org.scalafx"    %% "scalafx"             % "16.0.0-R25-SNAPSHOT",
     "org.scalafx"    %% "scalafxml-core-sfx8" % "0.5",
-    "org.scalatest"  %% "scalatest"           % "3.2.3" % "test"
+    "org.scalatest"  %% "scalatest"           % "3.2.9" % "test"
   ) ++ JavaFXModuleLibsProvided,
   // Use `pomPostProcess` to remove dependencies marked as "provided" from publishing in POM
   // This is to avoid dependency on wrong OS version JavaFX libraries
@@ -133,16 +133,15 @@ lazy val scalaFXExtrasSettings = Seq(
   },
   autoAPIMappings := true,
   manifestSetting,
-  fork in run := true,
-  fork in Test := true,
-  parallelExecution in Test := false,
+  run / fork  := true,
+  Test / fork := true,
+  Test / parallelExecution := false,
   resolvers += Resolver.sonatypeRepo("snapshots"),
   // print junit-style XML for CI
-  testOptions in Test += {
-    val t = (target in Test).value
+  Test / testOptions += {
+    val t = (Test / target).value
     Tests.Argument(TestFrameworks.ScalaTest, "-u", s"$t/junitxmldir")
-  },
-  shellPrompt in ThisBuild := { state => "sbt:" + Project.extract(state).currentRef.project + "> " }
+  }
 ) ++ mavenCentralSettings
 
 lazy val manifestSetting = packageOptions += {
