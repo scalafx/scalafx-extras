@@ -75,7 +75,7 @@ lazy val scalaFXExtrasDemos = (project in file("scalafx-extras-demos")).settings
   publishArtifact := false,
   libraryDependencies ++= Seq(
     "com.typesafe.scala-logging" %% "scala-logging"   % "3.9.4",
-    "ch.qos.logback"              % "logback-classic" % "1.2.5"
+    "ch.qos.logback"              % "logback-classic" % "1.2.6"
   ),
 ).dependsOn(scalaFXExtras % "compile;test->test")
 
@@ -112,9 +112,9 @@ lazy val scalaFXExtrasSettings = Seq(
   libraryDependencies ++= Seq(
     "com.beachape"   %% "enumeratum"          % "1.7.0",
     "org.scala-lang"  % "scala-reflect"       % scalaVersion.value,
-    "org.scalafx"    %% "scalafx"             % "16.0.0-R25-SNAPSHOT",
+    "org.scalafx"    %% "scalafx"             % "16.0.0-R25",
     "org.scalafx"    %% "scalafxml-core-sfx8" % "0.5",
-    "org.scalatest"  %% "scalatest"           % "3.2.9" % "test"
+    "org.scalatest"  %% "scalatest"           % "3.2.10" % "test"
   ) ++ JavaFXModuleLibsProvided,
   // Use `pomPostProcess` to remove dependencies marked as "provided" from publishing in POM
   // This is to avoid dependency on wrong OS version JavaFX libraries
