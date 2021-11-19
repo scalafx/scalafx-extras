@@ -12,7 +12,7 @@ import scala.xml.{Node => XmlNode, NodeSeq => XmlNodeSeq, _}
 
 val projectVersion  = "0.3.6.1-SNAPSHOT"
 val versionTagDir   = if (projectVersion.endsWith("SNAPSHOT")) "master" else "v." + projectVersion
-val _scalaVersions  = Seq("2.13.6", "2.12.14")
+val _scalaVersions  = Seq("2.13.7", "2.12.15")
 val _scalaVersion   = _scalaVersions.head
 val _javaFXVersion = "16"
 
@@ -75,7 +75,7 @@ lazy val scalaFXExtrasDemos = (project in file("scalafx-extras-demos")).settings
   publishArtifact := false,
   libraryDependencies ++= Seq(
     "com.typesafe.scala-logging" %% "scala-logging"   % "3.9.4",
-    "ch.qos.logback"              % "logback-classic" % "1.2.6"
+    "ch.qos.logback"              % "logback-classic" % "1.2.7"
   ),
 ).dependsOn(scalaFXExtras % "compile;test->test")
 
