@@ -100,11 +100,10 @@ The demos module has a complete example of an simple application in `ShowMessage
 
 ### BusyWorker
 
-BusyWorker helps running a UI task on separate threads (other than the JavaFX Application thread). 
-It will show busy cursor and disable specified nodes while the task is performed.
-It gives an option to show progress and status messages. 
-`BusyWorker` takes care of handling handling exceptions and displaying error dialogs.
-It provides for an option to perform custom finish actions after task is completed.
+BusyWorker helps running a UI task on separate threads (other than the JavaFX Application thread). It will show busy
+cursor and disable specified nodes while the task is performed. It gives an option to show progress and status messages.
+`BusyWorker` takes care of handling exceptions and displaying error dialogs. It provides for an option to perform custom
+finish actions after task is completed.
 
 #### Example 1
 
@@ -122,7 +121,7 @@ new BusyWorker("Simple Task", parentWindow).doTask { () =>
 
 #### Examnple 2
 
-Her is a little bit more elaborated example. It updates a progress message and progress indicator.
+Here is a little more elaborated example. It updates a progress message and progress indicator.
 ```scala
   val buttonPane: Pane = ...
   val progressLabel: Label = ...
@@ -163,8 +162,8 @@ The demos module has a complete example of a simple application: [StopWatchApp][
 
 ### ImageDisplay Component
 
-ImageDisplay Component is an image view with ability to zoom in, zoom out, zoom to fit. 
-It can also automatically resizes to parent size.
+ImageDisplay Component is an image view with ability to zoom in, zoom out, zoom to fit. It can also automatically resize
+to parent size.
 
 
 Demos
