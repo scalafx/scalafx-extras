@@ -12,16 +12,17 @@ import scala.xml.{Node => XmlNode, NodeSeq => XmlNodeSeq, _}
 
 val projectVersion = "0.4.0"
 val versionTagDir  = if (projectVersion.endsWith("SNAPSHOT")) "master" else "v." + projectVersion
-val _scalaVersions = Seq("2.13.7", "2.12.15", "3.0.2", "3.1.0")
+val _scalaVersions = Seq("2.13.7", "2.12.15", "3.0.2")
 val _scalaVersion  = _scalaVersions.head
 val _javaFXVersion = "16"
 
 ThisBuild / version             := projectVersion
 ThisBuild / crossScalaVersions  := _scalaVersions
 ThisBuild / scalaVersion        := _scalaVersion
-ThisBuild / publishArtifact     := false
-ThisBuild / publish / skip      := true
 ThisBuild / sonatypeProfileName := "org.scalafx"
+
+publishArtifact     := false
+publish / skip      := true
 
 lazy val OSName = System.getProperty("os.name") match {
   case n if n.startsWith("Linux")   => "linux"
@@ -153,8 +154,8 @@ lazy val scalaFXExtrasSettings = Seq(
       Seq.empty[sbt.ModuleID]
   ),
   javacOptions ++= Seq(
-    //    "-target", "1.8",
-    //    "-source", "1.8",
+       "-target", "1.8",
+       "-source", "1.8",
     "-Xlint:deprecation"
   ),
   libraryDependencies ++= Seq(
