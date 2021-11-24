@@ -2,8 +2,10 @@ sudo: false
 
 language: scala
 scala:
-  - 2.12.12
-  - 2.13.4
+  - 2.12.15
+  - 2.13.7
+  - 3.0.2
+  - 3.1.0
 
 dist: xenial
 services:
@@ -11,7 +13,7 @@ services:
 
 jdk:
   - oraclejdk11
-  - oraclejdk15
+  - oraclejdk17
 
 install: true
 
