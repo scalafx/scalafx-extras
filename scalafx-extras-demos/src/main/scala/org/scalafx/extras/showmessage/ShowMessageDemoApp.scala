@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2018, ScalaFX Project
+ * Copyright (c) 2011-2021, ScalaFX Project
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -27,9 +27,8 @@
 
 package org.scalafx.extras.showmessage
 
-import scalafx.Includes._
-import scalafx.application.JFXApp
-import scalafx.application.JFXApp.PrimaryStage
+import scalafx.application.JFXApp3
+import scalafx.application.JFXApp3.PrimaryStage
 import scalafx.scene.Scene
 import scalafx.scene.image.Image
 import scalafx.scene.layout.BorderPane
@@ -41,14 +40,17 @@ import scala.language.implicitConversions
   * The application is very simple but, for realistic illustration of [[org.scalafx.extras.ShowMessage ShowMessage]] usage
   * it is using the [[org.scalafx.extras.mvcfx ModelFX-ControllerFX]] pattern.
   */
-object ShowMessageDemoApp extends JFXApp {
+object ShowMessageDemoApp extends JFXApp3 {
 
-  stage = new PrimaryStage {
-    scene = new Scene {
-      icons += new Image("/org/scalafx/extras/sfx.png")
-      title = "ShowMessage Demo"
-      root = new BorderPane {
-        center = new ShowMessageDemo().view
+  override def start(): Unit = {
+
+    stage = new PrimaryStage {
+      scene = new Scene {
+        icons += new Image("/org/scalafx/extras/sfx.png")
+        title = "ShowMessage Demo"
+        root = new BorderPane {
+          center = new ShowMessageDemo().view
+        }
       }
     }
   }

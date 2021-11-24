@@ -25,31 +25,45 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.scalafx.extras.mvcfx.stopwatch
-
-import scalafx.application.JFXApp3
-import scalafx.application.JFXApp3.PrimaryStage
-import scalafx.scene.Scene
-import scalafx.scene.image.Image
-import scalafx.scene.layout.BorderPane
-
-import scala.language.implicitConversions
+package org.scalafx.extras.mvcfx
 
 /**
-  * StopWatchApp is an application illustrating use of [[org.scalafx.extras.mvcfx ModelFX-ControllerFX]] pattern,
-  * where layout of the UI is loaded from FXML definition and behaviour is defined in a model.
-  */
-object StopWatchApp extends JFXApp3 {
-
-  override def start(): Unit = {
-    stage = new PrimaryStage {
-      icons += new Image("/org/scalafx/extras/sfx.png")
-      title = "StopWatch"
-      scene = new Scene {
-        root = new BorderPane {
-          center = new StopWatch().view
-        }
-      }
-    }
-  }
-}
+ * The ControllerFX creates connection of the FXML to Scala code and underlying ModelFX for the application logic.
+ *
+ * Constructor argument names correspond to controls defined in FXML and the model. The constructor is used by ScalaFXML
+ * macro to automatically expose FXML controls in Scala code of the view class.
+ *
+ * See more details in the [[org.scalafx.extras.mvcfx `org.scalafx.extras.mvcfx`]] documentation.
+ *
+ * Example:
+ * {{{
+ * import org.scalafx.extras.mvcfx.ControllerFX
+ *
+ * import scalafx.Includes.*
+ * import scalafx.scene.control.{Button, Label}
+ * import scalafxml.core.macros.sfxml
+ *
+ * import javafx.scene.control as jfxsc
+ * import javafx.fxml as jfxf
+ *
+ * class StopWatchController(model: StopWatchModel) extends ControllerFX {
+ *
+ *   @jfxf.FXML
+ *   private var startButton: jfxsc.Button = _
+ *   @jfxf.FXML
+ *   private var stopButton: jfxsc.Button = _
+ *   @jfxf.FXML
+ *   private var resetButton: jfxsc.Button = _
+ *   ...
+ *
+ *   @jfxf.FXML
+ *   def initialize(): Unit = {
+ *     startButton.disable <== model.running
+ *     stopButton.disable  <== !model.running
+ *     resetButton.disable <== model.running
+ *   ...
+  *  }
+ * }
+ * }}}
+ */
+trait ControllerFX

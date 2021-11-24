@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2018, ScalaFX Project
+ * Copyright (c) 2011-2021, ScalaFX Project
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -27,9 +27,6 @@
 
 package org.scalafx
 
-import java.io.{PrintWriter, StringWriter}
-import java.util.concurrent
-
 import javafx.embed.swing.JFXPanel
 import javafx.{concurrent => jfxc}
 import scalafx.Includes._
@@ -40,6 +37,9 @@ import scalafx.scene.control.{Alert, Label, TextArea}
 import scalafx.scene.layout.{GridPane, Priority}
 import scalafx.stage.Window
 
+import java.io.{PrintWriter, StringWriter}
+import java.util.concurrent
+
 /**
   * Helper methods for working with ScalaFX.
   */
@@ -47,7 +47,7 @@ package object extras {
 
   /**
     * Attempt to initialize JavaFX Toolkit. This is only needed when application is not
-    * started by `JFXApp` or JavaFX `Application`.
+    * started by `JFXApp3` or JavaFX `Application`.
     *
     * When JavaFX toolkit is not initialized and you attempt to use JavaFX components you will get exception:
     * `java.lang.IllegalStateException: Toolkit not initialized`.
@@ -199,7 +199,7 @@ package object extras {
     onFXAndWait {
       new Alert(AlertType.Error) {
         initOwner(ownerWindow.orNull)
-        title = dialogTitle
+        this.title = dialogTitle
         headerText = message
         contentText = Option(t.getMessage).getOrElse("")
         // Set expandable Exception into the dialog pane.
@@ -207,7 +207,6 @@ package object extras {
       }.showAndWait()
     }
   }
-
 
   /**
     * Run task on a named daemon thread.

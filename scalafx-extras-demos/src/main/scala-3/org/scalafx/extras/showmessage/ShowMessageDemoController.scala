@@ -25,31 +25,42 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.scalafx.extras.mvcfx.stopwatch
+package org.scalafx.extras.showmessage
 
-import scalafx.application.JFXApp3
-import scalafx.application.JFXApp3.PrimaryStage
-import scalafx.scene.Scene
-import scalafx.scene.image.Image
-import scalafx.scene.layout.BorderPane
+import javafx.scene.{control as jfxsc, layout as jfxsl}
+import javafx.{event as jfxe, fxml as jfxf}
 
-import scala.language.implicitConversions
+import org.scalafx.extras.mvcfx.ControllerFX
 
-/**
-  * StopWatchApp is an application illustrating use of [[org.scalafx.extras.mvcfx ModelFX-ControllerFX]] pattern,
-  * where layout of the UI is loaded from FXML definition and behaviour is defined in a model.
+import scalafx.Includes.*
+import scalafx.scene.control.{Button, Label}
+
+/** ShowMessage UI view. It is intended to create bindings between UI definition
+  * loaded from FXML configuration and the UI model
   */
-object StopWatchApp extends JFXApp3 {
+class ShowMessageDemoController(val model: ShowMessageDemoModel) extends ControllerFX {
 
-  override def start(): Unit = {
-    stage = new PrimaryStage {
-      icons += new Image("/org/scalafx/extras/sfx.png")
-      title = "StopWatch"
-      scene = new Scene {
-        root = new BorderPane {
-          center = new StopWatch().view
-        }
-      }
-    }
+  @jfxf.FXML
+  private var showConfirmationButton: jfxsc.Button = _
+  @jfxf.FXML
+  private var showConfirmationYNCButton: jfxsc.Button = _
+  @jfxf.FXML
+  private var showInformationButton: jfxsc.Button = _
+  @jfxf.FXML
+  private var showWarningButton: jfxsc.Button = _
+  @jfxf.FXML
+  private var showErrorButton: jfxsc.Button = _
+  @jfxf.FXML
+  private var showExceptionButton: jfxsc.Button = _
+
+  @jfxf.FXML
+  def initialize(): Unit = {
+    showConfirmationButton.onAction = () => model.onShowConfirmation()
+    showConfirmationYNCButton.onAction = () =>
+      model.onShowConfirmationYesNoCancel()
+    showInformationButton.onAction = () => model.onShowInformation()
+    showWarningButton.onAction = () => model.onShowWarning()
+    showErrorButton.onAction = () => model.onShowError()
+    showExceptionButton.onAction = () => model.onShowException()
   }
 }

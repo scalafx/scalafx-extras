@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2016, ScalaFX Project
+ * Copyright (c) 2011-2021, ScalaFX Project
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,12 +25,38 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.scalafx.extras.mvcfx.stopwatch
-
-import org.scalafx.extras.mvcfx.MVCfx
+package org.scalafx.extras.mvcfx
 
 /**
-  * StopWatch generator/loader.
-  */
-class StopWatch(val model: StopWatchModel = new StopWatchModel())
-  extends MVCfx("/org/scalafx/extras/mvcfx/stopwatch/StopWatch.fxml")
+ * The ControllerFX creates connection of the FXML to Scala code and underlying ModelFX for the application logic.
+ *
+ * Constructor argument names correspond to controls defined in FXML and the model. The constructor is used by ScalaFXML
+ * macro to automatically expose FXML controls in Scala code of the view class.
+ *
+ * See more details in the [[org.scalafx.extras.mvcfx `org.scalafx.extras.mvcfx`]] documentation.
+ *
+ * Example:
+ * {{{
+ * import org.scalafx.extras.mvcfx.ControllerFX
+ *
+ * import scalafx.Includes._
+ * import scalafx.scene.control.{Button, Label}
+ * import scalafxml.core.macros.sfxml
+ *
+ * @sfxml
+ * class StopWatchController(minutesLabel: Label,
+ *                           secondsLabel: Label,
+ *                           fractionLabel: Label,
+ *                           startButton: Button,
+ *                           stopButton: Button,
+ *                           resetButton: Button,
+ *                           model: StopWatchModel) extends ControllerFX {
+ * ...
+ *   startButton.disable <== model.running
+ *   stopButton.disable <== !model.running
+ *   resetButton.disable <== model.running
+ * ...
+ * }
+ * }}}
+ */
+trait ControllerFX

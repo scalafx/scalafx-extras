@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2018, ScalaFX Project
+ * Copyright (c) 2011-2021, ScalaFX Project
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -30,8 +30,8 @@ package org.scalafx.extras.image
 import javafx.beans.{binding => jfxbb}
 import org.scalafx.extras.showException
 import scalafx.Includes._
-import scalafx.application.JFXApp
-import scalafx.application.JFXApp.PrimaryStage
+import scalafx.application.JFXApp3
+import scalafx.application.JFXApp3.PrimaryStage
 import scalafx.scene.Scene
 import scalafx.scene.control._
 import scalafx.scene.image.Image
@@ -42,92 +42,95 @@ import scalafx.stage.FileChooser
 /**
   * Demonstrates use of `ImageDisplay` class.
   */
-object ImageDisplayDemoApp extends JFXApp {
+object ImageDisplayDemoApp extends JFXApp3 {
 
-  private val imageDisplay = new ImageDisplay()
-  //  private var roi: Option[Rectangle] = None
+  override def start(): Unit = {
 
-  stage = new PrimaryStage {
-    scene = new Scene(640, 480) {
-      icons += new Image("/org/scalafx/extras/sfx.png")
-      title = "ImageDisplay Demo"
-      root = new BorderPane {
-        top = new ToolBar {
-          items = Seq(
-            new Button("Open...") {
-              onAction = () => onFileOpen()
-            },
-            new Button("Zoom In") {
-              onAction = () => imageDisplay.zoomIn()
-              disable <== imageDisplay.zoomToFit
-            },
-            new Button("Zoom Out") {
-              onAction = () => imageDisplay.zoomOut()
-              disable <== imageDisplay.zoomToFit
-            },
-            new ToggleButton("Zoom to fit") {
-              selected <==> imageDisplay.zoomToFit
-            }
-          )
-        }
-        center = imageDisplay.view
-        bottom = new FlowPane {
-          children = Seq {
-            new Label("???") {
-              text <==
-                when(!imageDisplay.zoomToFit) choose {
-                  jfxbb.Bindings.format("Zoom %.2f%%", (imageDisplay.actualZoom * 100).delegate)
-                } otherwise {
-                  jfxbb.Bindings.format("Zoom to fit (%.2f%%)", (imageDisplay.actualZoom * 100).delegate)
-                }
+    val imageDisplay = new ImageDisplay()
+    //  private var roi: Option[Rectangle] = None
+
+    stage = new PrimaryStage {
+      scene = new Scene(640, 480) {
+        icons += new Image("/org/scalafx/extras/sfx.png")
+        title = "ImageDisplay Demo"
+        root = new BorderPane {
+          top = new ToolBar {
+            items = Seq(
+              new Button("Open...") {
+                onAction = () => onFileOpen()
+              },
+              new Button("Zoom In") {
+                onAction = () => imageDisplay.zoomIn()
+                disable <== imageDisplay.zoomToFit
+              },
+              new Button("Zoom Out") {
+                onAction = () => imageDisplay.zoomOut()
+                disable <== imageDisplay.zoomToFit
+              },
+              new ToggleButton("Zoom to fit") {
+                selected <==> imageDisplay.zoomToFit
+              }
+            )
+          }
+          center = imageDisplay.view
+          bottom = new FlowPane {
+            children = Seq {
+              new Label("???") {
+                text <==
+                  when(!imageDisplay.zoomToFit) choose {
+                    jfxbb.Bindings.format("Zoom %.2f%%", (imageDisplay.actualZoom * 100).delegate)
+                  } otherwise {
+                    jfxbb.Bindings.format("Zoom to fit (%.2f%%)", (imageDisplay.actualZoom * 100).delegate)
+                  }
+              }
             }
           }
         }
       }
     }
-  }
 
-  //  setROI()
-  //---------------------------------------------------------------------------
+    //  setROI()
+    //---------------------------------------------------------------------------
 
 
-  /**
-    * Let user select image file and load it.
-    */
-  def onFileOpen(): Unit = {
-    val fileChooser = new FileChooser()
-    val file = fileChooser.showOpenDialog(stage)
-    if (file != null) {
-      try {
-        val image = new Image("file:" + file.getCanonicalPath)
-        if (!image.error()) {
-          imageDisplay.image() = image
-        } else {
-          image.exception().printStackTrace()
-          showException(
-            title = "Open image...",
-            message = "Failed to load image from file:\n" + file.getCanonicalPath, t = image.exception(),
-            ownerWindow = stage)
+    /**
+      * Let user select image file and load it.
+      */
+    def onFileOpen(): Unit = {
+      val fileChooser = new FileChooser()
+      val file = fileChooser.showOpenDialog(stage)
+      if (file != null) {
+        try {
+          val image = new Image("file:" + file.getCanonicalPath)
+          if (!image.error()) {
+            imageDisplay.image() = image
+          } else {
+            image.exception().printStackTrace()
+            showException(
+              title = "Open image...",
+              message = "Failed to load image from file:\n" + file.getCanonicalPath, t = image.exception(),
+              ownerWindow = stage)
+          }
+        } catch {
+          case ex: IllegalArgumentException =>
+            ex.printStackTrace()
+            showException(
+              title = "Open image...",
+              message = "Failed to load image from file:\n" + file.getCanonicalPath, t = ex,
+              ownerWindow = stage)
+
         }
-      } catch {
-        case ex: IllegalArgumentException =>
-          ex.printStackTrace()
-          showException(
-            title = "Open image...",
-            message = "Failed to load image from file:\n" + file.getCanonicalPath, t = ex,
-            ownerWindow = stage)
-
       }
     }
-  }
 
-  //  private def setROI(): Unit = {
-  //    roi = roi match {
-  //      case Some(r) => None
-  //      case None => Some(Rectangle(278, 205, 37, 10))
-  //    }
-  //
-  //    imageDisplay.roi() = roi
-  //  }
+    //  private def setROI(): Unit = {
+    //    roi = roi match {
+    //      case Some(r) => None
+    //      case None => Some(Rectangle(278, 205, 37, 10))
+    //    }
+    //
+    //    imageDisplay.roi() = roi
+    //  }
+  }
 }
 

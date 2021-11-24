@@ -25,31 +25,17 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.scalafx.extras.mvcfx.stopwatch
+package org.scalafx.extras.showmessage
 
-import scalafx.application.JFXApp3
-import scalafx.application.JFXApp3.PrimaryStage
-import scalafx.scene.Scene
-import scalafx.scene.image.Image
-import scalafx.scene.layout.BorderPane
+import javafx.util as jfxu
 
-import scala.language.implicitConversions
+import org.scalafx.extras.mvcfx.MVCfx
 
 /**
-  * StopWatchApp is an application illustrating use of [[org.scalafx.extras.mvcfx ModelFX-ControllerFX]] pattern,
-  * where layout of the UI is loaded from FXML definition and behaviour is defined in a model.
+  * ShowMessage Demo generator/loader.
   */
-object StopWatchApp extends JFXApp3 {
+class ShowMessageDemo(val model: ShowMessageDemoModel = new ShowMessageDemoModel())
+  extends MVCfx[ShowMessageDemoController]("/org/scalafx/extras/showmessage/ShowMessageDemo.fxml") {
 
-  override def start(): Unit = {
-    stage = new PrimaryStage {
-      icons += new Image("/org/scalafx/extras/sfx.png")
-      title = "StopWatch"
-      scene = new Scene {
-        root = new BorderPane {
-          center = new StopWatch().view
-        }
-      }
-    }
-  }
+  protected def controllerInstance: ShowMessageDemoController = new ShowMessageDemoController(model)
 }
