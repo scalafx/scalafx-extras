@@ -65,7 +65,7 @@ trait ShowMessage {
     onFXAndWait {
       new Alert(AlertType.Error) {
         initOwner(parentWindow.orNull)
-        title = dialogTitle
+        this.title = dialogTitle
         headerText = header
         contentText = content
       }.showAndWait()
@@ -99,7 +99,7 @@ trait ShowMessage {
     onFXAndWait {
       new Alert(AlertType.Information) {
         initOwner(parentWindow.orNull)
-        title = dialogTitle
+        this.title = dialogTitle
         headerText = header
         contentText = content
       }.showAndWait()
@@ -121,7 +121,7 @@ trait ShowMessage {
     onFXAndWait {
       new Alert(AlertType.Warning) {
         initOwner(parentWindow.orNull)
-        title = dialogTitle
+        this.title = dialogTitle
         headerText = header
         contentText = content
       }.showAndWait()

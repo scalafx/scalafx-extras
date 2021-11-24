@@ -199,7 +199,7 @@ package object extras {
     onFXAndWait {
       new Alert(AlertType.Error) {
         initOwner(ownerWindow.orNull)
-        title = dialogTitle
+        this.title = dialogTitle
         headerText = message
         contentText = Option(t.getMessage).getOrElse("")
         // Set expandable Exception into the dialog pane.

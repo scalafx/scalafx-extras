@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2018, ScalaFX Project
+ * Copyright (c) 2011-2021, ScalaFX Project
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,12 +25,17 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.scalafx.extras.showmessage
+package org.scalafx.extras.mvcfx.stopwatch
+
+import javafx.util as jfxu
 
 import org.scalafx.extras.mvcfx.MVCfx
 
 /**
-  * ShowMessage Demo generator/loader.
+  * StopWatch generator/loader.
   */
-class ShowMessageDemo(val model: ShowMessageDemoModel = new ShowMessageDemoModel())
-  extends MVCfx("/org/scalafx/extras/showmessage/ShowMessageDemo.fxml")
+class StopWatch(val model: StopWatchModel = new StopWatchModel())
+  extends MVCfx[StopWatchController]("/org/scalafx/extras/mvcfx/stopwatch/StopWatch.fxml") {
+
+  def controllerInstance: StopWatchController = new StopWatchController(model)
+}

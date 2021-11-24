@@ -30,7 +30,6 @@ package org.scalafx.extras.pong
 import scalafx.Includes._
 import scalafx.animation.{AnimationTimer, KeyFrame, Timeline}
 import scalafx.beans.property.BooleanProperty
-import scalafx.event.ActionEvent
 import scalafx.scene.Group
 import scalafx.scene.control.Button
 import scalafx.scene.input.KeyCode
@@ -42,24 +41,26 @@ class Pong {
 
   private val ball = new Ball()
 
-  private val leftPaddle = new Paddle(20)
+  private val leftPaddle  = new Paddle(20)
   private val rightPaddle = new Paddle(470)
 
-  private val topWall = Rectangle(0, 0, 500, 1)
-  private val rightWall = Rectangle(500, 0, 1, 500)
-  private val leftWall = Rectangle(0, 0, 1, 500)
+  private val topWall    = Rectangle(0, 0, 500, 1)
+  private val rightWall  = Rectangle(500, 0, 1, 500)
+  private val leftWall   = Rectangle(0, 0, 1, 500)
   private val bottomWall = Rectangle(0, 500, 500, 1)
 
   private val startButtonVisible = BooleanProperty(true)
 
-  private val keyFrame = KeyFrame(10 ms, onFinished = {
-    _: ActionEvent =>
+  private val keyFrame = KeyFrame(
+    10 ms,
+    onFinished = () => {
       checkForCollision()
       val horzPixels = if (ball.movingRight) 1 else -1
       val vertPixels = if (ball.movingDown) 1 else -1
       ball.xPos() = ball.xPos.value + horzPixels
       ball.yPos() = ball.yPos.value + vertPixels
-  })
+    }
+  )
   private val pongAnimation = new Timeline {
     keyFrames = Seq(keyFrame)
     cycleCount = Timeline.Indefinite
@@ -70,11 +71,10 @@ class Pong {
     layoutY() = 470
     text = "Start!"
     visible <== startButtonVisible
-    onAction = {
-      _: ActionEvent =>
-        startButtonVisible() = false
-        pongAnimation.playFromStart()
-        pongComponents.requestFocus()
+    onAction = () => {
+      startButtonVisible() = false
+      pongAnimation.playFromStart()
+      pongComponents.requestFocus()
     }
   }
 
@@ -91,20 +91,22 @@ class Pong {
       startButton
     )
 
-    onKeyPressed = k => k.code match {
-      case KeyCode.L => rightPaddle.moveUp = true
-      case KeyCode.Comma => rightPaddle.moveDown = true
-      case KeyCode.A => leftPaddle.moveUp = true
-      case KeyCode.Z => leftPaddle.moveDown = true
-      case _ =>
-    }
-    onKeyReleased = k => k.code match {
-      case KeyCode.L => rightPaddle.moveUp = false
-      case KeyCode.Comma => rightPaddle.moveDown = false
-      case KeyCode.A => leftPaddle.moveUp = false
-      case KeyCode.Z => leftPaddle.moveDown = false
-      case _ =>
-    }
+    onKeyPressed = k =>
+      k.code match {
+        case KeyCode.L     => rightPaddle.moveUp = true
+        case KeyCode.Comma => rightPaddle.moveDown = true
+        case KeyCode.A     => leftPaddle.moveUp = true
+        case KeyCode.Z     => leftPaddle.moveDown = true
+        case _             =>
+      }
+    onKeyReleased = k =>
+      k.code match {
+        case KeyCode.L     => rightPaddle.moveUp = false
+        case KeyCode.Comma => rightPaddle.moveDown = false
+        case KeyCode.A     => leftPaddle.moveUp = false
+        case KeyCode.Z     => leftPaddle.moveDown = false
+        case _             =>
+      }
 
   }
 
@@ -121,8 +123,10 @@ class Pong {
     if (ball.circle.intersects(rightWall.boundsInLocal()) || ball.circle.intersects(leftWall.boundsInLocal())) {
       pongAnimation.stop()
       initialize()
-    } else if (ball.circle.intersects(bottomWall.boundsInLocal()) ||
-      ball.circle.intersects(topWall.boundsInLocal())) {
+    } else if (
+      ball.circle.intersects(bottomWall.boundsInLocal()) ||
+      ball.circle.intersects(topWall.boundsInLocal())
+    ) {
       ball.movingDown = !ball.movingDown
     } else if (ball.circle.intersects(leftPaddle.rect.boundsInParent()) && !ball.movingRight) {
       ball.movingRight = !ball.movingRight
@@ -132,8 +136,10 @@ class Pong {
   }
 
   private def movePaddleBy(paddle: Paddle, dy: Double): Unit = {
-    if (dy < 0 && !paddle.intersects(topWall.boundsInLocal()) ||
-      dy > 0 && !paddle.intersects(bottomWall.boundsInLocal())) {
+    if (
+      dy < 0 && !paddle.intersects(topWall.boundsInLocal()) ||
+      dy > 0 && !paddle.intersects(bottomWall.boundsInLocal())
+    ) {
       paddle.positionY() += dy
     }
   }
