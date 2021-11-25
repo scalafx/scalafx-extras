@@ -1,7 +1,7 @@
 ScalaFX Extras
 ==============
 
-[![Build Status](https://travis-ci.org/scalafx/scalafx-extras.svg?branch=master)](https://travis-ci.org/scalafx/scalafx-extras)
+[![Scala CI](https://github.com/scalafx/scalafx-extras/actions/workflows/scala.yml/badge.svg)](https://github.com/scalafx/scalafx-extras/actions/workflows/scala.yml)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.scalafx/scalafx-extras_2.13/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.scalafx/scalafx-extras_2.13)
 [![Scaladoc](https://javadoc.io/badge2/org.scalafx/scalafx-extras_2.13/scaladoc.svg)](https://javadoc.io/doc/org.scalafx/scalafx-extras_2.13)
 
