@@ -3,7 +3,7 @@ ScalaFX Extras
 
 [![Build Status](https://travis-ci.org/scalafx/scalafx-extras.svg?branch=master)](https://travis-ci.org/scalafx/scalafx-extras)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.scalafx/scalafx-extras_2.13/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.scalafx/scalafx-extras_2.13)
-[![Scaladoc](http://javadoc-badge.appspot.com/org.scalafx/scalafx-extras_2.13.svg?label=scaladoc)](http://javadoc-badge.appspot.com/org.scalafx/scalafx-extras_2.13)
+[![Scaladoc](https://javadoc.io/badge2/org.scalafx/scalafx-extras_2.13/scaladoc.svg)](https://javadoc.io/doc/org.scalafx/scalafx-extras_2.13)
 
 ScalaFX Extras are additions to ScalaFX that simplify creation of User interfaces. 
 In contrast to ScalaFX core, the Extras do not have direct corresponding concepts in JavaFX. 
