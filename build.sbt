@@ -12,9 +12,9 @@ import scala.xml.{Node => XmlNode, NodeSeq => XmlNodeSeq, _}
 
 val projectVersion = "0.4.0.1-SNAPSHOT"
 val versionTagDir  = if (projectVersion.endsWith("SNAPSHOT")) "master" else "v." + projectVersion
-val _scalaVersions = Seq("2.13.7", "2.12.15", "3.0.2")
+val _scalaVersions = Seq("3.0.2", "2.13.7", "2.12.15")
 val _scalaVersion  = _scalaVersions.head
-val _javaFXVersion = "16"
+val _javaFXVersion = "17.0.1"
 
 ThisBuild / version             := projectVersion
 ThisBuild / crossScalaVersions  := _scalaVersions
@@ -121,7 +121,10 @@ lazy val scalaFXExtrasSettings = Seq(
   ) ++
     (
       if (isScala2(scalaVersion.value))
-        Seq("-Xcheckinit")
+        Seq(
+          "-Xcheckinit",
+          "-Xsource:3"
+        )
       else
         Seq.empty[String]
     ),
@@ -159,7 +162,7 @@ lazy val scalaFXExtrasSettings = Seq(
     "-Xlint:deprecation"
   ),
   libraryDependencies ++= Seq(
-    "org.scalafx"   %% "scalafx"   % "16.0.0-R25",
+    "org.scalafx"   %% "scalafx"   % "17.0.1-R26",
     "org.scalatest" %% "scalatest" % "3.2.10" % "test"
   ) ++ JavaFXModuleLibsProvided,
   libraryDependencies ++= (
