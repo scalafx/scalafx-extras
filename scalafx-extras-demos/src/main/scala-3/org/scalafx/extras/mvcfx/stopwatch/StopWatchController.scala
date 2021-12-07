@@ -27,18 +27,15 @@
 
 package org.scalafx.extras.mvcfx.stopwatch
 
-import javafx.scene.{control as jfxsc, layout as jfxsl}
-import javafx.{event as jfxe, fxml as jfxf}
-
+import javafx.scene.control as jfxsc
+import javafx.fxml as jfxf
 import org.scalafx.extras.mvcfx.ControllerFX
-
 import scalafx.Includes.*
-import scalafx.scene.control.{Button, Label}
 
 /**
-  * StopWatch UI view controller. It is intended to create bindings between UI definition loaded fro FXML configuration
-  * and the UI model
-  */
+ * StopWatch UI view controller. It is intended to create bindings between UI definition loaded fro FXML configuration
+ * and the UI model
+ */
 class StopWatchController(model: StopWatchModel) extends ControllerFX {
 
   @jfxf.FXML

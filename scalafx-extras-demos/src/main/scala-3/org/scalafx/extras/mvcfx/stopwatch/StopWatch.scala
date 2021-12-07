@@ -27,8 +27,6 @@
 
 package org.scalafx.extras.mvcfx.stopwatch
 
-import javafx.util as jfxu
-
 import org.scalafx.extras.mvcfx.MVCfx
 
 /**
