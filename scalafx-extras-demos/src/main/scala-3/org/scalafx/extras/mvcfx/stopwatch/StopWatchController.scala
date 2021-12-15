@@ -53,17 +53,11 @@ class StopWatchController(model: StopWatchModel) extends ControllerFX:
 
   override def initialize(): Unit =
     minutesLabel.text.value = format2d(model.minutes.longValue)
-    model.minutes.onChange { (_, _, v) =>
-      minutesLabel.text.value = format2d(v.longValue)
-    }
+    model.minutes.onChange { (_, _, v) => minutesLabel.text.value = format2d(v.longValue) }
     secondsLabel.text.value = format2d(model.seconds.longValue())
-    model.seconds.onChange { (_, _, newValue) =>
-      secondsLabel.text.value = format2d(newValue.longValue())
-    }
+    model.seconds.onChange { (_, _, v) => secondsLabel.text.value = format2d(v.longValue()) }
     fractionLabel.text.value = format2d(model.secondFraction.longValue() / 10)
-    model.secondFraction.onChange { (_, _, newValue) =>
-      fractionLabel.text.value = format2d(newValue.longValue() / 10)
-    }
+    model.secondFraction.onChange { (_, _, v) => fractionLabel.text.value = format2d(v.longValue() / 10) }
 
     startButton.disable <== model.running
     stopButton.disable <== !model.running
@@ -72,6 +66,5 @@ class StopWatchController(model: StopWatchModel) extends ControllerFX:
     startButton.onAction = () => model.onStart()
     stopButton.onAction = () => model.onStop()
     resetButton.onAction = () => model.onReset()
-  end initialize
 
   private def format2d(t: Number) = f"${t.longValue()}%02d"

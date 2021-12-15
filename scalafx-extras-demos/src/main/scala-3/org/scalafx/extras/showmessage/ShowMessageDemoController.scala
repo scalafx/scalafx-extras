@@ -54,8 +54,7 @@ class ShowMessageDemoController(val model: ShowMessageDemoModel) extends Control
 
   override def initialize(): Unit =
     showConfirmationButton.onAction = () => model.onShowConfirmation()
-    showConfirmationYNCButton.onAction = () =>
-      model.onShowConfirmationYesNoCancel()
+    showConfirmationYNCButton.onAction = () => model.onShowConfirmationYesNoCancel()
     showInformationButton.onAction = () => model.onShowInformation()
     showWarningButton.onAction = () => model.onShowWarning()
     showErrorButton.onAction = () => model.onShowError()
