@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2019, ScalaFX Project
+ * Copyright (c) 2011-2021, ScalaFX Project
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -28,14 +28,14 @@
 package org.scalafx.extras.showmessage
 
 import com.typesafe.scalalogging.Logger
-import org.scalafx.extras._
+import org.scalafx.extras.*
 import org.scalafx.extras.mvcfx.ModelFX
 
 import scala.util.control.NonFatal
 
 /**
-  * ShowMessage behaviour ModelFX.
-  */
+ * ShowMessage behaviour ModelFX.
+ */
 class ShowMessageDemoModel extends ModelFX with ShowMessage {
 
   private val Title = "ShowMessage Demo"
@@ -44,44 +44,39 @@ class ShowMessageDemoModel extends ModelFX with ShowMessage {
   private val _logger = Logger[ShowMessageDemoModel]
   override def messageLogger: Option[ShowMessageLogger] = Some(
     new ShowMessageLogger {
-      override def warn(message: String): Unit = _logger.warn(message)
-      override def error(message: String): Unit = _logger.error(message)
+      override def warn(message: String): Unit                = _logger.warn(message)
+      override def error(message: String): Unit               = _logger.error(message)
       override def error(message: String, t: Throwable): Unit = _logger.error(message, t)
     }
   )
 
   def onShowInformation(): Unit = {
-    showInformation(Title,
-      "This is a information \"header\"",
-      "This is the information detailed \"content\".")
+    showInformation(Title, "This is a information \"header\"", "This is the information detailed \"content\".")
   }
 
   def onShowConfirmation(): Unit = {
-    val ok: Boolean = showConfirmation(Title,
-      "This is the confirmation \"header\"",
-      "This is the confirmation detailed \"content\".")
+    val ok: Boolean =
+      showConfirmation(Title, "This is the confirmation \"header\"", "This is the confirmation detailed \"content\".")
 
     showInformation(Title, "Confirmation (Yes/No) result", "Dialog returned: " + ok)
   }
 
   def onShowConfirmationYesNoCancel(): Unit = {
-    val ok: Option[Boolean] = showConfirmationYesNoCancel(Title,
+    val ok: Option[Boolean] = showConfirmationYesNoCancel(
+      Title,
       "This is the Yes/No/Cancel confirmation \"header\"",
-      "This is the confirmation detailed \"content\".")
+      "This is the confirmation detailed \"content\"."
+    )
 
     showInformation(Title, "Confirmation (Yes/No/Cancel) result", "Dialog returned: " + ok)
   }
 
   def onShowWarning(): Unit = {
-    showWarning(Title,
-      "This is the warning \"header\"",
-      "This is the warning detailed \"content\".")
+    showWarning(Title, "This is the warning \"header\"", "This is the warning detailed \"content\".")
   }
 
   def onShowError(): Unit = {
-    showError(Title,
-      "This is the error \"header\"",
-      "This is the error detailed \"content\".")
+    showError(Title, "This is the error \"header\"", "This is the error detailed \"content\".")
   }
 
   def onShowException(): Unit = {

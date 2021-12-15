@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2018, ScalaFX Project
+ * Copyright (c) 2011-2021, ScalaFX Project
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -27,24 +27,25 @@
 
 package org.scalafx.extras.mvcfx.stopwatch
 
-
 import org.scalafx.extras.mvcfx.ControllerFX
-import scalafx.Includes._
+import scalafx.Includes.*
 import scalafx.scene.control.{Button, Label}
 import scalafxml.core.macros.sfxml
 
 /**
-  * StopWatch UI view controller.
-  * It is intended to create bindings between UI definition loaded fro FXML configuration and the UI model
-  */
+ * StopWatch UI view controller.
+ * It is intended to create bindings between UI definition loaded fro FXML configuration and the UI model
+ */
 @sfxml
-class StopWatchController(minutesLabel: Label,
-                          secondsLabel: Label,
-                          fractionLabel: Label,
-                          startButton: Button,
-                          stopButton: Button,
-                          resetButton: Button,
-                          model: StopWatchModel) extends ControllerFX {
+class StopWatchController(
+  minutesLabel: Label,
+  secondsLabel: Label,
+  fractionLabel: Label,
+  startButton: Button,
+  stopButton: Button,
+  resetButton: Button,
+  model: StopWatchModel
+) extends ControllerFX {
 
   minutesLabel.text.value = format2d(model.minutes.longValue)
   model.minutes.onChange { (_, _, newValue) =>

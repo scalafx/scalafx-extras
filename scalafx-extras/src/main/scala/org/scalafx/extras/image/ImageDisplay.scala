@@ -27,8 +27,8 @@
 
 package org.scalafx.extras.image
 
-import scalafx.Includes._
-import scalafx.beans.property._
+import scalafx.Includes.*
+import scalafx.beans.property.*
 import scalafx.scene.Node
 import scalafx.scene.control.ScrollPane
 import scalafx.scene.image.ImageView
@@ -37,47 +37,47 @@ import scalafx.scene.paint.Color
 import scalafx.scene.shape.Rectangle
 
 /**
-  * Displays an image view with ability to zoom in, zoom out, zoom to fit. It can also automatically resizes to parent size.
-  * When `zoomToFit` is set to `true` the image is sized to fit the parent scroll pane.
-  *
-  * Sample usage (full detains in `ImageDisplayDemoApp`)
-  * {{{
-  * object ImageDisplayDemoApp extends JFXApp3 {
-  *
-  *   override def start(): Unit = {
-  *
-  *     private val imageDisplay = new ImageDisplay()
-  *
-  *     stage = new PrimaryStage {
-  *       scene = new Scene(640, 480) {
-  *         title = "ImageDisplay Demo"
-  *         root = new BorderPane {
-  *           top = new ToolBar {
-  *             items = Seq(
-  *               new Button("Open...") {
-  *                 onAction = () => onFileOpen()
-  *               },
-  *               new Button("Zoom In") {
-  *                 onAction = () => imageDisplay.zoomIn()
-  *                 disable <== imageDisplay.zoomToFit
-  *               },
-  *               new Button("Zoom Out") {
-  *                 onAction = () => imageDisplay.zoomOut()
-  *                 disable <== imageDisplay.zoomToFit
-  *               },
-  *               new ToggleButton("Zoom to fit") {
-  *                 selected <==> imageDisplay.zoomToFit
-  *               }
-  *             )
-  *           }
-  *           center = imageDisplay.view
-  *         }
-  *       }
-  *     }
-  *   }
-  * }
-  * }}}
-  */
+ * Displays an image view with ability to zoom in, zoom out, zoom to fit. It can also automatically resizes to parent size.
+ * When `zoomToFit` is set to `true` the image is sized to fit the parent scroll pane.
+ *
+ * Sample usage (full detains in `ImageDisplayDemoApp`)
+ * {{{
+ * object ImageDisplayDemoApp extends JFXApp3 {
+ *
+ *   override def start(): Unit = {
+ *
+ *     private val imageDisplay = new ImageDisplay()
+ *
+ *     stage = new PrimaryStage {
+ *       scene = new Scene(640, 480) {
+ *         title = "ImageDisplay Demo"
+ *         root = new BorderPane {
+ *           top = new ToolBar {
+ *             items = Seq(
+ *               new Button("Open...") {
+ *                 onAction = () => onFileOpen()
+ *               },
+ *               new Button("Zoom In") {
+ *                 onAction = () => imageDisplay.zoomIn()
+ *                 disable <== imageDisplay.zoomToFit
+ *               },
+ *               new Button("Zoom Out") {
+ *                 onAction = () => imageDisplay.zoomOut()
+ *                 disable <== imageDisplay.zoomToFit
+ *               },
+ *               new ToggleButton("Zoom to fit") {
+ *                 selected <==> imageDisplay.zoomToFit
+ *               }
+ *             )
+ *           }
+ *           center = imageDisplay.view
+ *         }
+ *       }
+ *     }
+ *   }
+ * }
+ * }}}
+ */
 class ImageDisplay() {
 
   private val imageView = new ImageView {
@@ -112,44 +112,44 @@ class ImageDisplay() {
   }
 
   /**
-    * Controls image zoom when `zoomToFit` is off. Value of 1 mean no scaling.
-    * Values larger than 1 make image larger. Values smaller than 1 make image smaller.
-    */
+   * Controls image zoom when `zoomToFit` is off. Value of 1 mean no scaling.
+   * Values larger than 1 make image larger. Values smaller than 1 make image smaller.
+   */
   val zoom: ObjectProperty[ZoomScale] = ObjectProperty[ZoomScale](this, "Zoom", ZoomScale.Zoom100Perc)
 
   /**
-    * When set to `true` the image fits to the size of the available view, maintaining its aspect ratio.
-    */
+   * When set to `true` the image fits to the size of the available view, maintaining its aspect ratio.
+   */
   val zoomToFit: BooleanProperty = BooleanProperty(value = false)
 
   private val _actualZoom = ReadOnlyDoubleWrapper(1d)
 
   /**
-    * Actual zoom value.
-    * It should be the same as `zoom` when `zoomToFit==false`, it may be different if `zoomToFit==true`
-    */
+   * Actual zoom value.
+   * It should be the same as `zoom` when `zoomToFit==false`, it may be different if `zoomToFit==true`
+   */
   val actualZoom: ReadOnlyDoubleProperty = _actualZoom.readOnlyProperty
 
   /**
-    * Optional rectangular ROI to be displayed on the image
-    */
+   * Optional rectangular ROI to be displayed on the image
+   */
   val roi: ObjectProperty[Option[Rectangle]] = ObjectProperty[Option[Rectangle]](None)
 
   /**
-    * ScalaFX node in containing this image display UI.
-    */
+   * ScalaFX node in containing this image display UI.
+   */
   val view: Node = scrollPane
 
   /**
-    * Property containing image to be displayed. If `null` the display will be blank (following JavaFX convention)
-    */
+   * Property containing image to be displayed. If `null` the display will be blank (following JavaFX convention)
+   */
   val image: ObjectProperty[javafx.scene.image.Image] = imageView.image
 
   initialize()
 
   /**
-    * Image rotation in degrees. Default value is 0 (no rotation).
-    */
+   * Image rotation in degrees. Default value is 0 (no rotation).
+   */
   def rotation: Double = imageView.rotate()
 
   def rotation_=(r: Double): Unit = {
@@ -157,15 +157,15 @@ class ImageDisplay() {
   }
 
   /**
-    * Zoom in the view.
-    */
+   * Zoom in the view.
+   */
   def zoomIn(): Unit = {
     zoom() = ZoomScale.zoomIn(zoom())
   }
 
   /**
-    * Zoom out the view.
-    */
+   * Zoom out the view.
+   */
   def zoomOut(): Unit = {
     zoom() = ZoomScale.zoomOut(zoom())
   }

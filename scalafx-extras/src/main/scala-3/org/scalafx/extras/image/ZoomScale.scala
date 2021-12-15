@@ -29,7 +29,6 @@ package org.scalafx.extras.image
 
 import scala.math.*
 
-
 enum ZoomScale(val scale: Double, val name: String):
 
   case Zoom1Perc extends ZoomScale(0.01, "1%")
@@ -58,9 +57,7 @@ enum ZoomScale(val scale: Double, val name: String):
   case Zoom1600Perc extends ZoomScale(16, "1600%")
   case Zoom3200Perc extends ZoomScale(32, "3200%")
 
-
   override def toString: String = name
-
 
 object ZoomScale:
 
@@ -77,7 +74,6 @@ object ZoomScale:
     else
       throw new IllegalArgumentException("Internal error looking for next scale.")
 
-
   def zoomIn(zoomScale: ZoomScale): ZoomScale =
     val i: Int = ZoomScale.values.indexOf(zoomScale)
     if i < 0 then
@@ -90,7 +86,6 @@ object ZoomScale:
       ZoomScale.values(i + 1)
     else
       throw new IllegalArgumentException("Internal error looking for next scale.")
-
 
   private def closetsScaleTo(scaleCandidate: Double): Double =
     val values      = ZoomScale.values

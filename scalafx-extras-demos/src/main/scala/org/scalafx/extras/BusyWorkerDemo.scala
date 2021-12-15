@@ -28,7 +28,7 @@
 package org.scalafx.extras
 
 import org.scalafx.extras.BusyWorker.SimpleTask
-import scalafx.Includes._
+import scalafx.Includes.*
 import scalafx.application.JFXApp3
 import scalafx.application.JFXApp3.PrimaryStage
 import scalafx.geometry.{Insets, Pos}
@@ -40,8 +40,8 @@ import scalafx.scene.layout.{BorderPane, HBox, Priority, VBox}
 import java.util.concurrent.Future
 
 /**
-  * An application illustrating use of `BusyWorker`, including progress and message updates.
-  */
+ * An application illustrating use of `BusyWorker`, including progress and message updates.
+ */
 object BusyWorkerDemo extends JFXApp3 {
 
   override def start(): Unit = {
@@ -54,7 +54,7 @@ object BusyWorkerDemo extends JFXApp3 {
       progress = 0
     }
 
-    //noinspection ConvertExpressionToSAM
+    // noinspection ConvertExpressionToSAM
     lazy val buttonPane = new VBox {
       spacing = 9
       alignment = Pos.Center
