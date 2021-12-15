@@ -28,7 +28,6 @@
 package org.scalafx.extras.mvcfx.stopwatch
 
 import scalafx.application.JFXApp3
-import scalafx.application.JFXApp3.PrimaryStage
 import scalafx.scene.Scene
 import scalafx.scene.image.Image
 import scalafx.scene.layout.BorderPane
@@ -36,13 +35,13 @@ import scalafx.scene.layout.BorderPane
 import scala.language.implicitConversions
 
 /**
-  * StopWatchApp is an application illustrating use of [[org.scalafx.extras.mvcfx ModelFX-ControllerFX]] pattern,
-  * where layout of the UI is loaded from FXML definition and behaviour is defined in a model.
-  */
+ * StopWatchApp is an application illustrating use of [[org.scalafx.extras.mvcfx ModelFX-ControllerFX]] pattern,
+ * where layout of the UI is loaded from FXML definition and behaviour is defined in a model.
+ */
 object StopWatchApp extends JFXApp3 {
 
   override def start(): Unit = {
-    stage = new PrimaryStage {
+    stage = new JFXApp3.PrimaryStage {
       icons += new Image("/org/scalafx/extras/sfx.png")
       title = "StopWatch"
       scene = new Scene {
