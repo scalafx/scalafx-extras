@@ -29,16 +29,15 @@ package org.scalafx.extras.showmessage
 
 import javafx.scene.{control as jfxsc, layout as jfxsl}
 import javafx.{event as jfxe, fxml as jfxf}
-
 import org.scalafx.extras.mvcfx.ControllerFX
-
 import scalafx.Includes.*
 import scalafx.scene.control.{Button, Label}
 
-/** ShowMessage UI view. It is intended to create bindings between UI definition
-  * loaded from FXML configuration and the UI model
-  */
-class ShowMessageDemoController(val model: ShowMessageDemoModel) extends ControllerFX {
+/**
+ * ShowMessage UI view. It is intended to create bindings between UI definition
+ * loaded from FXML configuration and the UI model
+ */
+class ShowMessageDemoController(val model: ShowMessageDemoModel) extends ControllerFX:
 
   @jfxf.FXML
   private var showConfirmationButton: jfxsc.Button = _
@@ -53,8 +52,7 @@ class ShowMessageDemoController(val model: ShowMessageDemoModel) extends Control
   @jfxf.FXML
   private var showExceptionButton: jfxsc.Button = _
 
-  @jfxf.FXML
-  def initialize(): Unit = {
+  override def initialize(): Unit =
     showConfirmationButton.onAction = () => model.onShowConfirmation()
     showConfirmationYNCButton.onAction = () =>
       model.onShowConfirmationYesNoCancel()
@@ -62,5 +60,3 @@ class ShowMessageDemoController(val model: ShowMessageDemoModel) extends Control
     showWarningButton.onAction = () => model.onShowWarning()
     showErrorButton.onAction = () => model.onShowError()
     showExceptionButton.onAction = () => model.onShowException()
-  }
-}

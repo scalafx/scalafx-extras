@@ -27,8 +27,8 @@
 
 package org.scalafx.extras.mvcfx.stopwatch
 
-import javafx.scene.control as jfxsc
 import javafx.fxml as jfxf
+import javafx.scene.control as jfxsc
 import org.scalafx.extras.mvcfx.ControllerFX
 import scalafx.Includes.*
 
@@ -36,7 +36,7 @@ import scalafx.Includes.*
  * StopWatch UI view controller. It is intended to create bindings between UI definition loaded fro FXML configuration
  * and the UI model
  */
-class StopWatchController(model: StopWatchModel) extends ControllerFX {
+class StopWatchController(model: StopWatchModel) extends ControllerFX:
 
   @jfxf.FXML
   private var minutesLabel: jfxsc.Label = _
@@ -51,11 +51,10 @@ class StopWatchController(model: StopWatchModel) extends ControllerFX {
   @jfxf.FXML
   private var resetButton: jfxsc.Button = _
 
-  @jfxf.FXML
-  def initialize(): Unit = {
+  override def initialize(): Unit =
     minutesLabel.text.value = format2d(model.minutes.longValue)
-    model.minutes.onChange { (_, _, newValue) =>
-      minutesLabel.text.value = format2d(newValue.longValue)
+    model.minutes.onChange { (_, _, v) =>
+      minutesLabel.text.value = format2d(v.longValue)
     }
     secondsLabel.text.value = format2d(model.seconds.longValue())
     model.seconds.onChange { (_, _, newValue) =>
@@ -73,7 +72,6 @@ class StopWatchController(model: StopWatchModel) extends ControllerFX {
     startButton.onAction = () => model.onStart()
     stopButton.onAction = () => model.onStop()
     resetButton.onAction = () => model.onReset()
-  }
+  end initialize
 
   private def format2d(t: Number) = f"${t.longValue()}%02d"
-}

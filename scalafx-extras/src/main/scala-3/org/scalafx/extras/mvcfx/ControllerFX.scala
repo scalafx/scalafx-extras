@@ -27,6 +27,8 @@
 
 package org.scalafx.extras.mvcfx
 
+import javafx.fxml as jfxf
+
 /**
  * The ControllerFX creates connection of the FXML to Scala code and underlying ModelFX for the application logic.
  *
@@ -40,30 +42,28 @@ package org.scalafx.extras.mvcfx
  * import org.scalafx.extras.mvcfx.ControllerFX
  *
  * import scalafx.Includes.*
- * import scalafx.scene.control.{Button, Label}
- * import scalafxml.core.macros.sfxml
+ * import scalafx.scene.control.Button
  *
  * import javafx.scene.control as jfxsc
  * import javafx.fxml as jfxf
  *
- * class StopWatchController(model: StopWatchModel) extends ControllerFX {
+ * class StopWatchController(model: StopWatchModel) extends ControllerFX:
  *
  *   @jfxf.FXML
  *   private var startButton: jfxsc.Button = _
- *   @jfxf.FXML
- *   private var stopButton: jfxsc.Button = _
- *   @jfxf.FXML
- *   private var resetButton: jfxsc.Button = _
- *   ...
  *
- *   @jfxf.FXML
- *   def initialize(): Unit = {
+ *   override def initialize(): Unit =
  *     startButton.disable <== model.running
- *     stopButton.disable  <== !model.running
- *     resetButton.disable <== model.running
- *   ...
-  *  }
- * }
+ *     startButton.onAction = () => model.onStart()
  * }}}
  */
-trait ControllerFX
+trait ControllerFX:
+
+  /**
+   * Performs custom initialization of the this controller.
+   * It is called by JavaFX runtime after associated FXML from was loaded and controls instantiated.
+   */
+  def initialize(): Unit
+
+  @jfxf.FXML
+  private def initializeImpl(): Unit = initialize()
