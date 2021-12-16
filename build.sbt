@@ -19,7 +19,7 @@ val _javaFXVersion = "17.0.1"
 ThisBuild / version             := projectVersion
 ThisBuild / crossScalaVersions  := _scalaVersions
 ThisBuild / scalaVersion        := _scalaVersion
-ThisBuild / sonatypeProfileName := "org.scalafx"
+ThisBuild / organization        := "org.scalafx"
 
 publishArtifact     := false
 publish / skip      := true
@@ -104,10 +104,6 @@ resolvers += Resolver.sonatypeRepo("snapshots")
 
 // Common settings
 lazy val scalaFXExtrasSettings = Seq(
-  organization       := "org.scalafx",
-  version            := projectVersion,
-  crossScalaVersions := _scalaVersions,
-  scalaVersion       := _scalaVersion,
   // SAdd version specific directories
   Compile / unmanagedSourceDirectories += (Compile / sourceDirectory).value / versionSubDir(scalaVersion.value),
   Test / unmanagedSourceDirectories += (Test / sourceDirectory).value / versionSubDir(scalaVersion.value),
@@ -184,7 +180,8 @@ lazy val scalaFXExtrasSettings = Seq(
     else
       Seq.empty[sbt.ModuleID]
   ),
-  // Use `pomPostProcess` to remove dependencies marked as "provided" from publishing in POM
+  sonatypeProfileName := "org.scalafx",
+    // Use `pomPostProcess` to remove dependencies marked as "provided" from publishing in POM
   // This is to avoid dependency on wrong OS version JavaFX libraries
   // See also [https://stackoverflow.com/questions/27835740/sbt-exclude-certain-dependency-only-during-publish]
   pomPostProcess := { node: XmlNode =>
