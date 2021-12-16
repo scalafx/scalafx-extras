@@ -180,8 +180,7 @@ lazy val scalaFXExtrasSettings = Seq(
     else
       Seq.empty[sbt.ModuleID]
   ),
-  sonatypeProfileName := "org.scalafx",
-    // Use `pomPostProcess` to remove dependencies marked as "provided" from publishing in POM
+  // Use `pomPostProcess` to remove dependencies marked as "provided" from publishing in POM
   // This is to avoid dependency on wrong OS version JavaFX libraries
   // See also [https://stackoverflow.com/questions/27835740/sbt-exclude-certain-dependency-only-during-publish]
   pomPostProcess := { node: XmlNode =>
