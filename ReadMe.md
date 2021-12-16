@@ -1,28 +1,28 @@
 ScalaFX Extras
 ==============
 
-[![Build Status](https://travis-ci.org/scalafx/scalafx-extras.svg?branch=master)](https://travis-ci.org/scalafx/scalafx-extras)
+[![Scala CI](https://github.com/scalafx/scalafx-extras/actions/workflows/scala.yml/badge.svg)](https://github.com/scalafx/scalafx-extras/actions/workflows/scala.yml)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.scalafx/scalafx-extras_2.13/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.scalafx/scalafx-extras_2.13)
-[![Scaladoc](http://javadoc-badge.appspot.com/org.scalafx/scalafx-extras_2.13.svg?label=scaladoc)](http://javadoc-badge.appspot.com/org.scalafx/scalafx-extras_2.13)
+[![Scaladoc](https://javadoc.io/badge2/org.scalafx/scalafx-extras_2.13/scaladoc.svg)](https://javadoc.io/doc/org.scalafx/scalafx-extras_2.13)
 
-ScalaFX Extras are additions to ScalaFX that simplify creation of User interfaces. 
-In contrast to ScalaFX core, the Extras do not have direct corresponding concepts in JavaFX. 
+ScalaFX Extras are additions to ScalaFX that simplify creation of User interfaces. In contrast to ScalaFX core, the
+Extras do not have direct corresponding concepts in JavaFX.
 
 **Contents**
 
 0. [Project Structure](#project-structure)
 0. [SBT](#sbt)
 0. [Features](#features)
-   1. [Helper Methods](#helper-methods)
-   1. [Simpler Display of Dialogs](#simpler-display-of-dialogs)
-   1. [BusyWorker](#busyworker)
-   1. [Simpler Use of FXML with MVCfx Pattern](#simpler-use-of-fxml-with-mvcfx-pattern)
-   1. [Image Display Component](#imagedisplay-component)
+    1. [Helper Methods](#helper-methods)
+    1. [Simpler Display of Dialogs](#simpler-display-of-dialogs)
+    1. [BusyWorker](#busyworker)
+    1. [Simpler Use of FXML with MVCfx Pattern](#simpler-use-of-fxml-with-mvcfx-pattern)
+    1. [Image Display Component](#imagedisplay-component)
 0. [Demos](#demos)
-   1. [StopWatch Application](#stopwatch-application)
-   1. [ShowMessage Demo](#showmessage-demo)
-   1. [BusyWorker Demo](#busyworker-demo)
-   1. [ImageDisplay Demo](#imagedisplay-demo)
+    1. [StopWatch Application](#stopwatch-application)
+    1. [ShowMessage Demo](#showmessage-demo)
+    1. [BusyWorker Demo](#busyworker-demo)
+    1. [ImageDisplay Demo](#imagedisplay-demo)
 0. [Status](#status)
 0. [Discussion and Support](#discussion-and-support)
 0. [License](#license)
@@ -30,8 +30,8 @@ In contrast to ScalaFX core, the Extras do not have direct corresponding concept
 Project Structure
 -----------------
 
-Module `scalafx-extras` contain feature implementations.
-Module `scalafx-extras-demos` illustrates use of `scalafx-extras`
+Module `scalafx-extras` contain feature implementations. Module `scalafx-extras-demos` illustrates use
+of `scalafx-extras`
 
 SBT
 ---
@@ -42,7 +42,8 @@ To use ScalaFX Extras with SBT add following dependency:
 libraryDependencies += "org.scalafx" %% "scalafx-extras" % scalafx_extras_version
 ```
 
-The latest published ScalaFX Extras version: [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.scalafx/scalafx-extras_2.12/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.scalafx/scalafx-extras_2.12)
+The latest published ScalaFX Extras
+version: [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.scalafx/scalafx-extras_2.12/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.scalafx/scalafx-extras_2.12)
 
 Features
 --------
@@ -59,28 +60,32 @@ The main helper methods:
 * `showException` show an exception dialog
 
 Example scheduling some code on FX Application thread
+
 ```scala
 onFX {
-    counterService.doResume()
-    _running.value = true
+  counterService.doResume()
+  _running.value = true
 }
 
 ```
 
 Example execution some code on a separate thread and waiting for the result of computation
+
 ```scala
 val x = offFXAndWait {
-    val a = 3
-    val b = 7
-    a * b
+  val a = 3
+  val b = 7
+  a * b
 }
 
 ```
 
 ### Simpler Display of Dialogs
 
-The mixin `ShowMessage` makes it easier to display dialogs. It is typically used with a UI `Model`. 
-The dialogs can be displayed using a single method, like `showInformation`, `showConfirmation`. `ShowMessage` takes care of blocking parent windows and using parent icons in dialogs. It can also log warnings, errors, and exceptions when warnings, errors, and exceptions dialogs are displayed. 
+The mixin `ShowMessage` makes it easier to display dialogs. It is typically used with a UI `Model`. The dialogs can be
+displayed using a single method, like `showInformation`, `showConfirmation`. `ShowMessage` takes care of blocking parent
+windows and using parent icons in dialogs. It can also log warnings, errors, and exceptions when warnings, errors, and
+exceptions dialogs are displayed.
 
 ```scala
 class MyUIModel extends Model with ShowMessage {
@@ -92,11 +97,12 @@ class MyUIModel extends Model with ShowMessage {
       "This is the information detailed \"content\".")
     // ...
   }
-  
+
   // ...
 }
 ```  
-The demos module has a complete example of an simple application in `ShowMessageDemoApp`.
+
+The demos module has a complete example of a simple application in `ShowMessageDemoApp`.
 
 ### BusyWorker
 
@@ -107,10 +113,9 @@ finish actions after task is completed.
 
 #### Example 1
 
-Below is a simple example of using `BusyWorker`. 
-When the task is running, `BusyWorker` will disable the root pane of the `parentWindow` to indicate that a task is performed.
-It will also change the cursor in the root pane to "busy". 
-When task is done, the cursor will be changed back to default and root pane will be enabled back.
+Below is a simple example of using `BusyWorker`. When the task is running, `BusyWorker` will disable the root pane of
+the `parentWindow` to indicate that a task is performed. It will also change the cursor in the root pane to "busy". When
+task is done, the cursor will be changed back to default and root pane will be enabled back.
 
 ```scala
 new BusyWorker("Simple Task", parentWindow).doTask { () =>
@@ -122,41 +127,46 @@ new BusyWorker("Simple Task", parentWindow).doTask { () =>
 #### Examnple 2
 
 Here is a little more elaborated example. It updates a progress message and progress indicator.
+
 ```scala
-  val buttonPane: Pane = ...
-  val progressLabel: Label = ...
-  val progressBar: ProgressBar = ...
+  val buttonPane: Pane =
+...
+val progressLabel: Label =
+...
+val progressBar: ProgressBar =
+...
 
-  val busyWorker = new BusyWorker("BusyWorker Demo", buttonPane) {
-    progressLabel.text <== progressMessage
-    progressBar.progress <== progressValue
-  }
+val busyWorker = new BusyWorker("BusyWorker Demo", buttonPane) {
+  progressLabel.text <== progressMessage
+  progressBar.progress <== progressValue
+}
 
-  val button = new Button("Click Me") {
-        onAction = () => busyWorker.doTask("Task 1")(
-          new SimpleTask[String] {
-            override def call(): String = {
-              val maxItems = 10
-              for (i <- 1 to maxItems) {
-                println(i)
-                message() = s"Processing item $i/$maxItems"
-                progress() = (i - 1) / 10.0
-                Thread.sleep(250)
-              }
-              progress() = 1
-              "Done"
-            }
-          }
-        )
-  }
+val button = new Button("Click Me") {
+  onAction = () => busyWorker.doTask("Task 1")(
+    new SimpleTask[String] {
+      override def call(): String = {
+        val maxItems = 10
+        for (i <- 1 to maxItems) {
+          println(i)
+          message() = s"Processing item $i/$maxItems"
+          progress() = (i - 1) / 10.0
+          Thread.sleep(250)
+        }
+        progress() = 1
+        "Done"
+      }
+    }
+  )
+}
 ```
-The full code example can be found in the 
-[BusyWorkerDemo][BusyWorkerDemo].
 
+The full code example can be found in the
+[BusyWorkerDemo][BusyWorkerDemo].
 
 ### Simpler Use of FXML with MVCfx Pattern
 
-Package `org.scalafx.extras.mvcfx` contains classes for creating with UI components based on FXML.
+Package `org.scalafx.extras.mvcfx` contains classes for creating with UI components based on FXML that use
+Model-View-Controller, here we call it the MVCfx Pattern. See wiki page [MVCfx Pattern] for details.
 
 The demos module has a complete example of a simple application: [StopWatchApp][StopWatchDemo].
 
@@ -173,15 +183,22 @@ Module [scalafx-extras-demos][scalafx-extras-demos] contains examples of using S
 
 ### StopWatch Application
 
-[StopWatchApp][StopWatchDemo] is an application that illustrates uses of the MVCfx: a Model-Controller and SFXML/FXML API.
+[StopWatchApp][StopWatchDemo] is an application that illustrates uses of the [MVCfx Pattern]: a Model-View-Controller
+with FXML layout.
 
 ![StopWatch Demo](notes/assets/StopWatchDemo.gif)
+
+There are slight differences between Scala 2 and 3 related to use of annotations. See [StopWatchDemo Scala 2]
+and [StopWatchDemo Scala 3] files for details. It is described in details in [MVCfx Pattern] wiki page.
 
 ### ShowMessage Demo
 
 [ShowMessageDemoApp][ShowMessageDemo] is a full example of using `ShowMessage` and MVCfx.
 
 ![ShowMessage Demo](notes/assets/ShowMessageDemo.gif)
+
+There are slight differences between Scala 2 and 3 related to use of annotations. See [ShowMessageDemo Scala 2]
+and [ShowMessageDemo Scala 3] files for details.
 
 ### BusyWorker Demo
 
@@ -191,8 +208,8 @@ Module [scalafx-extras-demos][scalafx-extras-demos] contains examples of using S
 
 ### ImageDisplay Demo
 
-[ImageDisplayDemoApp][ImageDisplayDemo] a simple example of an application that can display images, 
-with ability to zoom in, zoom out, and fit to current window. Illustrates use of the `ImageDisplay` component.
+[ImageDisplayDemoApp][ImageDisplayDemo] a simple example of an application that can display images, with ability to zoom
+in, zoom out, and fit to current window. Illustrates use of the `ImageDisplay` component.
 
 ![Image Display Demo](notes/assets/ImageDisplayDemo.gif)
 
@@ -204,9 +221,8 @@ ScalaFX Extras is still quite experimental and APIs may change significantly.
 Discussion and Support
 ----------------------
 
-For discussion and support, please use [ScalaFX Users Group](https://groups.google.com/forum/#!forum/scalafx-users) 
-or [ScalaFX on StackOverflow](https://stackoverflow.com/questions/tagged/scalafx).
-Please report issues using the projects Issue tracker.
+For discussion and support, please use [ScalaFX Users Group]
+or project [Discussions]. Please report issues using the projects Issue tracker.
 
 
 License
@@ -215,7 +231,25 @@ License
 BSD-3-Clause ScalaFX license.
 
 [scalafx-extras-demos]: scalafx-extras-demos
+
+[MVCfx Pattern]: https://github.com/scalafx/scalafx-extras/wiki/MVCfx-Pattern
+
 [BusyWorkerDemo]: scalafx-extras-demos/src/main/scala/org/scalafx/extras/BusyWorkerDemo.scala
-[ImageDisplayDemo]: scalafx-extras-demos\src\main\scala\org\scalafx\extras\image\ImageDisplayDemoApp.scala
-[ShowMessageDemo]: scalafx-extras-demos\src\main\scala\org\scalafx\extras\showmessage
-[StopWatchDemo]: scalafx-extras-demos\src\main\scala\org\scalafx\extras\mvcfx\stopwatch
+
+[ImageDisplayDemo]: scalafx-extras-demos/src/main/scala/org/scalafx/extras/image/ImageDisplayDemoApp.scala
+
+[ShowMessageDemo]: scalafx-extras-demos/src/main/scala/org/scalafx/extras/showmessage
+
+[ShowMessageDemo Scala 2]: scalafx-extras-demos/src/main/scala-2/org/scalafx/extras/showmessage
+
+[ShowMessageDemo Scala 3]: scalafx-extras-demos/src/main/scala-3/org/scalafx/extras/showmessage
+
+[StopWatchDemo]: scalafx-extras-demos/src/main/scala/org/scalafx/extras/mvcfx/stopwatch
+
+[StopWatchDemo Scala 2]: scalafx-extras-demos/src/main/scala-2/org/scalafx/extras/mvcfx/stopwatch
+
+[StopWatchDemo Scala 3]: scalafx-extras-demos/src/main/scala-3/org/scalafx/extras/mvcfx/stopwatch
+
+[ScalaFX Users Group]: https://groups.google.com/forum/#!forum/scalafx-users
+
+[Discussions]: https://github.com/scalafx/scalafx-extras/discussions

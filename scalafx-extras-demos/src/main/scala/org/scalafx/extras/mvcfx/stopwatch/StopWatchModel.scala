@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2016, ScalaFX Project
+ * Copyright (c) 2011-2021, ScalaFX Project
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -27,18 +27,16 @@
 
 package org.scalafx.extras.mvcfx.stopwatch
 
-import javafx.{concurrent => jfxc}
-import org.scalafx.extras._
+import javafx.concurrent as jfxc
+import org.scalafx.extras.*
 import org.scalafx.extras.mvcfx.ModelFX
-import scalafx.Includes._
+import scalafx.Includes.*
 import scalafx.beans.property.{LongProperty, ReadOnlyBooleanProperty, ReadOnlyBooleanWrapper}
 
-
 /**
-  * StopWatch behaviour ModelFX.
-  */
+ * StopWatch behaviour ModelFX.
+ */
 class StopWatchModel extends ModelFX {
-
 
   private val _running = ReadOnlyBooleanWrapper(false)
 
@@ -47,17 +45,16 @@ class StopWatchModel extends ModelFX {
   private val counterService = new CounterService()
   counterService.period = 10.ms
 
-  val minutes = new LongProperty()
-  val seconds = new LongProperty()
+  val minutes        = new LongProperty()
+  val seconds        = new LongProperty()
   val secondFraction = new LongProperty()
 
   counterService.elapsedTime.onChange { (_, _, newValue) =>
     val t = newValue.longValue()
-    secondFraction.value = t % 1000
+    secondFraction.value = t   % 1000
     seconds.value = (t / 1000) % 60
     minutes.value = t / 1000 / 60
   }
-
 
   def onStart(): Unit = {
     counterService.doResume()
@@ -73,11 +70,10 @@ class StopWatchModel extends ModelFX {
     counterService.doReset()
   }
 
-
   private class CounterService extends jfxc.ScheduledService[Long] {
 
     private var timeAccumulator: Long = 0
-    private var restartTime: Long = 0
+    private var restartTime: Long     = 0
 
     val elapsedTime = new LongProperty()
 

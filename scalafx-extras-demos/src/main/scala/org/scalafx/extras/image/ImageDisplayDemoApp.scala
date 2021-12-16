@@ -27,21 +27,20 @@
 
 package org.scalafx.extras.image
 
-import javafx.beans.{binding => jfxbb}
+import javafx.beans.binding as jfxbb
 import org.scalafx.extras.showException
-import scalafx.Includes._
+import scalafx.Includes.*
 import scalafx.application.JFXApp3
 import scalafx.application.JFXApp3.PrimaryStage
 import scalafx.scene.Scene
-import scalafx.scene.control._
+import scalafx.scene.control.*
 import scalafx.scene.image.Image
 import scalafx.scene.layout.{BorderPane, FlowPane}
 import scalafx.stage.FileChooser
 
-
 /**
-  * Demonstrates use of `ImageDisplay` class.
-  */
+ * Demonstrates use of `ImageDisplay` class.
+ */
 object ImageDisplayDemoApp extends JFXApp3 {
 
   override def start(): Unit = {
@@ -90,15 +89,14 @@ object ImageDisplayDemoApp extends JFXApp3 {
     }
 
     //  setROI()
-    //---------------------------------------------------------------------------
-
+    // ---------------------------------------------------------------------------
 
     /**
-      * Let user select image file and load it.
-      */
+     * Let user select image file and load it.
+     */
     def onFileOpen(): Unit = {
       val fileChooser = new FileChooser()
-      val file = fileChooser.showOpenDialog(stage)
+      val file        = fileChooser.showOpenDialog(stage)
       if (file != null) {
         try {
           val image = new Image("file:" + file.getCanonicalPath)
@@ -108,16 +106,20 @@ object ImageDisplayDemoApp extends JFXApp3 {
             image.exception().printStackTrace()
             showException(
               title = "Open image...",
-              message = "Failed to load image from file:\n" + file.getCanonicalPath, t = image.exception(),
-              ownerWindow = stage)
+              message = "Failed to load image from file:\n" + file.getCanonicalPath,
+              t = image.exception(),
+              ownerWindow = stage
+            )
           }
         } catch {
           case ex: IllegalArgumentException =>
             ex.printStackTrace()
             showException(
               title = "Open image...",
-              message = "Failed to load image from file:\n" + file.getCanonicalPath, t = ex,
-              ownerWindow = stage)
+              message = "Failed to load image from file:\n" + file.getCanonicalPath,
+              t = ex,
+              ownerWindow = stage
+            )
 
         }
       }
@@ -133,4 +135,3 @@ object ImageDisplayDemoApp extends JFXApp3 {
     //  }
   }
 }
-

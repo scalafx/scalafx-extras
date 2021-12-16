@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2018, ScalaFX Project
+ * Copyright (c) 2011-2021, ScalaFX Project
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -27,7 +27,7 @@
 
 package org.scalafx.extras.pong
 
-import scalafx.Includes._
+import scalafx.Includes.*
 import scalafx.beans.property.DoubleProperty
 import scalafx.geometry.Bounds
 import scalafx.scene.Cursor
@@ -41,7 +41,7 @@ private[pong] class Paddle(val xPos: Int) {
 
   var dragAnchorY: Double = _
 
-  var moveUp: Boolean = false
+  var moveUp: Boolean   = false
   var moveDown: Boolean = false
 
   val rect: Rectangle = new Rectangle {
@@ -66,4 +66,3 @@ private[pong] class Paddle(val xPos: Int) {
     rect.boundsInParent().intersects(b)
   }
 }
-

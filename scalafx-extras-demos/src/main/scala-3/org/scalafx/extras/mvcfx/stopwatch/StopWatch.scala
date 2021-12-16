@@ -27,15 +27,12 @@
 
 package org.scalafx.extras.mvcfx.stopwatch
 
-import javafx.util as jfxu
-
 import org.scalafx.extras.mvcfx.MVCfx
 
 /**
-  * StopWatch generator/loader.
-  */
+ * StopWatch generator/loader.
+ */
 class StopWatch(val model: StopWatchModel = new StopWatchModel())
-  extends MVCfx[StopWatchController]("/org/scalafx/extras/mvcfx/stopwatch/StopWatch.fxml") {
+    extends MVCfx[StopWatchController]("/org/scalafx/extras/mvcfx/stopwatch/StopWatch.fxml"):
 
   def controllerInstance: StopWatchController = new StopWatchController(model)
-}

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2018, ScalaFX Project
+ * Copyright (c) 2011-2021, ScalaFX Project
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -112,11 +112,10 @@ object ZoomScale extends Enum[ZoomScale] {
     }
   }
 
-
   private def closetsScaleTo(scaleCandidate: Double): Double = {
-    val values = ZoomScale.values
+    val values      = ZoomScale.values
     var minDistance = Double.PositiveInfinity
-    var bestScale = 1d
+    var bestScale   = 1d
     for (v <- ZoomScale.values) {
       val d = abs(scaleCandidate - v.scale)
       if (d < minDistance) {
@@ -129,10 +128,9 @@ object ZoomScale extends Enum[ZoomScale] {
 
 }
 
-
 /**
-  * @author Jarek Sacha
-  */
+ * @author Jarek Sacha
+ */
 sealed abstract class ZoomScale(val scale: Double, val name: String) extends EnumEntry {
 
   override def toString: String = name

@@ -30,7 +30,7 @@ package org.scalafx.extras.showmessage
 import org.scalafx.extras.mvcfx.MVCfx
 
 /**
-  * ShowMessage Demo generator/loader.
-  */
+ * ShowMessage Demo generator/loader.
+ */
 class ShowMessageDemo(val model: ShowMessageDemoModel = new ShowMessageDemoModel())
-  extends MVCfx("/org/scalafx/extras/showmessage/ShowMessageDemo.fxml")
+    extends MVCfx("/org/scalafx/extras/showmessage/ShowMessageDemo.fxml")

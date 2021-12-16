@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2020, ScalaFX Project
+ * Copyright (c) 2011-2021, ScalaFX Project
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -35,32 +35,30 @@ import scalafxml.core.{ControllerDependencyResolver, ExplicitDependencies, FXMLV
 
 import java.io.IOException
 
-
 /**
-  * MVCfx is the "root" class for creation of UI components using MVCfx pattern.
-  * It instantiates and binds together the model, the controller, and the view (FXML).
-  *
-  * The implementation of a class that extends MVCfx is very simple,
-  * it only needs instance of the model and information about location of the FXML resource.
-  * For example:
-  * {{{
-  * import org.scalafx.extras.mvcfx.MVCfx
-  *
-  * class StopWatch(val model: StopWatchModel = new StopWatchModel())
-  *   extends MVCfx("/org/scalafx/extras/mvcfx/stopwatch/StopWatch.fxml")
-  * }}}
-  *
-  * The implementation will include:
-  * * StopWatch extends MVCfx
-  * * StopWatchModel extends ModelFX
-  * * StopWatchController extends ControllerFX
-  * * StopWatch.fxml
-  *
-  * The complete example in in demo module.
-  *
-  * See more details on MVCfx see [[org.scalafx.extras.mvcfx `org.scalafx.extras.mvcfx`]] documentation.
-  *
-  */
+ * MVCfx is the "root" class for creation of UI components using MVCfx pattern.
+ * It instantiates and binds together the model, the controller, and the view (FXML).
+ *
+ * The implementation of a class that extends MVCfx is very simple,
+ * it only needs instance of the model and information about location of the FXML resource.
+ * For example:
+ * {{{
+ * import org.scalafx.extras.mvcfx.MVCfx
+ *
+ * class StopWatch(val model: StopWatchModel = new StopWatchModel())
+ *   extends MVCfx("/org/scalafx/extras/mvcfx/stopwatch/StopWatch.fxml")
+ * }}}
+ *
+ * The implementation will include:
+ * * StopWatch extends MVCfx
+ * * StopWatchModel extends ModelFX
+ * * StopWatchController extends ControllerFX
+ * * StopWatch.fxml
+ *
+ * The complete example in in demo module.
+ *
+ * See more details on MVCfx see [[org.scalafx.extras.mvcfx `org.scalafx.extras.mvcfx`]] documentation.
+ */
 abstract class MVCfx(fxmlFilePath: String) {
 
   /** UI model for this component. */
@@ -104,20 +102,20 @@ abstract class MVCfx(fxmlFilePath: String) {
   }
 
   /**
-    * Dependencies for the view. Default implementation only provides the model as a dependency.
-    * Overwrite to add additional dependencies as needed.
-    *
-    * @return dependencies injected into the view when it is created.
-    */
+   * Dependencies for the view. Default implementation only provides the model as a dependency.
+   * Overwrite to add additional dependencies as needed.
+   *
+   * @return dependencies injected into the view when it is created.
+   */
   protected def viewDependencies: ControllerDependencyResolver = {
     new ExplicitDependencies(Map("model" -> model))
   }
 
   /**
-    * Creates FXMLView using provided FXML file (`fxmlFilePath`).
-    *
-    * @return parent node of the loaded FXML view.
-    */
+   * Creates FXMLView using provided FXML file (`fxmlFilePath`).
+   *
+   * @return parent node of the loaded FXML view.
+   */
   private def createFXMLView(): Parent = {
     // Load main view
     val resource = getClass.getResource(fxmlFilePath)
@@ -129,6 +127,4 @@ abstract class MVCfx(fxmlFilePath: String) {
     FXMLView(resource, viewDependencies)
   }
 
-
 }
-

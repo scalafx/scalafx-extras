@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2018, ScalaFX Project
+ * Copyright (c) 2011-2021, ScalaFX Project
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -28,22 +28,24 @@
 package org.scalafx.extras.showmessage
 
 import org.scalafx.extras.mvcfx.ControllerFX
-import scalafx.Includes._
+import scalafx.Includes.*
 import scalafx.scene.control.Button
 import scalafxml.core.macros.sfxml
 
 /**
-  * ShowMessage UI view.
-  * It is intended to create bindings between UI definition loaded fro FXML configuration and the UI model
-  */
+ * ShowMessage UI view.
+ * It is intended to create bindings between UI definition loaded fro FXML configuration and the UI model
+ */
 @sfxml
-class ShowMessageDemoController(showConfirmationButton: Button,
-                                showConfirmationYNCButton: Button,
-                                showInformationButton: Button,
-                                showWarningButton: Button,
-                                showErrorButton: Button,
-                                showExceptionButton: Button,
-                                model: ShowMessageDemoModel) extends ControllerFX {
+class ShowMessageDemoController(
+  showConfirmationButton: Button,
+  showConfirmationYNCButton: Button,
+  showInformationButton: Button,
+  showWarningButton: Button,
+  showErrorButton: Button,
+  showExceptionButton: Button,
+  model: ShowMessageDemoModel
+) extends ControllerFX {
 
   showConfirmationButton.onAction = () => model.onShowConfirmation()
   showConfirmationYNCButton.onAction = () => model.onShowConfirmationYesNoCancel()

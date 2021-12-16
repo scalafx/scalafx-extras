@@ -27,19 +27,16 @@
 
 package org.scalafx.extras.mvcfx.stopwatch
 
-import javafx.scene.{control as jfxsc, layout as jfxsl}
-import javafx.{event as jfxe, fxml as jfxf}
-
+import javafx.fxml as jfxf
+import javafx.scene.control as jfxsc
 import org.scalafx.extras.mvcfx.ControllerFX
-
 import scalafx.Includes.*
-import scalafx.scene.control.{Button, Label}
 
 /**
-  * StopWatch UI view controller. It is intended to create bindings between UI definition loaded fro FXML configuration
-  * and the UI model
-  */
-class StopWatchController(model: StopWatchModel) extends ControllerFX {
+ * StopWatch UI view controller. It is intended to create bindings between UI definition loaded fro FXML configuration
+ * and the UI model
+ */
+class StopWatchController(model: StopWatchModel) extends ControllerFX:
 
   @jfxf.FXML
   private var minutesLabel: jfxsc.Label = _
@@ -54,20 +51,13 @@ class StopWatchController(model: StopWatchModel) extends ControllerFX {
   @jfxf.FXML
   private var resetButton: jfxsc.Button = _
 
-  @jfxf.FXML
-  def initialize(): Unit = {
+  override def initialize(): Unit =
     minutesLabel.text.value = format2d(model.minutes.longValue)
-    model.minutes.onChange { (_, _, newValue) =>
-      minutesLabel.text.value = format2d(newValue.longValue)
-    }
+    model.minutes.onChange { (_, _, v) => minutesLabel.text.value = format2d(v.longValue) }
     secondsLabel.text.value = format2d(model.seconds.longValue())
-    model.seconds.onChange { (_, _, newValue) =>
-      secondsLabel.text.value = format2d(newValue.longValue())
-    }
+    model.seconds.onChange { (_, _, v) => secondsLabel.text.value = format2d(v.longValue()) }
     fractionLabel.text.value = format2d(model.secondFraction.longValue() / 10)
-    model.secondFraction.onChange { (_, _, newValue) =>
-      fractionLabel.text.value = format2d(newValue.longValue() / 10)
-    }
+    model.secondFraction.onChange { (_, _, v) => fractionLabel.text.value = format2d(v.longValue() / 10) }
 
     startButton.disable <== model.running
     stopButton.disable <== !model.running
@@ -76,7 +66,5 @@ class StopWatchController(model: StopWatchModel) extends ControllerFX {
     startButton.onAction = () => model.onStart()
     stopButton.onAction = () => model.onStop()
     resetButton.onAction = () => model.onReset()
-  }
 
   private def format2d(t: Number) = f"${t.longValue()}%02d"
-}

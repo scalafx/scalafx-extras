@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2018, ScalaFX Project
+ * Copyright (c) 2011-2021, ScalaFX Project
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -29,7 +29,7 @@ package org.scalafx.extras.image
 
 import scala.math.*
 
-enum ZoomScale(val scale: Double, val name: String) {
+enum ZoomScale(val scale: Double, val name: String):
 
   case Zoom1Perc extends ZoomScale(0.01, "1%")
   case Zoom1_5Perc extends ZoomScale(0.015, "1.5%")
@@ -58,55 +58,43 @@ enum ZoomScale(val scale: Double, val name: String) {
   case Zoom3200Perc extends ZoomScale(32, "3200%")
 
   override def toString: String = name
-}
 
-object ZoomScale {
-  def zoomOut(zoomScale: ZoomScale): ZoomScale = {
+object ZoomScale:
+
+  def zoomOut(zoomScale: ZoomScale): ZoomScale =
     val i: Int = ZoomScale.values.indexOf(zoomScale)
-    if (i < 0) {
+    if i < 0 then
       throw new IllegalArgumentException(
         "Internal error: scale: " + zoomScale + " is not one of indexed values."
       )
-    } else if (i == 0) {
+    else if i == 0 then
       zoomScale
-    } else if (i < ZoomScale.values.length) {
+    else if i < ZoomScale.values.length then
       ZoomScale.values(i - 1)
-    } else {
-      throw new IllegalArgumentException(
-        "Internal error looking for next scale."
-      )
-    }
-  }
+    else
+      throw new IllegalArgumentException("Internal error looking for next scale.")
 
-  def zoomIn(zoomScale: ZoomScale): ZoomScale = {
+  def zoomIn(zoomScale: ZoomScale): ZoomScale =
     val i: Int = ZoomScale.values.indexOf(zoomScale)
-    if (i < 0) {
+    if i < 0 then
       throw new IllegalArgumentException(
         "Internal error: scale: " + zoomScale + " is not one of indexed values."
       )
-    } else if (i == (ZoomScale.values.length - 1)) {
+    else if i == (ZoomScale.values.length - 1) then
       zoomScale
-    } else if (i < (ZoomScale.values.length - 1)) {
+    else if i < (ZoomScale.values.length - 1) then
       ZoomScale.values(i + 1)
-    } else {
-      throw new IllegalArgumentException(
-        "Internal error looking for next scale."
-      )
-    }
-  }
+    else
+      throw new IllegalArgumentException("Internal error looking for next scale.")
 
-  private def closetsScaleTo(scaleCandidate: Double): Double = {
-    val values = ZoomScale.values
+  private def closetsScaleTo(scaleCandidate: Double): Double =
+    val values      = ZoomScale.values
     var minDistance = Double.PositiveInfinity
-    var bestScale = 1d
-    for (v <- ZoomScale.values) {
+    var bestScale   = 1d
+    for v <- ZoomScale.values do
       val d = abs(scaleCandidate - v.scale)
-      if (d < minDistance) {
+      if d < minDistance then
         minDistance = d
         bestScale = v.scale
-      }
-    }
-    bestScale
-  }
 
-}
+    bestScale

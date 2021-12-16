@@ -30,7 +30,7 @@ package org.scalafx.extras.mvcfx.stopwatch
 import org.scalafx.extras.mvcfx.MVCfx
 
 /**
-  * StopWatch generator/loader.
-  */
+ * StopWatch generator/loader.
+ */
 class StopWatch(val model: StopWatchModel = new StopWatchModel())
-  extends MVCfx("/org/scalafx/extras/mvcfx/stopwatch/StopWatch.fxml")
+    extends MVCfx("/org/scalafx/extras/mvcfx/stopwatch/StopWatch.fxml")

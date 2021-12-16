@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2018, ScalaFX Project
+ * Copyright (c) 2011-2021, ScalaFX Project
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -28,8 +28,8 @@
 package org.scalafx.extras
 
 /**
-  * Logging operations used by ShowMessage. Enables ShowMessage to use loggers preferred by the user.
-  */
+ * Logging operations used by ShowMessage. Enables ShowMessage to use loggers preferred by the user.
+ */
 trait ShowMessageLogger {
   def warn(message: String): Unit
   def error(message: String): Unit

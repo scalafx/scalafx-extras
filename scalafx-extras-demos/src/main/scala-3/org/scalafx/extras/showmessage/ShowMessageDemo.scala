@@ -28,14 +28,12 @@
 package org.scalafx.extras.showmessage
 
 import javafx.util as jfxu
-
 import org.scalafx.extras.mvcfx.MVCfx
 
 /**
-  * ShowMessage Demo generator/loader.
-  */
+ * ShowMessage Demo generator/loader.
+ */
 class ShowMessageDemo(val model: ShowMessageDemoModel = new ShowMessageDemoModel())
-  extends MVCfx[ShowMessageDemoController]("/org/scalafx/extras/showmessage/ShowMessageDemo.fxml") {
+    extends MVCfx[ShowMessageDemoController]("/org/scalafx/extras/showmessage/ShowMessageDemo.fxml"):
 
   protected def controllerInstance: ShowMessageDemoController = new ShowMessageDemoController(model)
-}
