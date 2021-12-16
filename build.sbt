@@ -93,7 +93,7 @@ lazy val scalaFXExtrasDemos = (project in file("scalafx-extras-demos")).settings
   publishArtifact := false,
   libraryDependencies ++= Seq(
     "com.typesafe.scala-logging" %% "scala-logging"   % "3.9.4",
-    "ch.qos.logback"              % "logback-classic" % "1.2.7"
+    "ch.qos.logback"              % "logback-classic" % "1.2.8"
   )
 ).dependsOn(scalaFXExtras % "compile;test->test")
 
@@ -122,11 +122,20 @@ lazy val scalaFXExtrasSettings = Seq(
     (
       if (isScala2(scalaVersion.value))
         Seq(
+          "-explaintypes",
           "-Xcheckinit",
-          "-Xsource:3"
+          "-Xsource:3",
+//          "-Xlint",
+//          "-Xcheckinit",
+//          "-Xlint:missing-interpolator",
+//          "-Ywarn-dead-code",
+//          "-Ywarn-unused:-patvars,_",
         )
       else
-        Seq.empty[String]
+        Seq(
+          "-explain",
+          "-explain-types"
+        )
     ),
   Compile / doc / scalacOptions ++= Opts.doc.title("ScalaFX Extras API"),
   Compile / doc / scalacOptions ++= Opts.doc.version(projectVersion),
