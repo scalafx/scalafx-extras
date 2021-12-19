@@ -10,7 +10,7 @@ import scala.xml.{Node => XmlNode, NodeSeq => XmlNodeSeq, _}
 // JAR_BUILT_BY      - Name to be added to Jar metadata field "Built-By" (defaults to System.getProperty("user.name")
 //
 
-val projectVersion = "0.4.0.1-SNAPSHOT"
+val projectVersion = "0.5.0"
 val versionTagDir  = if (projectVersion.endsWith("SNAPSHOT")) "master" else "v." + projectVersion
 val _scalaVersions = Seq("3.0.2", "2.13.7", "2.12.15")
 val _scalaVersion  = _scalaVersions.head
@@ -19,7 +19,7 @@ val _javaFXVersion = "17.0.1"
 ThisBuild / version             := projectVersion
 ThisBuild / crossScalaVersions  := _scalaVersions
 ThisBuild / scalaVersion        := _scalaVersion
-ThisBuild / sonatypeProfileName := "org.scalafx"
+ThisBuild / organization        := "org.scalafx"
 
 publishArtifact     := false
 publish / skip      := true
@@ -93,7 +93,7 @@ lazy val scalaFXExtrasDemos = (project in file("scalafx-extras-demos")).settings
   publishArtifact := false,
   libraryDependencies ++= Seq(
     "com.typesafe.scala-logging" %% "scala-logging"   % "3.9.4",
-    "ch.qos.logback"              % "logback-classic" % "1.2.7"
+    "ch.qos.logback"              % "logback-classic" % "1.2.9"
   )
 ).dependsOn(scalaFXExtras % "compile;test->test")
 
@@ -104,10 +104,6 @@ resolvers += Resolver.sonatypeRepo("snapshots")
 
 // Common settings
 lazy val scalaFXExtrasSettings = Seq(
-  organization       := "org.scalafx",
-  version            := projectVersion,
-  crossScalaVersions := _scalaVersions,
-  scalaVersion       := _scalaVersion,
   // SAdd version specific directories
   Compile / unmanagedSourceDirectories += (Compile / sourceDirectory).value / versionSubDir(scalaVersion.value),
   Test / unmanagedSourceDirectories += (Test / sourceDirectory).value / versionSubDir(scalaVersion.value),
@@ -122,11 +118,20 @@ lazy val scalaFXExtrasSettings = Seq(
     (
       if (isScala2(scalaVersion.value))
         Seq(
+          "-explaintypes",
           "-Xcheckinit",
-          "-Xsource:3"
+          "-Xsource:3",
+//          "-Xlint",
+//          "-Xcheckinit",
+//          "-Xlint:missing-interpolator",
+//          "-Ywarn-dead-code",
+//          "-Ywarn-unused:-patvars,_",
         )
       else
-        Seq.empty[String]
+        Seq(
+          "-explain",
+          "-explain-types"
+        )
     ),
   Compile / doc / scalacOptions ++= Opts.doc.title("ScalaFX Extras API"),
   Compile / doc / scalacOptions ++= Opts.doc.version(projectVersion),

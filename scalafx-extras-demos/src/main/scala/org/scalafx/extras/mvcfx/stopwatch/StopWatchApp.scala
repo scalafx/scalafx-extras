@@ -32,8 +32,6 @@ import scalafx.scene.Scene
 import scalafx.scene.image.Image
 import scalafx.scene.layout.BorderPane
 
-import scala.language.implicitConversions
-
 /**
  * StopWatchApp is an application illustrating use of [[org.scalafx.extras.mvcfx ModelFX-ControllerFX]] pattern,
  * where layout of the UI is loaded from FXML definition and behaviour is defined in a model.

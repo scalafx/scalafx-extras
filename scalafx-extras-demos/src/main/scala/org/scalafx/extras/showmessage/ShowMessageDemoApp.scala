@@ -33,8 +33,6 @@ import scalafx.scene.Scene
 import scalafx.scene.image.Image
 import scalafx.scene.layout.BorderPane
 
-import scala.language.implicitConversions
-
 /**
  * ShowMessage application demo.
  * The application is very simple but, for realistic illustration of [[org.scalafx.extras.ShowMessage ShowMessage]] usage
