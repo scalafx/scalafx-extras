@@ -129,7 +129,7 @@ new BusyWorker("Simple Task", parentWindow).doTask { () =>
 Here is a little more elaborated example. It updates a progress message and progress indicator.
 
 ```scala
-  val buttonPane: Pane =
+val buttonPane: Pane =
 ...
 val progressLabel: Label =
 ...
