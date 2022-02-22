@@ -113,7 +113,8 @@ lazy val scalaFXExtrasSettings = Seq(
     "-deprecation",
     "-encoding",
     "utf8",
-    "-feature"
+    "-feature",
+    "-release", "8"
   ) ++
     (
       if (isScala2(scalaVersion.value))
@@ -160,11 +161,6 @@ lazy val scalaFXExtrasSettings = Seq(
       ))
     else
       Seq.empty[sbt.ModuleID]
-  ),
-  javacOptions ++= Seq(
-       "-target", "1.8",
-       "-source", "1.8",
-    "-Xlint:deprecation"
   ),
   libraryDependencies ++= Seq(
     "org.scalafx"   %% "scalafx"   % "17.0.1-R26",
