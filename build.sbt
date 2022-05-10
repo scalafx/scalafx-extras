@@ -14,7 +14,7 @@ val projectVersion = "0.5.0.1-SNAPSHOT"
 val versionTagDir  = if (projectVersion.endsWith("SNAPSHOT")) "master" else "v." + projectVersion
 val _scalaVersions = Seq("3.0.2", "2.13.8", "2.12.15")
 val _scalaVersion  = _scalaVersions.head
-val _javaFXVersion = "17.0.1"
+val _javaFXVersion = "18.0.1"
 
 ThisBuild / version             := projectVersion
 ThisBuild / crossScalaVersions  := _scalaVersions
@@ -163,7 +163,7 @@ lazy val scalaFXExtrasSettings = Seq(
       Seq.empty[sbt.ModuleID]
   ),
   libraryDependencies ++= Seq(
-    "org.scalafx"   %% "scalafx"   % "17.0.1-R26",
+    "org.scalafx"   %% "scalafx"   % "18.0.1-R27",
     "org.scalatest" %% "scalatest" % "3.2.10" % "test"
   ) ++ JavaFXModuleLibsProvided,
   libraryDependencies ++= (
