@@ -164,7 +164,7 @@ lazy val scalaFXExtrasSettings = Seq(
   ),
   libraryDependencies ++= Seq(
     "org.scalafx"   %% "scalafx"   % "18.0.1-R27",
-    "org.scalatest" %% "scalatest" % "3.2.10" % "test"
+    "org.scalatest" %% "scalatest" % "3.2.11" % "test"
   ) ++ JavaFXModuleLibsProvided,
   libraryDependencies ++= (
     if (isScala2(scalaVersion.value))
