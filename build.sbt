@@ -24,18 +24,9 @@ ThisBuild / organization        := "org.scalafx"
 publishArtifact     := false
 publish / skip      := true
 
-lazy val OSName = System.getProperty("os.name") match {
-  case n if n.startsWith("Linux")   => "linux"
-  case n if n.startsWith("Mac")     => "mac"
-  case n if n.startsWith("Windows") => "win"
-  case _                            => throw new Exception("Unknown platform!")
-}
-
-lazy val JavaFXModuleNames = Seq("base", "controls", "fxml", "graphics", "media", "swing", "web")
-lazy val JavaFXModuleLibsProvided: Seq[ModuleID] =
-  JavaFXModuleNames.map(m => "org.openjfx" % s"javafx-$m" % _javaFXVersion % "provided" classifier OSName)
 lazy val JavaFXModuleLibs: Seq[ModuleID] =
-  JavaFXModuleNames.map(m => "org.openjfx" % s"javafx-$m" % _javaFXVersion classifier OSName)
+  Seq("base", "controls", "fxml", "graphics", "media", "swing", "web")
+    .map(m => "org.openjfx" % s"javafx-$m" % _javaFXVersion)
 
 def isScala2(scalaVersion: String): Boolean = {
   CrossVersion.partialVersion(scalaVersion) match {
@@ -165,7 +156,7 @@ lazy val scalaFXExtrasSettings = Seq(
   libraryDependencies ++= Seq(
     "org.scalafx"   %% "scalafx"   % "18.0.1-R27",
     "org.scalatest" %% "scalatest" % "3.2.11" % "test"
-  ) ++ JavaFXModuleLibsProvided,
+  ) ++ JavaFXModuleLibs,
   libraryDependencies ++= (
     if (isScala2(scalaVersion.value))
       Seq(
