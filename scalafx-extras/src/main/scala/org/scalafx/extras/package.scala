@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2021, ScalaFX Project
+ * Copyright (c) 2011-2022, ScalaFX Project
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -29,15 +29,10 @@ package org.scalafx
 
 import javafx.concurrent as jfxc
 import javafx.embed.swing.JFXPanel
-import scalafx.Includes.*
 import scalafx.application.Platform
 import scalafx.scene.Node
-import scalafx.scene.control.Alert.AlertType
-import scalafx.scene.control.{Alert, Label, TextArea}
-import scalafx.scene.layout.{GridPane, Priority}
 import scalafx.stage.Window
 
-import java.io.{PrintWriter, StringWriter}
 import java.util.concurrent
 
 /**
@@ -135,85 +130,47 @@ package object extras {
   }
 
   /**
-   * Show a modal dialog with an expandable details about an exception (stack trace).
-   *
-   * @param title       dialog title
-   * @param message     message shown in the dialog header.
-   * @param t           exception.
-   * @param ownerWindow owner window that will be blacked by the dialog. Can be `null`.
-   */
-  def showException(title: String, message: String, t: Throwable, ownerWindow: Node): Unit = {
-    val parentWindow = Option(ownerWindow).flatMap(n => Option(n.scene()).map(s => jfxWindow2sfx(s.window())))
-    showException(title, message, t, parentWindow)
-  }
+    * Show a modal dialog with an expandable details about an exception (stack trace).
+    *
+    * @param title       dialog title
+    * @param message     message shown in the dialog header.
+    * @param t           exception.
+    * @param ownerWindow owner window that will be blacked by the dialog. Can be `null`.
+    */
+  @deprecated("Use org.scalafx.extras.ShowMessage.exception()", "0.6.0")
+  def showException(title: String, message: String, t: Throwable, ownerWindow: Node): Unit =
+    ShowMessage.exception(title, message, t, ownerWindow)
 
   /**
-   * Show a modal dialog with an expandable details about an exception (stack trace).
-   *
-   * @param title       dialog title
-   * @param message     message shown in the dialog header.
-   * @param t           exception.
-   * @param ownerWindow owner window that will be blacked by the dialog. Can be `null` to match JavaFX convention.
-   */
-  def showException(title: String, message: String, t: Throwable, ownerWindow: Window): Unit = {
-    showException(title, message, t, Option(ownerWindow))
-  }
+    * Show a modal dialog with an expandable details about an exception (stack trace).
+    *
+    * @param title       dialog title
+    * @param message     message shown in the dialog header.
+    * @param t           exception.
+    * @param ownerWindow owner window that will be blacked by the dialog. Can be `null` to match JavaFX convention.
+    */
+  @deprecated("Use org.scalafx.extras.ShowMessage.exception()", "0.6.0")
+  def showException(title: String, message: String, t: Throwable, ownerWindow: Window): Unit =
+    ShowMessage.exception(title, message, t, ownerWindow)
 
   /**
-   * Show a modal dialog with an expandable details about an exception (stack trace).
-   *
-   * @param title       dialog title
-   * @param message     message shown in the dialog header.
-   * @param t           exception.
-   * @param ownerWindow owner window that will be blacked by the dialog.
-   */
-  def showException(title: String, message: String, t: Throwable, ownerWindow: Option[Window] = None): Unit = {
-    t.printStackTrace()
-
-    // Rename to avoid name clashes
-    val dialogTitle = title
-
-    // Create expandable Exception.
-    val exceptionText = {
-      val sw = new StringWriter()
-      val pw = new PrintWriter(sw)
-      t.printStackTrace(pw)
-      sw.toString
-    }
-    val label = new Label("The exception stack trace was:")
-    val textArea = new TextArea {
-      text = exceptionText
-      editable = false
-      wrapText = true
-      maxWidth = Double.MaxValue
-      maxHeight = Double.MaxValue
-      vgrow = Priority.Always
-      hgrow = Priority.Always
-    }
-    val expContent = new GridPane {
-      maxWidth = Double.MaxValue
-      add(label, 0, 0)
-      add(textArea, 0, 1)
-    }
-
-    onFXAndWait {
-      new Alert(AlertType.Error) {
-        initOwner(ownerWindow.orNull)
-        this.title = dialogTitle
-        headerText = message
-        contentText = Option(t.getMessage).getOrElse("")
-        // Set expandable Exception into the dialog pane.
-        dialogPane().expandableContent = expContent
-      }.showAndWait()
-    }
-  }
+    * Show a modal dialog with an expandable details about an exception (stack trace).
+    *
+    * @param title       dialog title
+    * @param message     message shown in the dialog header.
+    * @param t           exception.
+    * @param ownerWindow owner window that will be blacked by the dialog.
+    */
+  @deprecated("Use org.scalafx.extras.ShowMessage.exception()", "0.6.0")
+  def showException(title: String, message: String, t: Throwable, ownerWindow: Option[Window] = None): Unit =
+    ShowMessage.exception(title, message, t, ownerWindow)
 
   /**
-   * Run task on a named daemon thread.
-   *
-   * @param task to run
-   * @param name name for the thread to run the operation. Useful for debugging.
-   */
+    * Run task on a named daemon thread.
+    *
+    * @param task to run
+    * @param name name for the thread to run the operation. Useful for debugging.
+    */
   def runTask[T](task: javafx.concurrent.Task[T], name: String): Unit = {
     val th = new Thread(task, name)
     th.setDaemon(true)

@@ -13,16 +13,16 @@ Extras do not have direct corresponding concepts in JavaFX.
 0. [Project Structure](#project-structure)
 0. [SBT](#sbt)
 0. [Features](#features)
-    1. [Helper Methods](#helper-methods)
-    1. [Simpler Display of Dialogs](#simpler-display-of-dialogs)
-    1. [BusyWorker](#busyworker)
-    1. [Simpler Use of FXML with MVCfx Pattern](#simpler-use-of-fxml-with-mvcfx-pattern)
-    1. [Image Display Component](#imagedisplay-component)
+   1. [Helper Methods](#helper-methods)
+   1. [Simpler Display of Standard Dialogs](#simpler-display-of-standard-dialogs)
+   1. [BusyWorker](#busyworker)
+   1. [Simpler Use of FXML with MVCfx Pattern](#simpler-use-of-fxml-with-mvcfx-pattern)
+   1. [Image Display Component](#imagedisplay-component)
 0. [Demos](#demos)
-    1. [StopWatch Application](#stopwatch-application)
-    1. [ShowMessage Demo](#showmessage-demo)
-    1. [BusyWorker Demo](#busyworker-demo)
-    1. [ImageDisplay Demo](#imagedisplay-demo)
+   1. [StopWatch Application](#stopwatch-application)
+   1. [ShowMessage Demo](#showmessage-demo)
+   1. [BusyWorker Demo](#busyworker-demo)
+   1. [ImageDisplay Demo](#imagedisplay-demo)
 0. [Status](#status)
 0. [Discussion and Support](#discussion-and-support)
 0. [License](#license)
@@ -57,7 +57,6 @@ The main helper methods:
 * `onFXAndWait` run code on FX Application thread and wait till finished
 * `offFX` run code a thread in parallel
 * `offFXAndWait` run code a thread and wait till finished
-* `showException` show an exception dialog
 
 Example scheduling some code on FX Application thread
 
@@ -73,16 +72,39 @@ Example execution some code on a separate thread and waiting for the result of c
 
 ```scala
 val x = offFXAndWait {
-  val a = 3
-  val b = 7
-  a * b
+   val a = 3
+   val b = 7
+   a * b
 }
 
 ```
 
-### Simpler Display of Dialogs
+### Simpler Display of Standard Dialogs
 
-The mixin `ShowMessage` makes it easier to display dialogs. It is typically used with a UI `Model`. The dialogs can be
+Standard dialogs can be quickly displayed using functions provided my `ShowMessage`. For instance,
+
+```scala
+import org.scalafx.extras.ShowMessage
+
+ShowMessage.information(
+   "Dialog Title",
+   "This is the information 'header'",
+   "This is the information detailed 'content'.",
+   parentWindow
+)
+```
+
+Dialog types supported:
+
+* `confirmation`
+* `confirmationYesNoCancel`
+* `error`
+* `exception`
+* `information`
+* `warning`
+
+`ShowMessage` can be also used as a mixin to be used within a class where there is the same `parentWindow`.
+It is typically used with a UI `Model`. The dialogs can be
 displayed using a single method, like `showInformation`, `showConfirmation`. `ShowMessage` takes care of blocking parent
 windows and using parent icons in dialogs. It can also log warnings, errors, and exceptions when warnings, errors, and
 exceptions dialogs are displayed.
@@ -90,15 +112,15 @@ exceptions dialogs are displayed.
 ```scala
 class MyUIModel extends Model with ShowMessage {
 
-  def onSomeUserAction(): Unit = {
-    // ...
-    showInformation("Dialog Title",
-      "This is the information \"header\"",
-      "This is the information detailed \"content\".")
-    // ...
-  }
+   def onSomeUserAction(): Unit = {
+      // ...
+      showInformation("Dialog Title",
+         "This is the information 'header'",
+         "This is the information detailed 'content'.")
+      // ...
+   }
 
-  // ...
+   // ...
 }
 ```  
 
