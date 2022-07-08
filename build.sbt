@@ -12,7 +12,7 @@ import scala.xml.{Node => XmlNode, NodeSeq => XmlNodeSeq, _}
 
 val projectVersion = "0.5.0.1-SNAPSHOT"
 val versionTagDir  = if (projectVersion.endsWith("SNAPSHOT")) "master" else "v." + projectVersion
-val _scalaVersions = Seq("3.0.2", "2.13.8", "2.12.15")
+val _scalaVersions = Seq("3.0.2", "2.13.8", "2.12.16")
 val _scalaVersion  = _scalaVersions.head
 val _javaFXVersion = "18.0.1"
 
