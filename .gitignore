@@ -26,3 +26,4 @@ project/target
 .externalToolBuilders/
 /_local_/
 /.bsp/
+.DS_Store
