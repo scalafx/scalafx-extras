@@ -83,7 +83,7 @@ lazy val scalaFXExtrasDemos = (project in file("scalafx-extras-demos")).settings
   libraryDependencies ++= JavaFXModuleLibs,
   publishArtifact := false,
   libraryDependencies ++= Seq(
-    "com.typesafe.scala-logging" %% "scala-logging"   % "3.9.4",
+    "com.typesafe.scala-logging" %% "scala-logging"   % "3.9.5",
     "ch.qos.logback"              % "logback-classic" % "1.2.11"
   )
 ).dependsOn(scalaFXExtras % "compile;test->test")
