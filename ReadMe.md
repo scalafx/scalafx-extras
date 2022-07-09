@@ -171,6 +171,8 @@ if (dialog.wasOKed) {
 
 ![GenericDialogFX Demo](notes/assets/GenericDialogFX_2.png)
 
+A more elaborate example is in the `GenericDialogFXDemo`.
+
 ### BusyWorker
 
 BusyWorker helps running a UI task on separate threads (other than the JavaFX Application thread). It will show busy
