@@ -15,6 +15,7 @@ Extras do not have direct corresponding concepts in JavaFX.
 0. [Features](#features)
    1. [Helper Methods](#helper-methods)
    1. [Simpler Display of Standard Dialogs](#simpler-display-of-standard-dialogs)
+   1. [Easy Custom Dialogs](#easy-custom-dialogs)
    1. [BusyWorker](#busyworker)
    1. [Simpler Use of FXML with MVCfx Pattern](#simpler-use-of-fxml-with-mvcfx-pattern)
    1. [Image Display Component](#imagedisplay-component)
@@ -125,6 +126,50 @@ class MyUIModel extends Model with ShowMessage {
 ```  
 
 The demos module has a complete example of a simple application in `ShowMessageDemoApp`.
+
+### Easy Custom Dialogs
+
+Custom dialogs can be quickly created using `GenericDialogFX` class. This class is particularly suited for creation of
+input dialogs.
+
+There are 3 steps to using the `GenericDialogFX`:
+
+1. Creation, where elements of the dialog are appended vertically using `add*(...)` methods, for
+   instance,`addStringField(label, defaultText)`
+2. User interaction, dialog is displayed using `showDialog()` method
+3. Reading of input, once the dialog is closed, dialog content can be read using `next*()` methods. Content is read in
+   the order it is added.
+
+Here is en example:
+
+```scala
+// Create a dialog
+val dialog =
+   new GenericDialogFX(
+      title = "GenericDialogFX Demo",
+      header = Option("Fancy description can go here.")
+   ) {
+      // Add fields
+      addCheckbox("Check me out!", defaultValue = false)
+      addCheckbox("Check me too!", defaultValue = true)
+   }
+
+// Show dialog to the user
+dialog.showDialog()
+
+// Read input provided by the user
+if (dialog.wasOKed) {
+   val select1 = dialog.nextBoolean()
+   val select2 = dialog.nextBoolean()
+
+   println(s"Selection 1: $select1")
+   println(s"Selection 2: $select2")
+} else {
+   println("Dialog was cancelled.")
+}
+```
+
+![GenericDialogFX Demo](notes/assets/GenericDialogFX_2.png)
 
 ### BusyWorker
 
