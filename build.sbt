@@ -187,7 +187,7 @@ lazy val scalaFXExtrasSettings = Seq(
   run / fork               := true,
   Test / fork              := true,
   Test / parallelExecution := false,
-  resolvers += Resolver.sonatypeRepo("snapshots"),
+  resolvers ++= Resolver.sonatypeOssRepos("snapshots"),
   // print junit-style XML for CI
   Test / testOptions += {
     val t = (Test / target).value
