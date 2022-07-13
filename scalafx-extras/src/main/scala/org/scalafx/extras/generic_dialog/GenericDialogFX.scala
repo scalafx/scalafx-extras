@@ -50,6 +50,22 @@ object GenericDialogFX {
     * button used to close the dialog
     */
   private case class Result(buttonPressed: Option[ButtonType])
+
+  /**
+    * Create an instance of a [[GenericDialogFX]].
+    *
+    * @param title                dialogs title
+    * @param header               header
+    * @param parentWindow         optional parent window that will be blocked when this dialog is displayed.
+    * @param lastDirectoryHandler customize how directory selections are remembered between uses of the dialog. Used with `addDirectoryField` and `addFileField`.
+    * @return
+    */
+  def apply(title: String,
+            header: String,
+            parentWindow: Option[Window] = None,
+            lastDirectoryHandler: LastDirectoryHandler = new DefaultLastDirectoryHandler()): GenericDialogFX = {
+    new GenericDialogFX(title, Option(header), parentWindow, lastDirectoryHandler)
+  }
 }
 
 /**
