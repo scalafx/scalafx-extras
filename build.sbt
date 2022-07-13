@@ -91,7 +91,7 @@ lazy val scalaFXExtrasDemos = (project in file("scalafx-extras-demos")).settings
 // Resolvers
 // Add snapshots to root project to enable compilation with Scala SNAPSHOT compiler,
 // e.g., 2.11.0-SNAPSHOT
-resolvers += Resolver.sonatypeRepo("snapshots")
+resolvers ++= Resolver.sonatypeOssRepos("snapshots")
 
 // Common settings
 lazy val scalaFXExtrasSettings = Seq(
