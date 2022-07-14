@@ -10,11 +10,11 @@ import scala.xml.{Node => XmlNode, NodeSeq => XmlNodeSeq, _}
 // JAR_BUILT_BY      - Name to be added to Jar metadata field "Built-By" (defaults to System.getProperty("user.name")
 //
 
-val projectVersion = "0.5.0"
+val projectVersion = "0.5.0.2-SNAPSHOT"
 val versionTagDir  = if (projectVersion.endsWith("SNAPSHOT")) "master" else "v." + projectVersion
-val _scalaVersions = Seq("3.0.2", "2.13.7", "2.12.15")
+val _scalaVersions = Seq("3.0.2", "2.13.8", "2.12.16")
 val _scalaVersion  = _scalaVersions.head
-val _javaFXVersion = "17.0.1"
+val _javaFXVersion = "18.0.1"
 
 ThisBuild / version             := projectVersion
 ThisBuild / crossScalaVersions  := _scalaVersions
@@ -24,18 +24,9 @@ ThisBuild / organization        := "org.scalafx"
 publishArtifact     := false
 publish / skip      := true
 
-lazy val OSName = System.getProperty("os.name") match {
-  case n if n.startsWith("Linux")   => "linux"
-  case n if n.startsWith("Mac")     => "mac"
-  case n if n.startsWith("Windows") => "win"
-  case _                            => throw new Exception("Unknown platform!")
-}
-
-lazy val JavaFXModuleNames = Seq("base", "controls", "fxml", "graphics", "media", "swing", "web")
-lazy val JavaFXModuleLibsProvided: Seq[ModuleID] =
-  JavaFXModuleNames.map(m => "org.openjfx" % s"javafx-$m" % _javaFXVersion % "provided" classifier OSName)
 lazy val JavaFXModuleLibs: Seq[ModuleID] =
-  JavaFXModuleNames.map(m => "org.openjfx" % s"javafx-$m" % _javaFXVersion classifier OSName)
+  Seq("base", "controls", "fxml", "graphics", "media", "swing", "web")
+    .map(m => "org.openjfx" % s"javafx-$m" % _javaFXVersion)
 
 def isScala2(scalaVersion: String): Boolean = {
   CrossVersion.partialVersion(scalaVersion) match {
@@ -93,14 +84,14 @@ lazy val scalaFXExtrasDemos = (project in file("scalafx-extras-demos")).settings
   publishArtifact := false,
   libraryDependencies ++= Seq(
     "com.typesafe.scala-logging" %% "scala-logging"   % "3.9.4",
-    "ch.qos.logback"              % "logback-classic" % "1.2.9"
+    "ch.qos.logback"              % "logback-classic" % "1.2.11"
   )
 ).dependsOn(scalaFXExtras % "compile;test->test")
 
 // Resolvers
 // Add snapshots to root project to enable compilation with Scala SNAPSHOT compiler,
 // e.g., 2.11.0-SNAPSHOT
-resolvers += Resolver.sonatypeRepo("snapshots")
+resolvers ++= Resolver.sonatypeOssRepos("snapshots")
 
 // Common settings
 lazy val scalaFXExtrasSettings = Seq(
@@ -113,7 +104,8 @@ lazy val scalaFXExtrasSettings = Seq(
     "-deprecation",
     "-encoding",
     "utf8",
-    "-feature"
+    "-feature",
+    "-release", "8"
   ) ++
     (
       if (isScala2(scalaVersion.value))
@@ -161,15 +153,10 @@ lazy val scalaFXExtrasSettings = Seq(
     else
       Seq.empty[sbt.ModuleID]
   ),
-  javacOptions ++= Seq(
-       "-target", "1.8",
-       "-source", "1.8",
-    "-Xlint:deprecation"
-  ),
   libraryDependencies ++= Seq(
-    "org.scalafx"   %% "scalafx"   % "17.0.1-R26",
-    "org.scalatest" %% "scalatest" % "3.2.10" % "test"
-  ) ++ JavaFXModuleLibsProvided,
+    "org.scalafx"   %% "scalafx"   % "18.0.1-R27",
+    "org.scalatest" %% "scalatest" % "3.2.11" % "test"
+  ) ++ JavaFXModuleLibs,
   libraryDependencies ++= (
     if (isScala2(scalaVersion.value))
       Seq(
@@ -200,7 +187,7 @@ lazy val scalaFXExtrasSettings = Seq(
   run / fork               := true,
   Test / fork              := true,
   Test / parallelExecution := false,
-  resolvers += Resolver.sonatypeRepo("snapshots"),
+  resolvers ++= Resolver.sonatypeOssRepos("snapshots"),
   // print junit-style XML for CI
   Test / testOptions += {
     val t = (Test / target).value

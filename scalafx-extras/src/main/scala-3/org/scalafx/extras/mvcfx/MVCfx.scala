@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2021, ScalaFX Project
+ * Copyright (c) 2011-2022, ScalaFX Project
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -107,7 +107,7 @@ abstract class MVCfx[T <: ControllerFX](fxmlFilePath: String)(implicit tag: Clas
 
         override def failed(): Unit =
           val message = s"Error while initializing view for '$title'."
-          showException(title, message, exceptionProperty.get(), Option(stage))
+          ShowMessage.exception(title, message, exceptionProperty.get(), Option(stage))
     )
 
     stage

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2021, ScalaFX Project
+ * Copyright (c) 2011-2022, ScalaFX Project
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -27,18 +27,172 @@
 
 package org.scalafx.extras
 
+import scalafx.Includes.*
+import scalafx.scene.Node
 import scalafx.scene.control.Alert.AlertType
-import scalafx.scene.control.{Alert, ButtonType}
+import scalafx.scene.control.{Alert, ButtonType, Label, TextArea}
+import scalafx.scene.layout.{GridPane, Priority}
 import scalafx.stage.Window
 
+import java.io.{PrintWriter, StringWriter}
+
+object ShowMessage {
+
+  private def showMessage(parentWindow: Option[Window]): ShowMessage = {
+    val pw = parentWindow
+    new ShowMessage {
+      override def parentWindow: Option[Window] = pw
+    }
+  }
+
+  /**
+    * Show error dialog
+    *
+    * @param title        dialog title
+    * @param header       header text.
+    * @param content      main content text.
+    * @param parentWindow owner window that will be blacked by the dialog.
+    */
+  def error(title: String, header: String, content: String = "", parentWindow: Option[Window] = None): Unit =
+    showMessage(parentWindow).showError(title, header, content)
+
+  /**
+    * Show a modal dialog with an expandable details about an exception (stack trace).
+    *
+    * @param title     dialog title
+    * @param message   message shown in the dialog header.
+    * @param t         exception.
+    * @param ownerNode owner window that will be blacked by the dialog. Can be `null`.
+    */
+  def exception(title: String, message: String, t: Throwable, ownerNode: Node): Unit = {
+    // Find parent window for the node
+    val parentWindow =
+      Option(ownerNode)
+        .flatMap(n =>
+          Option(n.scene())
+            .map(s => jfxWindow2sfx(s.window()))
+        )
+    exception(title, message, t, parentWindow)
+  }
+
+  /**
+    * Show a modal dialog with an expandable details about an exception (stack trace).
+    *
+    * @param title        dialog title
+    * @param message      message shown in the dialog header.
+    * @param t            exception.
+    * @param parentWindow owner window that will be blacked by the dialog. Can be `null` to match JavaFX convention.
+    */
+  def exception(title: String, message: String, t: Throwable, parentWindow: Window): Unit =
+    exception(title, message, t, Option(parentWindow))
+
+  /**
+    * Show a modal dialog with an expandable details about an exception (stack trace).
+    *
+    * @param title        dialog title
+    * @param message      message shown in the dialog header.
+    * @param t            exception.
+    * @param parentWindow owner window that will be blacked by the dialog.
+    */
+  def exception(title: String, message: String, t: Throwable, parentWindow: Option[Window] = None): Unit = {
+    t.printStackTrace()
+
+    // Rename to avoid name clashes
+    val dialogTitle = title
+
+    // Create expandable Exception.
+    val exceptionText = {
+      val sw = new StringWriter()
+      val pw = new PrintWriter(sw)
+      t.printStackTrace(pw)
+      sw.toString
+    }
+    val label = new Label("The exception stack trace was:")
+    val textArea = new TextArea {
+      text = exceptionText
+      editable = false
+      wrapText = true
+      maxWidth = Double.MaxValue
+      maxHeight = Double.MaxValue
+      vgrow = Priority.Always
+      hgrow = Priority.Always
+    }
+    val expContent = new GridPane {
+      maxWidth = Double.MaxValue
+      add(label, 0, 0)
+      add(textArea, 0, 1)
+    }
+
+    onFXAndWait {
+      new Alert(AlertType.Error) {
+        initOwner(parentWindow.orNull)
+        this.title = dialogTitle
+        headerText = message
+        contentText = Option(t.getMessage).getOrElse("")
+        // Set expandable Exception into the dialog pane.
+        dialogPane().expandableContent = expContent
+      }.showAndWait()
+    }
+  }
+
+  /**
+    * Show information dialog
+    *
+    * @param title        dialog title
+    * @param header       header text.
+    * @param content      main content text.
+    * @param parentWindow owner window that will be blacked by the dialog.
+    */
+  def information(title: String, header: String, content: String = "", parentWindow: Option[Window] = None): Unit =
+    showMessage(parentWindow).showInformation(title, header, content)
+
+  /**
+    * Show warning dialog
+    *
+    * @param title        dialog title
+    * @param header       header text.
+    * @param content      main content text.
+    * @param parentWindow owner window that will be blacked by the dialog.
+    */
+  def warning(title: String, header: String, content: String, parentWindow: Option[Window] = None): Unit =
+    showMessage(parentWindow).showWarning(title, header, content)
+
+  /**
+    * Show a confirmation dialog with "OK" and "Cancel" buttons.
+    *
+    * @param title        dialog title.
+    * @param header       header text.
+    * @param content      content text.
+    * @param parentWindow owner window that will be blacked by the dialog.
+    * @return `true` when user selected 'OK' and `false` when user selected `Cancel` or dismissed the dialog.
+    */
+  def confirmation(title: String, header: String, content: String = "", parentWindow: Option[Window] = None): Boolean =
+    showMessage(parentWindow).showConfirmation(title, header, content)
+
+  /**
+    * Show a confirmation dialog with "OK", "No", and "Cancel" buttons.
+    *
+    * @param title        dialog title.
+    * @param header       header text.
+    * @param content      content text.
+    * @param parentWindow owner window that will be blacked by the dialog.
+    * @return `Some(true)` when user selected 'OK', `Some(false)` when user selected `No`,
+    *         and `None` user selected `Cancel` or dismissed the dialog.
+    */
+  def confirmationYesNoCancel(title: String, header: String, content: String = "",
+                              parentWindow: Option[Window] = None): Option[Boolean] =
+    showMessage(parentWindow).showConfirmationYesNoCancel(title, header, content)
+
+}
+
 /**
- * Mixin that adds ability to easily show message dialogs.
- * A messageLogger can be provided, so when the error or warning dialogs are shown, they are also logged.
- *
- * A ShowMessage mixin will typically be used with the [[org.scalafx.extras.mvcfx.ModelFX ModelFX]].
- *
- * @author Jarek Sacha
- */
+  * Mixin that adds ability to easily show message dialogs.
+  * A messageLogger can be provided, so when the error or warning dialogs are shown, they are also logged.
+  *
+  * A ShowMessage mixin will typically be used with the [[org.scalafx.extras.mvcfx.ModelFX ModelFX]].
+  *
+  * @author Jarek Sacha
+  */
 trait ShowMessage {
 
   /**
@@ -82,7 +236,7 @@ trait ShowMessage {
    */
   def showException(title: String, message: String, t: Throwable): Unit = {
     messageLogger.foreach(_.error(s"<$title> $message", t))
-    org.scalafx.extras.showException(title, message, t, parentWindow)
+    ShowMessage.exception(title, message, t, parentWindow)
   }
 
   /**

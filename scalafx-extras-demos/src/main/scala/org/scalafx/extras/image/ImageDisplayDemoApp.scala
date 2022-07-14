@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2021, ScalaFX Project
+ * Copyright (c) 2011-2022, ScalaFX Project
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -28,7 +28,7 @@
 package org.scalafx.extras.image
 
 import javafx.beans.binding as jfxbb
-import org.scalafx.extras.showException
+import org.scalafx.extras.ShowMessage
 import scalafx.Includes.*
 import scalafx.application.JFXApp3
 import scalafx.application.JFXApp3.PrimaryStage
@@ -104,21 +104,21 @@ object ImageDisplayDemoApp extends JFXApp3 {
             imageDisplay.image() = image
           } else {
             image.exception().printStackTrace()
-            showException(
+            ShowMessage.exception(
               title = "Open image...",
               message = "Failed to load image from file:\n" + file.getCanonicalPath,
               t = image.exception(),
-              ownerWindow = stage
+              parentWindow = stage
             )
           }
         } catch {
           case ex: IllegalArgumentException =>
             ex.printStackTrace()
-            showException(
+            ShowMessage.exception(
               title = "Open image...",
               message = "Failed to load image from file:\n" + file.getCanonicalPath,
               t = ex,
-              ownerWindow = stage
+              parentWindow = stage
             )
 
         }
