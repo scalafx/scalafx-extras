@@ -164,13 +164,7 @@ class GenericDialogFX(val title: String,
     _checkBoxes += checkBox
   }
 
-  /**
-    * Adds a choice list.
-    *
-    * @param label       the label
-    * @param items       items on the list
-    * @param defaultItem the initial item, must be equal to one of the `items`
-    */
+
   def addChoice(label: String, items: Array[String], defaultItem: String): Unit = {
 
     require(items.contains(defaultItem))
@@ -188,6 +182,17 @@ class GenericDialogFX(val title: String,
     _choiceBoxes += choiceBox
 
   }
+
+  /**
+    * Adds a choice list.
+    *
+    * @param label       the label
+    * @param items       items on the list
+    * @param defaultItem the initial item, must be equal to one of the `items`
+    */
+  def addChoice(label: String, items: Seq[String], defaultItem: String): Unit =
+    addChoice(label, items.toArray, defaultItem)
+
 
   /**
     * Adds a directory text field and "Browse" button, where the field width is determined by the length of
