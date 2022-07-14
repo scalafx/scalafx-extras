@@ -50,22 +50,6 @@ object GenericDialogFX {
     * button used to close the dialog
     */
   private case class Result(buttonPressed: Option[ButtonType])
-
-  /**
-    * Create an instance of a [[GenericDialogFX]].
-    *
-    * @param title                dialogs title
-    * @param header               header
-    * @param parentWindow         optional parent window that will be blocked when this dialog is displayed.
-    * @param lastDirectoryHandler customize how directory selections are remembered between uses of the dialog. Used with `addDirectoryField` and `addFileField`.
-    * @return
-    */
-  def apply(title: String,
-            header: String,
-            parentWindow: Option[Window] = None,
-            lastDirectoryHandler: LastDirectoryHandler = new DefaultLastDirectoryHandler()): GenericDialogFX = {
-    new GenericDialogFX(title, Option(header), parentWindow, lastDirectoryHandler)
-  }
 }
 
 /**
@@ -84,7 +68,7 @@ object GenericDialogFX {
   *     val dialog =
   *       new GenericDialogFX(
   *         title = "GenericDialogFX Demo",
-  *         header = Option("Fancy description can go here.")
+  *         "Fancy description can go here."
   *       ) {
   *         addCheckbox("Check me out!", defaultValue = false)
   *         addCheckbox("Check me too!", defaultValue = true)
@@ -102,14 +86,18 @@ object GenericDialogFX {
   * }}}
   *
   * @param title                dialogs title
-  * @param header               optional header
+  * @param header               dialog header
   * @param parentWindow         optional parent window that will be blocked when this dialog is displayed.
   * @param lastDirectoryHandler customize how directory selections are remembered between uses of the dialog. Used with `addDirectoryField` and `addFileField`.
   */
 class GenericDialogFX(val title: String,
-                      val header: Option[String] = None,
+                      val header: String = "",
                       val parentWindow: Option[Window] = None,
                       val lastDirectoryHandler: LastDirectoryHandler = new DefaultLastDirectoryHandler()) {
+  require(title != null, "Argument 'title' cannot be 'null'")
+  require(header != null, "Argument 'header' cannot be 'null'")
+  require(parentWindow != null, "Argument 'parentWindow' cannot be 'null'")
+  require(lastDirectoryHandler != null, "Argument 'lastDirectoryHandler' cannot be 'null'")
 
   import GenericDialogFX.*
 
@@ -434,7 +422,9 @@ class GenericDialogFX(val title: String,
       val dialog = new Dialog[Result]() {
         parentWindow.foreach(initOwner)
         this.title = GenericDialogFX.this.title
-        header.foreach(headerText = _)
+        if (header.nonEmpty) {
+          headerText = header
+        }
         resizable = true
       }
 

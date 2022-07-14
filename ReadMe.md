@@ -147,7 +147,7 @@ Here is en example:
 val dialog =
    new GenericDialogFX(
       title = "GenericDialogFX Demo",
-      header = Option("Fancy description can go here.")
+      header = "Fancy description can go here."
    ) {
       // Add fields
       addCheckbox("Check me out!", defaultValue = false)

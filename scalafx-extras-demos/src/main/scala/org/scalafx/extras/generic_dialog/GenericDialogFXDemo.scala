@@ -48,7 +48,7 @@ object GenericDialogFXDemo extends JFXApp3 {
     val dialog =
       new GenericDialogFX(
         title = "GenericDialogFX Demo",
-        header = Option("An attempt to emulate ImageJ's GenericDialog."),
+        header = "An attempt to emulate ImageJ's GenericDialog.",
         parentWindow = parentWindow
       ) {
         addCheckbox("Check me out!", defaultValue = false)
@@ -102,7 +102,7 @@ object GenericDialogFXDemo extends JFXApp3 {
 
     //    ShowMessage.information("GenericDialogFX Result", status, result, parentWindow)
 
-    new GenericDialogFX("GenericDialogFX Result", Option(status), parentWindow) {
+    new GenericDialogFX("GenericDialogFX Result", status, parentWindow) {
       addMessage(result, Font.font("Monospaced", Font.default.size))
     }.showDialog()
   }
