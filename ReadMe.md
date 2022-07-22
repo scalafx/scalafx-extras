@@ -10,23 +10,30 @@ Extras do not have direct corresponding concepts in JavaFX.
 
 **Contents**
 
-0. [Project Structure](#project-structure)
-0. [SBT](#sbt)
-0. [Features](#features)
-   1. [Helper Methods](#helper-methods)
-   1. [Simpler Display of Standard Dialogs](#simpler-display-of-standard-dialogs)
-   1. [Easy Custom Dialogs](#easy-custom-dialogs)
-   1. [BusyWorker](#busyworker)
-   1. [Simpler Use of FXML with MVCfx Pattern](#simpler-use-of-fxml-with-mvcfx-pattern)
-   1. [Image Display Component](#imagedisplay-component)
-0. [Demos](#demos)
-   1. [StopWatch Application](#stopwatch-application)
-   1. [ShowMessage Demo](#showmessage-demo)
-   1. [BusyWorker Demo](#busyworker-demo)
-   1. [ImageDisplay Demo](#imagedisplay-demo)
-0. [Status](#status)
-0. [Discussion and Support](#discussion-and-support)
-0. [License](#license)
+<!-- TOC -->
+
+* [Project Structure](#project-structure)
+* [SBT](#sbt)
+* [Features](#features)
+   * [Helper Methods](#helper-methods)
+   * [Simpler Display of Standard Dialogs](#simpler-display-of-standard-dialogs)
+   * [Easy Custom Dialogs](#easy-custom-dialogs)
+   * [Edit a Case Class object with AutoDialog](#edit-a-case-class-object-with-autodialog)
+   * [BusyWorker](#busyworker)
+      * [Example 1](#example-1)
+      * [Example 2](#example-2)
+   * [Simpler Use of FXML with MVCfx Pattern](#simpler-use-of-fxml-with-mvcfx-pattern)
+   * [ImageDisplay Component](#imagedisplay-component)
+* [Demos](#demos)
+   * [StopWatch Application](#stopwatch-application)
+   * [ShowMessage Demo](#showmessage-demo)
+   * [BusyWorker Demo](#busyworker-demo)
+   * [ImageDisplay Demo](#imagedisplay-demo)
+* [Status](#status)
+* [Discussion and Support](#discussion-and-support)
+* [License](#license)
+
+<!-- TOC -->
 
 Project Structure
 -----------------
@@ -173,6 +180,34 @@ if (dialog.wasOKed) {
 
 A more elaborate example is in the `GenericDialogFXDemo`.
 
+### Edit a Case Class object with AutoDialog
+
+`AutoDialog` can be used too quickly open auto generated dialog from case class. After closing, the dialog will return
+edited version of the input case class.
+
+Here is an example of usage:
+
+```scala
+import org.scalafx.extras.auto_dialog.AutoDialog
+
+case class FilterOptions(kernelSize: Int = 7,
+                         start: Double = 3.14,
+                         tag: String = "alpha",
+                         debugMode: Boolean = false)
+
+val filterOptions = FilterOptions()
+
+val result: Option[FilterOptions] =
+   new AutoDialog(filterOptions)
+           .showDialog(
+              "AutoDialog Demo",
+              "Fields are auto generated from `FilterOptions` object")
+
+println(s"Result: $result")
+```
+
+![GenericDialogFX Demo](notes/assets/AutoDialog.png)
+
 ### BusyWorker
 
 BusyWorker helps running a UI task on separate threads (other than the JavaFX Application thread). It will show busy
@@ -193,7 +228,7 @@ new BusyWorker("Simple Task", parentWindow).doTask { () =>
 }
 ```
 
-#### Examnple 2
+#### Example 2
 
 Here is a little more elaborated example. It updates a progress message and progress indicator.
 
