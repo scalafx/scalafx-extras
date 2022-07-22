@@ -14,7 +14,6 @@ val projectVersion = "0.6.0.1-SNAPSHOT"
 val versionTagDir  = if (projectVersion.endsWith("SNAPSHOT")) "master" else "v." + projectVersion
 val _scalaVersions = Seq("3.0.2", "2.13.8", "2.12.16")
 val _scalaVersion  = _scalaVersions.head
-val _javaFXVersion = "18.0.1"
 
 ThisBuild / version             := projectVersion
 ThisBuild / crossScalaVersions  := _scalaVersions
@@ -23,10 +22,6 @@ ThisBuild / organization        := "org.scalafx"
 
 publishArtifact     := false
 publish / skip      := true
-
-lazy val JavaFXModuleLibs: Seq[ModuleID] =
-  Seq("base", "controls", "fxml", "graphics", "media", "swing", "web")
-    .map(m => "org.openjfx" % s"javafx-$m" % _javaFXVersion)
 
 def isScala2(scalaVersion: String): Boolean = {
   CrossVersion.partialVersion(scalaVersion) match {
@@ -80,7 +75,6 @@ lazy val scalaFXExtrasDemos = (project in file("scalafx-extras-demos")).settings
     "-Xmx512M",
     "-Djavafx.verbose"
   ),
-  libraryDependencies ++= JavaFXModuleLibs,
   publishArtifact := false,
   libraryDependencies ++= Seq(
     "com.typesafe.scala-logging" %% "scala-logging"   % "3.9.4",
@@ -154,9 +148,9 @@ lazy val scalaFXExtrasSettings = Seq(
       Seq.empty[sbt.ModuleID]
   ),
   libraryDependencies ++= Seq(
-    "org.scalafx"   %% "scalafx"   % "18.0.1-R27",
+    "org.scalafx"   %% "scalafx"   % "18.0.2-R29",
     "org.scalatest" %% "scalatest" % "3.2.11" % "test"
-  ) ++ JavaFXModuleLibs,
+  ),
   libraryDependencies ++= (
     if (isScala2(scalaVersion.value))
       Seq(
