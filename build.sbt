@@ -10,11 +10,10 @@ import scala.xml.{Node => XmlNode, NodeSeq => XmlNodeSeq, _}
 // JAR_BUILT_BY      - Name to be added to Jar metadata field "Built-By" (defaults to System.getProperty("user.name")
 //
 
-val projectVersion = "0.6.0"
+val projectVersion = "0.6.0.1-SNAPSHOT"
 val versionTagDir  = if (projectVersion.endsWith("SNAPSHOT")) "master" else "v." + projectVersion
 val _scalaVersions = Seq("3.0.2", "2.13.8", "2.12.16")
 val _scalaVersion  = _scalaVersions.head
-val _javaFXVersion = "18.0.1"
 
 ThisBuild / version             := projectVersion
 ThisBuild / crossScalaVersions  := _scalaVersions
@@ -23,10 +22,6 @@ ThisBuild / organization        := "org.scalafx"
 
 publishArtifact     := false
 publish / skip      := true
-
-lazy val JavaFXModuleLibs: Seq[ModuleID] =
-  Seq("base", "controls", "fxml", "graphics", "media", "swing", "web")
-    .map(m => "org.openjfx" % s"javafx-$m" % _javaFXVersion)
 
 def isScala2(scalaVersion: String): Boolean = {
   CrossVersion.partialVersion(scalaVersion) match {
@@ -80,7 +75,6 @@ lazy val scalaFXExtrasDemos = (project in file("scalafx-extras-demos")).settings
     "-Xmx512M",
     "-Djavafx.verbose"
   ),
-  libraryDependencies ++= JavaFXModuleLibs,
   publishArtifact := false,
   libraryDependencies ++= Seq(
     "com.typesafe.scala-logging" %% "scala-logging"   % "3.9.4",
@@ -131,7 +125,7 @@ lazy val scalaFXExtrasSettings = Seq(
   Compile / doc / scalacOptions ++= (
     if(isScala2(scalaVersion.value))
       Seq(
-        s"-doc-external-doc:${scalaInstance.value.libraryJars.head}#http://www.scala-lang.org/api/${scalaVersion.value}/",
+        s"-doc-external-doc:${scalaInstance.value.libraryJars.head}#https://www.scala-lang.org/api/${scalaVersion.value}/",
         "-doc-source-url", "https://github.com/SscalaFX-Extras/scalafx-extras/blob/" + versionTagDir + "/scalafx/€{FILE_PATH}.scala"
       ) ++ (
         Option(System.getenv("GRAPHVIZ_DOT_PATH")) match {
@@ -154,9 +148,9 @@ lazy val scalaFXExtrasSettings = Seq(
       Seq.empty[sbt.ModuleID]
   ),
   libraryDependencies ++= Seq(
-    "org.scalafx"   %% "scalafx"   % "18.0.1-R27",
+    "org.scalafx"   %% "scalafx"   % "18.0.2-R29",
     "org.scalatest" %% "scalatest" % "3.2.11" % "test"
-  ) ++ JavaFXModuleLibs,
+  ),
   libraryDependencies ++= (
     if (isScala2(scalaVersion.value))
       Seq(
@@ -215,7 +209,7 @@ import xerial.sbt.Sonatype._
 // Metadata needed by Maven Central
 // See also http://maven.apache.org/pom.html#Developers
 lazy val mavenCentralSettings = Seq(
-  homepage               := Some(new URL("http://www.scalafx.org/")),
+  homepage               := Some(new URL("https://www.scalafx.org/")),
   startYear              := Some(2016),
   licenses               := Seq(("BSD", new URL("https://github.com/scalafx/scalafx-extras/blob/master/LICENSE.txt"))),
   sonatypeProfileName    := "org.scalafx",
