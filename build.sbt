@@ -125,7 +125,7 @@ lazy val scalaFXExtrasSettings = Seq(
   Compile / doc / scalacOptions ++= (
     if(isScala2(scalaVersion.value))
       Seq(
-        s"-doc-external-doc:${scalaInstance.value.libraryJars.head}#http://www.scala-lang.org/api/${scalaVersion.value}/",
+        s"-doc-external-doc:${scalaInstance.value.libraryJars.head}#https://www.scala-lang.org/api/${scalaVersion.value}/",
         "-doc-source-url", "https://github.com/SscalaFX-Extras/scalafx-extras/blob/" + versionTagDir + "/scalafx/€{FILE_PATH}.scala"
       ) ++ (
         Option(System.getenv("GRAPHVIZ_DOT_PATH")) match {
@@ -209,7 +209,7 @@ import xerial.sbt.Sonatype._
 // Metadata needed by Maven Central
 // See also http://maven.apache.org/pom.html#Developers
 lazy val mavenCentralSettings = Seq(
-  homepage               := Some(new URL("http://www.scalafx.org/")),
+  homepage               := Some(new URL("https://www.scalafx.org/")),
   startYear              := Some(2016),
   licenses               := Seq(("BSD", new URL("https://github.com/scalafx/scalafx-extras/blob/master/LICENSE.txt"))),
   sonatypeProfileName    := "org.scalafx",
