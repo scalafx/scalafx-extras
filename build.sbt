@@ -77,8 +77,8 @@ lazy val scalaFXExtrasDemos = (project in file("scalafx-extras-demos")).settings
   ),
   publishArtifact := false,
   libraryDependencies ++= Seq(
-    "com.typesafe.scala-logging" %% "scala-logging"   % "3.9.4",
-    "ch.qos.logback"              % "logback-classic" % "1.2.11"
+    "com.typesafe.scala-logging" %% "scala-logging"   % "3.9.5",
+    "ch.qos.logback"              % "logback-classic" % "1.4.3"
   )
 ).dependsOn(scalaFXExtras % "compile;test->test")
 
@@ -149,7 +149,7 @@ lazy val scalaFXExtrasSettings = Seq(
   ),
   libraryDependencies ++= Seq(
     "org.scalafx"   %% "scalafx"   % "18.0.2-R29",
-    "org.scalatest" %% "scalatest" % "3.2.11" % "test"
+    "org.scalatest" %% "scalatest" % "3.2.14" % "test"
   ),
   libraryDependencies ++= (
     if (isScala2(scalaVersion.value))
