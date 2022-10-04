@@ -28,7 +28,7 @@
 package org.scalafx.extras.auto_dialog
 
 
-import org.scalafx.extras.generic_dialog.GenericDialogFX
+import org.scalafx.extras.generic_pane.GenericDialogFX
 
 import scala.collection.mutable
 import scala.compiletime.{constValueTuple, summonAll}

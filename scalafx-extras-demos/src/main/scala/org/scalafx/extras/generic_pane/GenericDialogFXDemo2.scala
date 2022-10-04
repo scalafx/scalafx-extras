@@ -25,26 +25,45 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.scalafx.extras.generic_dialog
+package org.scalafx.extras.generic_pane
 
-import scalafx.scene.control.{TextField, TextFormatter}
-import scalafx.util.converter.FormatStringConverter
+import org.scalafx.extras.initFX
 
-import java.text.DecimalFormat
+object GenericDialogFXDemo2 {
 
-class NumberTextField(decimalPlaces: Int = 6) extends TextField {
-  private val format = {
-    val pattern =
-      if (decimalPlaces > 0) {
-        "0." + ("0" * decimalPlaces)
-      } else
-        "0"
+  def main(args: Array[String]): Unit = {
 
-    new DecimalFormat(pattern)
+    // Initialize JavaFX, so we can display the dialog
+    initFX()
+
+
+    // Create dialog
+    val dialog =
+      new GenericDialogFX(
+        title = "GenericDialogFX Demo",
+        header = "Fancy description can go here."
+      ) {
+        // Add fields
+        addCheckbox("Check me out!", defaultValue = false)
+        addCheckbox("Check me too!", defaultValue = true)
+      }
+
+    // Show dialog to the user
+    dialog.showDialog()
+
+    // Read input provided by the user
+    if (dialog.wasOKed) {
+      val select1 = dialog.nextBoolean()
+      val select2 = dialog.nextBoolean()
+
+      println(s"Selection 1: $select1")
+      println(s"Selection 2: $select2")
+    } else {
+      println("Dialog was cancelled.")
+    }
+
+
+    // Use of initFX() requires explicit application exit
+    System.exit(0)
   }
-  private val converter = new FormatStringConverter[Number](format)
-
-  val model = new TextFormatter(converter)
-
-  textFormatter = model
 }

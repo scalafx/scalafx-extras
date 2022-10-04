@@ -25,46 +25,29 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.scalafx.extras.generic_dialog
+package org.scalafx.extras.generic_pane
 
 import scalafx.application.Platform
 import scalafx.beans.property.StringProperty
 import scalafx.scene.Node
 import scalafx.scene.control.{Button, TextField}
 import scalafx.scene.layout.{HBox, Priority}
-import scalafx.stage.{DirectoryChooser, Window}
+import scalafx.stage.{FileChooser, Window}
 
 import java.io.File
-import scala.annotation.tailrec
-
-object DirectorySelectionField {
-
-  /**
-    * Find existing part of the input file path. If the input file exists return that file otherwise look for first
-    * existing parent
-    */
-  @tailrec
-  def existingOrParent(file: File): File =
-    if (file.exists()) file
-    else existingOrParent(file.getCanonicalFile.getParentFile)
-}
 
 /**
-  * Directory selection control, accessible through `view`. The text field shows the path, the button allow browsing to
-  * select the directory.
+  * File selection control, accessible through `view`. The text field shows the path, the button allow browsing to
+  * select the File.
   */
-class DirectorySelectionField(val title: String,
-                              val ownerWindow: Option[Window],
-                              val lastDirectoryHandler: LastDirectoryHandler = new DefaultLastDirectoryHandler()) {
-
-  import DirectorySelectionField.*
-
-  private lazy val chooser: DirectoryChooser = new DirectoryChooser() {
-    this.title = DirectorySelectionField.this.title
+class FileSelectionField(val title: String,
+                         val ownerWindow: Option[Window],
+                         val lastDirectoryHandler: LastDirectoryHandler = new DefaultLastDirectoryHandler()) {
+  private lazy val fileChooser: FileChooser = new FileChooser() {
+    this.title = FileSelectionField.this.title
   }
-
-  private var _view: Option[Node] = None
   val path: StringProperty = new StringProperty("")
+  private var _view: Option[Node] = None
 
   def view: Node = {
     if (_view.isEmpty) {
@@ -93,12 +76,18 @@ class DirectorySelectionField(val title: String,
       onAction = _ => {
         val initialPath = path.value
         if (initialPath.trim.nonEmpty) {
-          chooser.initialDirectory = existingOrParent(new File(initialPath))
+          val file = new File(initialPath)
+          fileChooser.initialFileName = file.getName
+          if (file.getParentFile.exists()) {
+            fileChooser.initialDirectory = file.getParentFile
+          }
         } else {
-          chooser.initialDirectory = lastDirectoryHandler.lastDirectory
+          val parent = lastDirectoryHandler.lastDirectory
+          if (parent.exists())
+            fileChooser.initialDirectory = parent
         }
 
-        val selection = chooser.showDialog(ownerWindow.orNull)
+        val selection = fileChooser.showOpenDialog(ownerWindow.orNull)
 
         Option(selection).foreach { s =>
           path.value = s.getCanonicalPath

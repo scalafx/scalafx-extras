@@ -25,7 +25,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.scalafx.extras.generic_dialog
+package org.scalafx.extras.generic_pane
 
 import org.scalafx.extras.onFXAndWait
 import scalafx.Includes.*

@@ -25,21 +25,26 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.scalafx.extras.generic_dialog
+package org.scalafx.extras.generic_pane
 
-import java.io.File
-import java.util.concurrent.atomic.AtomicReference
+import scalafx.scene.control.{TextField, TextFormatter}
+import scalafx.util.converter.FormatStringConverter
 
-/**
-  * Default implementation of the `LastDirectoryHandler`.
-  */
-class DefaultLastDirectoryHandler extends LastDirectoryHandler {
-  private val _lastDirectory: AtomicReference[File] = new AtomicReference[File](new File("."))
+import java.text.DecimalFormat
 
-  def lastDirectory: File = _lastDirectory.get()
+class NumberTextField(decimalPlaces: Int = 6) extends TextField {
+  private val format = {
+    val pattern =
+      if (decimalPlaces > 0) {
+        "0." + ("0" * decimalPlaces)
+      } else
+        "0"
 
-  def lastDirectory_=(newDir: File): Unit = {
-    require(newDir != null, "Argument `newDir` cannot be `null`.")
-    _lastDirectory.set(newDir)
+    new DecimalFormat(pattern)
   }
+  private val converter = new FormatStringConverter[Number](format)
+
+  val model = new TextFormatter(converter)
+
+  textFormatter = model
 }
