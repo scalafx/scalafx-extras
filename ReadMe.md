@@ -15,20 +15,20 @@ Extras do not have direct corresponding concepts in JavaFX.
 * [Project Structure](#project-structure)
 * [SBT](#sbt)
 * [Features](#features)
-   * [Helper Methods](#helper-methods)
-   * [Simpler Display of Standard Dialogs](#simpler-display-of-standard-dialogs)
-   * [Easy Custom Dialogs](#easy-custom-dialogs)
-   * [Edit a Case Class object with AutoDialog](#edit-a-case-class-object-with-autodialog)
-   * [BusyWorker](#busyworker)
-      * [Example 1](#example-1)
-      * [Example 2](#example-2)
-   * [Simpler Use of FXML with MVCfx Pattern](#simpler-use-of-fxml-with-mvcfx-pattern)
-   * [ImageDisplay Component](#imagedisplay-component)
+    * [Helper Methods](#helper-methods)
+    * [Simpler Display of Standard Dialogs](#simpler-display-of-standard-dialogs)
+    * [Easy Custom Dialogs](#easy-custom-dialogs)
+    * [Edit a Case Class object with AutoDialog](#edit-a-case-class-object-with-autodialog)
+    * [BusyWorker](#busyworker)
+        * [Example 1](#example-1)
+        * [Example 2](#example-2)
+    * [Simpler Use of FXML with MVCfx Pattern](#simpler-use-of-fxml-with-mvcfx-pattern)
+    * [ImageDisplay Component](#imagedisplay-component)
 * [Demos](#demos)
-   * [StopWatch Application](#stopwatch-application)
-   * [ShowMessage Demo](#showmessage-demo)
-   * [BusyWorker Demo](#busyworker-demo)
-   * [ImageDisplay Demo](#imagedisplay-demo)
+    * [StopWatch Application](#stopwatch-application)
+    * [ShowMessage Demo](#showmessage-demo)
+    * [BusyWorker Demo](#busyworker-demo)
+    * [ImageDisplay Demo](#imagedisplay-demo)
 * [Status](#status)
 * [Discussion and Support](#discussion-and-support)
 * [License](#license)
@@ -80,9 +80,9 @@ Example execution some code on a separate thread and waiting for the result of c
 
 ```scala
 val x = offFXAndWait {
-   val a = 3
-   val b = 7
-   a * b
+  val a = 3
+  val b = 7
+  a * b
 }
 
 ```
@@ -95,10 +95,10 @@ Standard dialogs can be quickly displayed using functions provided my `ShowMessa
 import org.scalafx.extras.ShowMessage
 
 ShowMessage.information(
-   "Dialog Title",
-   "This is the information 'header'",
-   "This is the information detailed 'content'.",
-   parentWindow
+  "Dialog Title",
+  "This is the information 'header'",
+  "This is the information detailed 'content'.",
+  parentWindow
 )
 ```
 
@@ -120,19 +120,79 @@ exceptions dialogs are displayed.
 ```scala
 class MyUIModel extends Model with ShowMessage {
 
-   def onSomeUserAction(): Unit = {
-      // ...
-      showInformation("Dialog Title",
-         "This is the information 'header'",
-         "This is the information detailed 'content'.")
-      // ...
-   }
+  def onSomeUserAction(): Unit = {
+    // ...
+    showInformation("Dialog Title",
+      "This is the information 'header'",
+      "This is the information detailed 'content'.")
+    // ...
+  }
 
-   // ...
+  // ...
 }
 ```  
 
 The demos module has a complete example of a simple application in `ShowMessageDemoApp`.
+
+### Easy Custom Panes
+
+`GenericPane` is a helper class that simplifies creation of panes. Particularly suited for creation of input controls.
+
+Typically there are 4 steps to using a `GenericPane`:
+
+1. Creation, where elements of the pane are appended vertically using `add*(...)` methods, for instance,
+   `addStringField(label, defaultText)`
+
+2. Adding the pane to the UI
+
+3. User interaction, after the pane is displayed
+
+4. Optionally, reading of input. Pane's editable content can be read using `next*()` methods. Content is read in the
+   order it is added. The whole pane content can be read multiple tiles. Remember to call `resetReadout()` to ensure
+   that reading is restarted from the beginning of the pane.
+
+A complete example in Scala 3. Shows a pane with 2 directory selection fields and a button "Print Fields". When the
+button is pressed values
+of the directory fields are printed
+
+[//]: # (@formatter:off)
+```scala
+import scalafx.application.JFXApp3
+import scalafx.application.JFXApp3.PrimaryStage
+import scalafx.geometry.Insets
+import scalafx.scene.Scene
+import scalafx.scene.control.Button
+import scalafx.scene.layout.VBox
+import scalafx.scene.paint.*
+import scalafx.scene.paint.Color.*
+import scalafx.scene.text.Text
+
+object GenericPaneDemo extends JFXApp3:
+
+  override def start(): Unit =
+
+    val gp = new GenericPane():
+      addDirectoryField("Input", "images")
+      addDirectoryField("Output", "output")
+
+    stage = new PrimaryStage:
+      title = "GenericPane Demo"
+      scene = new Scene:
+        content = new VBox:
+          padding = Insets(7, 7, 7, 7)
+          spacing = 7
+          children = Seq(
+            gp.pane,
+            new Button("Print Fields"):
+              onAction = (_) =>
+                gp.resetReadout()
+                println(s"Input dir : ${gp.nextString()}")
+                println(s"Output dir: ${gp.nextString()}")
+          )
+```
+[//]: # (@formatter:off)
+
+![GenericPane Demo](notes/assets/GenericPane.png)
 
 ### Easy Custom Dialogs
 
@@ -152,27 +212,27 @@ Here is en example:
 ```scala
 // Create a dialog
 val dialog =
-   new GenericDialogFX(
-      title = "GenericDialogFX Demo",
-      header = "Fancy description can go here."
-   ) {
-      // Add fields
-      addCheckbox("Check me out!", defaultValue = false)
-      addCheckbox("Check me too!", defaultValue = true)
-   }
+  new GenericDialogFX(
+    title = "GenericDialogFX Demo",
+    header = "Fancy description can go here."
+  ) {
+    // Add fields
+    addCheckbox("Check me out!", defaultValue = false)
+    addCheckbox("Check me too!", defaultValue = true)
+  }
 
 // Show dialog to the user
 dialog.showDialog()
 
 // Read input provided by the user
 if (dialog.wasOKed) {
-   val select1 = dialog.nextBoolean()
-   val select2 = dialog.nextBoolean()
+  val select1 = dialog.nextBoolean()
+  val select2 = dialog.nextBoolean()
 
-   println(s"Selection 1: $select1")
-   println(s"Selection 2: $select2")
+  println(s"Selection 1: $select1")
+  println(s"Selection 2: $select2")
 } else {
-   println("Dialog was cancelled.")
+  println("Dialog was cancelled.")
 }
 ```
 
@@ -198,10 +258,10 @@ case class FilterOptions(kernelSize: Int = 7,
 val filterOptions = FilterOptions()
 
 val result: Option[FilterOptions] =
-   new AutoDialog(filterOptions)
-           .showDialog(
-              "AutoDialog Demo",
-              "Fields are auto generated from `FilterOptions` object")
+  new AutoDialog(filterOptions)
+    .showDialog(
+      "AutoDialog Demo",
+      "Fields are auto generated from `FilterOptions` object")
 
 println(s"Result: $result")
 ```
