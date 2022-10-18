@@ -31,7 +31,7 @@ import scalafx.Includes.*
 import scalafx.scene.Node
 import scalafx.scene.control.Alert.AlertType
 import scalafx.scene.control.{Alert, ButtonType, Label, TextArea}
-import scalafx.scene.layout.{GridPane, Priority}
+import scalafx.scene.layout.{GridPane, Priority, Region}
 import scalafx.stage.Window
 
 import java.io.{PrintWriter, StringWriter}
@@ -246,10 +246,13 @@ trait ShowMessage {
    * @param header  header text.
    * @param content main content text.
    */
-  def showInformation(title: String, header: String, content: String): Unit = {
+  def showInformation(title: String, header: String, content: String,
+                      resizable:Boolean=false): Unit = {
     //    messageLogger.info(s"<$title> $header $content")
     // Rename to avoid name clashes
     val dialogTitle = title
+
+    val _resizable = resizable
 
     onFXAndWait {
       new Alert(AlertType.Information) {
@@ -257,8 +260,10 @@ trait ShowMessage {
         this.title = dialogTitle
         headerText = header
         contentText = content
+        this.resizable = _resizable
+        dialogPane().minHeight(Region.USE_PREF_SIZE)
       }.showAndWait()
-    }
+   }
   }
 
   /**
