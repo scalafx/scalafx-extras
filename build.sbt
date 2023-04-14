@@ -12,7 +12,7 @@ import scala.xml.{Node => XmlNode, NodeSeq => XmlNodeSeq, _}
 
 val projectVersion = "0.7.0.1-SNAPSHOT"
 val versionTagDir  = if (projectVersion.endsWith("SNAPSHOT")) "master" else "v." + projectVersion
-val _scalaVersions = Seq("3.2.0", "2.13.10", "2.12.17")
+val _scalaVersions = Seq("3.2.2", "2.13.10", "2.12.17")
 val _scalaVersion  = _scalaVersions.head
 
 ThisBuild / version             := projectVersion
@@ -78,7 +78,7 @@ lazy val scalaFXExtrasDemos = (project in file("scalafx-extras-demos")).settings
   publishArtifact := false,
   libraryDependencies ++= Seq(
     "com.typesafe.scala-logging" %% "scala-logging"   % "3.9.5",
-    "ch.qos.logback"              % "logback-classic" % "1.4.4"
+    "ch.qos.logback"              % "logback-classic" % "1.4.6" % Runtime
   )
 ).dependsOn(scalaFXExtras % "compile;test->test")
 
@@ -148,13 +148,13 @@ lazy val scalaFXExtrasSettings = Seq(
       Seq.empty[sbt.ModuleID]
   ),
   libraryDependencies ++= Seq(
-    "org.scalafx"   %% "scalafx"   % "19.0.0-R30",
-    "org.scalatest" %% "scalatest" % "3.2.14" % "test"
+    "org.scalafx"   %% "scalafx"   % "20.0.0-R31",
+    "org.scalatest" %% "scalatest" % "3.2.15" % "test"
   ),
   libraryDependencies ++= (
     if (isScala2(scalaVersion.value))
       Seq(
-        "com.beachape"  %% "enumeratum"          % "1.7.0",
+        "com.beachape"  %% "enumeratum"          % "1.7.2",
         "org.scala-lang" % "scala-reflect"       % scalaVersion.value,
         "org.scalafx"   %% "scalafxml-core-sfx8" % "0.5"
       )
@@ -204,7 +204,7 @@ lazy val manifestSetting = packageOptions += {
   )
 }
 
-import xerial.sbt.Sonatype._
+import xerial.sbt.Sonatype.*
 
 // Metadata needed by Maven Central
 // See also http://maven.apache.org/pom.html#Developers
