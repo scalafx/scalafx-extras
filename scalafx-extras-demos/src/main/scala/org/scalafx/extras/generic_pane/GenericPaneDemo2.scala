@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2022, ScalaFX Project
+ * Copyright (c) 2011-2023, ScalaFX Project
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -39,7 +39,6 @@ import scalafx.scene.text.Text
 
 object GenericPaneDemo2 extends JFXApp3 {
 
-
   override def start(): Unit = {
 
     val gp = new GenericPane()
@@ -47,7 +46,7 @@ object GenericPaneDemo2 extends JFXApp3 {
     gp.addDirectoryField("Output", "output")
 
     stage = new PrimaryStage {
-      title = "ScalaFX Hello World!"
+      title = "GenericPane Demo"
       scene = new Scene {
         content = new VBox {
           padding = Insets(7, 7, 7, 7)
@@ -61,7 +60,7 @@ object GenericPaneDemo2 extends JFXApp3 {
                 println(gp.nextString())
               }
             }
-            )
+          )
         }
       }
     }
