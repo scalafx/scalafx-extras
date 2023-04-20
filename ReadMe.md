@@ -2,8 +2,8 @@ ScalaFX Extras
 ==============
 
 [![Scala CI](https://github.com/scalafx/scalafx-extras/actions/workflows/scala.yml/badge.svg)](https://github.com/scalafx/scalafx-extras/actions/workflows/scala.yml)
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.scalafx/scalafx-extras_2.13/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.scalafx/scalafx-extras_2.13)
-[![Scaladoc](https://javadoc.io/badge2/org.scalafx/scalafx-extras_2.13/scaladoc.svg)](https://javadoc.io/doc/org.scalafx/scalafx-extras_2.13)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.scalafx/scalafx-extras_3/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.scalafx/scalafx-extras_3)
+[![Scaladoc](https://javadoc.io/badge2/org.scalafx/scalafx-extras_3/scaladoc.svg)](https://javadoc.io/doc/org.scalafx/scalafx-extras_3)
 
 ScalaFX Extras are additions to ScalaFX that simplify creation of User interfaces. In contrast to ScalaFX core, the
 Extras do not have direct corresponding concepts in JavaFX.
@@ -11,28 +11,27 @@ Extras do not have direct corresponding concepts in JavaFX.
 **Contents**
 
 <!-- TOC -->
-
-* [Project Structure](#project-structure)
-* [SBT](#sbt)
-* [Features](#features)
+  * [Project Structure](#project-structure)
+  * [SBT](#sbt)
+  * [Features](#features)
     * [Helper Methods](#helper-methods)
     * [Simpler Display of Standard Dialogs](#simpler-display-of-standard-dialogs)
+    * [Easy Custom Panes](#easy-custom-panes)
     * [Easy Custom Dialogs](#easy-custom-dialogs)
     * [Edit a Case Class object with AutoDialog](#edit-a-case-class-object-with-autodialog)
     * [BusyWorker](#busyworker)
-        * [Example 1](#example-1)
-        * [Example 2](#example-2)
+      * [Example 1](#example-1)
+      * [Example 2](#example-2)
     * [Simpler Use of FXML with MVCfx Pattern](#simpler-use-of-fxml-with-mvcfx-pattern)
     * [ImageDisplay Component](#imagedisplay-component)
-* [Demos](#demos)
+  * [Demos](#demos)
     * [StopWatch Application](#stopwatch-application)
     * [ShowMessage Demo](#showmessage-demo)
     * [BusyWorker Demo](#busyworker-demo)
     * [ImageDisplay Demo](#imagedisplay-demo)
-* [Status](#status)
-* [Discussion and Support](#discussion-and-support)
-* [License](#license)
-
+  * [Status](#status)
+  * [Discussion and Support](#discussion-and-support)
+  * [License](#license)
 <!-- TOC -->
 
 Project Structure
