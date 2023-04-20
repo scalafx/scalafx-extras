@@ -78,7 +78,7 @@ lazy val scalaFXExtrasDemos = (project in file("scalafx-extras-demos")).settings
   publishArtifact := false,
   libraryDependencies ++= Seq(
     "com.typesafe.scala-logging" %% "scala-logging"   % "3.9.5",
-    "ch.qos.logback"              % "logback-classic" % "1.4.6" % Runtime
+    "ch.qos.logback"              % "logback-classic" % "1.4.7" % Runtime
   )
 ).dependsOn(scalaFXExtras % "compile;test->test")
 
