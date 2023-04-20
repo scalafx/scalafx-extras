@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2022, ScalaFX Project
+ * Copyright (c) 2011-2023, ScalaFX Project
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -37,16 +37,24 @@ import scalafx.stage.{FileChooser, Window}
 import java.io.File
 
 /**
-  * File selection control, accessible through `view`. The text field shows the path, the button allow browsing to
-  * select the File.
-  */
-class FileSelectionField(val title: String,
-                         val ownerWindow: Option[Window],
-                         val lastDirectoryHandler: LastDirectoryHandler = new DefaultLastDirectoryHandler()) {
+ * File selection control, accessible through `view`. The text field shows the path, the button allow browsing to
+ * select the File.
+ *
+ * @param title                dialogs title
+ * @param ownerWindow          the owner window of the displayed dialog
+ * @param lastDirectoryHandler customize how directory selections are remembered between uses of the dialog.
+ * @param columns              width of the text field
+ */
+class FileSelectionField(
+  val title: String,
+  val ownerWindow: Option[Window],
+  val lastDirectoryHandler: LastDirectoryHandler = new DefaultLastDirectoryHandler(),
+  val columns: Int = 12
+) {
   private lazy val fileChooser: FileChooser = new FileChooser() {
     this.title = FileSelectionField.this.title
   }
-  val path: StringProperty = new StringProperty("")
+  val path: StringProperty        = new StringProperty("")
   private var _view: Option[Node] = None
 
   def view: Node = {
@@ -62,6 +70,7 @@ class FileSelectionField(val title: String,
       hgrow = Priority.Always
       maxWidth = Double.MaxValue
       text <==> path
+      prefColumnCount = columns
     }
 
     // Make sure that end of the file name is visible

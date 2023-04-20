@@ -173,11 +173,12 @@ trait GenericPaneBase {
    *
    * @param label       the label
    * @param defaultPath initial path
+   * @param columns     width of the text field
    */
-  def addFileField(label: String, defaultPath: String = ""): Unit = {
+  def addFileField(label: String, defaultPath: String = "", columns: Int = 12): Unit = {
     val label2 = label.replace('_', ' ')
 
-    val fileSelectionField = new FileSelectionField(label2, parentWindow, lastDirectoryHandler)
+    val fileSelectionField = new FileSelectionField(label2, parentWindow, lastDirectoryHandler, columns)
     fileSelectionField.path.value = defaultPath
 
     _grid.add(new Label(label2), 0, _rowIndex)
