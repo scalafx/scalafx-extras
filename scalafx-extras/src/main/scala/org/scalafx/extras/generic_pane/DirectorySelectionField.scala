@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2022, ScalaFX Project
+ * Copyright (c) 2011-2023, ScalaFX Project
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -40,9 +40,9 @@ import scala.annotation.tailrec
 object DirectorySelectionField {
 
   /**
-    * Find existing part of the input file path. If the input file exists return that file otherwise look for first
-    * existing parent
-    */
+   * Find existing part of the input file path. If the input file exists return that file otherwise look for first
+   * existing parent
+   */
   @tailrec
   def existingOrParent(file: File): File =
     if (file.exists()) file
@@ -50,12 +50,20 @@ object DirectorySelectionField {
 }
 
 /**
-  * Directory selection control, accessible through `view`. The text field shows the path, the button allow browsing to
-  * select the directory.
-  */
-class DirectorySelectionField(val title: String,
-                              val ownerWindow: Option[Window],
-                              val lastDirectoryHandler: LastDirectoryHandler = new DefaultLastDirectoryHandler()) {
+ * Directory selection control, accessible through `view`. The text field shows the path, the button opens a dialog to
+ * select the directory.
+ *
+ * @param title                dialogs title
+ * @param ownerWindow          the owner window of the displayed dialog
+ * @param lastDirectoryHandler customize how directory selections are remembered between uses of the dialog.
+ * @param columns              width of the text field
+ */
+class DirectorySelectionField(
+  val title: String,
+  val ownerWindow: Option[Window],
+  val lastDirectoryHandler: LastDirectoryHandler = new DefaultLastDirectoryHandler(),
+  val columns: Int = 12
+) {
 
   import DirectorySelectionField.*
 
@@ -64,7 +72,7 @@ class DirectorySelectionField(val title: String,
   }
 
   private var _view: Option[Node] = None
-  val path: StringProperty = new StringProperty("")
+  val path: StringProperty        = new StringProperty("")
 
   def view: Node = {
     if (_view.isEmpty) {
@@ -79,6 +87,7 @@ class DirectorySelectionField(val title: String,
       hgrow = Priority.Always
       maxWidth = Double.MaxValue
       text <==> path
+      prefColumnCount = columns
     }
 
     // Make sure that end of the file name is visible

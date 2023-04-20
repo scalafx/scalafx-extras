@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2022, ScalaFX Project
+ * Copyright (c) 2011-2023, ScalaFX Project
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -41,20 +41,18 @@ import scalafx.stage.Window
 import scala.collection.mutable.ListBuffer
 
 /**
-  * 
-  * @param lastDirectoryHandler customize how directory selections are remembered between uses of the dialog. Used with `addDirectoryField` and `addFileField`.
-  */
+ * @param lastDirectoryHandler customize how directory selections are remembered between uses of the dialog. Used with `addDirectoryField` and `addFileField`.
+ */
 trait GenericPaneBase {
   require(lastDirectoryHandler != null, "Argument 'lastDirectoryHandler' cannot be 'null'")
-  
-  private val _labeledControls = ListBuffer.empty[(String, Node)]
-  private val _checkBoxes = ListBuffer.empty[CheckBox]
-  private val _choiceBoxes = ListBuffer.empty[ChoiceBox[String]]
+
+  private val _labeledControls  = ListBuffer.empty[(String, Node)]
+  private val _checkBoxes       = ListBuffer.empty[CheckBox]
+  private val _choiceBoxes      = ListBuffer.empty[ChoiceBox[String]]
   private val _numberTextFields = ListBuffer.empty[NumberTextField]
   private val _stringProperties = ListBuffer.empty[StringProperty]
 
   def lastDirectoryHandler: LastDirectoryHandler
-
 
   private val _grid: GridPane = new GridPane() {
     hgap = 5
@@ -70,15 +68,14 @@ trait GenericPaneBase {
         hgrow = Priority.Always
       }
     )
-    columnConstraints.addAll(constrains.map(_.delegate) *)
+    columnConstraints.addAll(constrains.map(_.delegate)*)
   }
 
-  private var _rowIndex = 0
-  private var _checkBoxNextIndex = 0
-  private var _choiceBoxNextIndex = 0
+  private var _rowIndex                 = 0
+  private var _checkBoxNextIndex        = 0
+  private var _choiceBoxNextIndex       = 0
   private var _numberTextFieldNextIndex = 0
-  private var _stringPropertyNextIndex = 0
-
+  private var _stringPropertyNextIndex  = 0
 
   protected def parentWindow: Option[Window] =
     Option(_grid).flatMap(n => Option(n.scene()).map(s => jfxWindow2sfx(s.window())))
@@ -88,11 +85,11 @@ trait GenericPaneBase {
   }
 
   /**
-    * Adds a checkbox.
-    *
-    * @param label        the label
-    * @param defaultValue the initial state
-    */
+   * Adds a checkbox.
+   *
+   * @param label        the label
+   * @param defaultValue the initial state
+   */
   def addCheckbox(label: String, defaultValue: Boolean): Unit = {
     val label2 = label.replace('_', ' ')
 
@@ -106,7 +103,6 @@ trait GenericPaneBase {
     _labeledControls.append((label, checkBox))
     _checkBoxes += checkBox
   }
-
 
   def addChoice(label: String, items: Array[String], defaultItem: String): Unit = {
 
@@ -127,34 +123,40 @@ trait GenericPaneBase {
   }
 
   /**
-    * Adds a choice list.
-    *
-    * @param label       the label
-    * @param items       items on the list
-    * @param defaultItem the initial item, must be equal to one of the `items`
-    */
+   * Adds a choice list.
+   *
+   * @param label       the label
+   * @param items       items on the list
+   * @param defaultItem the initial item, must be equal to one of the `items`
+   */
   def addChoice(label: String, items: Seq[String], defaultItem: String): Unit =
     addChoice(label, items.toArray, defaultItem)
 
-
   /**
-    * Adds a directory text field and "Browse" button, where the field width is determined by the length of
-    * 'defaultPath', with a minimum of 25 columns. Use nextString to retrieve the directory path.
-    *
-    * @param label       the label
-    * @param defaultPath initial path
-    */
+   * Adds a directory text field and "Browse" button, where the field width is determined by the length of
+   * 'defaultPath', with a minimum of 25 columns. Use nextString to retrieve the directory path.
+   *
+   * @param label       the label
+   * @param defaultPath initial path
+   */
   def addDirectoryField(label: String, defaultPath: String): Unit = {
     val columns =
-      if (defaultPath != null) Math.max(defaultPath.length, 25)
-      else 25
+      if (defaultPath != null) Math.max(defaultPath.length, 12) else 12
     addDirectoryField(label, defaultPath, columns)
   }
 
+  /**
+   * Adds a directory text field and "Browse" button, where the field width is determined by the length of
+   * 'defaultPath', with a minimum of 25 columns. Use nextString to retrieve the directory path.
+   *
+   * @param label       the label
+   * @param defaultPath initial path
+   * @param columns     width of the text field
+   */
   def addDirectoryField(label: String, defaultPath: String, columns: Int): Unit = {
     val label2 = label.replace('_', ' ')
 
-    val directorySelectionField = new DirectorySelectionField(label2, parentWindow, lastDirectoryHandler)
+    val directorySelectionField = new DirectorySelectionField(label2, parentWindow, lastDirectoryHandler, columns)
     directorySelectionField.path.value = defaultPath
 
     _grid.add(new Label(label2), 0, _rowIndex)
@@ -166,12 +168,12 @@ trait GenericPaneBase {
   }
 
   /**
-    * Adds a file text field and "Browse" button, where the field width is determined by the length of
-    * 'defaultPath', with a minimum of 25 columns. Use nextString to retrieve the file path.
-    *
-    * @param label       the label
-    * @param defaultPath initial path
-    */
+   * Adds a file text field and "Browse" button, where the field width is determined by the length of
+   * 'defaultPath', with a minimum of 25 columns. Use nextString to retrieve the file path.
+   *
+   * @param label       the label
+   * @param defaultPath initial path
+   */
   def addFileField(label: String, defaultPath: String = ""): Unit = {
     val label2 = label.replace('_', ' ')
 
@@ -187,25 +189,25 @@ trait GenericPaneBase {
   }
 
   /**
-    * Adds a message consisting of one or more lines of text.
-    *
-    * That message cannot be edited, cannot be edited with a `next*()`
-    *
-    * @param message message
-    * @param font    font used to render the message
-    */
+   * Adds a message consisting of one or more lines of text.
+   *
+   * That message cannot be edited, cannot be edited with a `next*()`
+   *
+   * @param message message
+   * @param font    font used to render the message
+   */
   def addMessage(message: String, font: Font): Unit = {
     addMessage(message, Option(font))
   }
 
   /**
-    * Adds a message consisting of one or more lines of text.
-    *
-    * That message cannot be edited, cannot be edited with a `next*()`
-    *
-    * @param message message
-    * @param font    Optional font used to render the message
-    */
+   * Adds a message consisting of one or more lines of text.
+   *
+   * That message cannot be edited, cannot be edited with a `next*()`
+   *
+   * @param message message
+   * @param font    Optional font used to render the message
+   */
 
   def addMessage(message: String, font: Option[Font] = None): Unit = {
     val label = Label(message)
@@ -221,11 +223,12 @@ trait GenericPaneBase {
     _rowIndex += 1
   }
 
-  /** Add a custom node
-    *
-    * @param label the label
-    * @param node  custom node. It is not included in `next*()` readouts, needs to be handled by the creator
-    */
+  /**
+   * Add a custom node
+   *
+   * @param label the label
+   * @param node  custom node. It is not included in `next*()` readouts, needs to be handled by the creator
+   */
   def addNode(label: String, node: Node): Unit = {
     val label2 = label.replace('_', ' ')
 
@@ -235,31 +238,33 @@ trait GenericPaneBase {
   }
 
   /**
-    * Add a numeric field.
-    *
-    * @param label        the label
-    * @param defaultValue the initial value
-    */
+   * Add a numeric field.
+   *
+   * @param label        the label
+   * @param defaultValue the initial value
+   */
   def addNumericField(label: String, defaultValue: Double): Unit = {
     val decimalPlaces = if (defaultValue.toInt == defaultValue) 0 else 3
-    val columnWidth = if (decimalPlaces == 3) 8 else 6
+    val columnWidth   = if (decimalPlaces == 3) 8 else 6
     addNumericField(label, defaultValue, decimalPlaces, columnWidth, "")
   }
 
   /**
-    * Add a numeric field.
-    *
-    * @param label         the label
-    * @param defaultValue  the initial value
-    * @param decimalPlaces number of decimal places to display
-    * @param columnWidth   number of columns used to display the number
-    * @param units         text displayed after the number
-    */
-  def addNumericField(label: String,
-                      defaultValue: Double,
-                      decimalPlaces: Int,
-                      columnWidth: Int,
-                      units: String): Unit = {
+   * Add a numeric field.
+   *
+   * @param label         the label
+   * @param defaultValue  the initial value
+   * @param decimalPlaces number of decimal places to display
+   * @param columnWidth   number of columns used to display the number
+   * @param units         text displayed after the number
+   */
+  def addNumericField(
+    label: String,
+    defaultValue: Double,
+    decimalPlaces: Int,
+    columnWidth: Int,
+    units: String
+  ): Unit = {
     require(columnWidth > 0)
 
     val label2 = label.replace('_', ' ')
@@ -277,24 +282,23 @@ trait GenericPaneBase {
     _numberTextFields += textField
   }
 
-
   /**
-    * Adds an 8 column text field.
-    *
-    * @param label       the label
-    * @param defaultText the text initially displayed
-    */
+   * Adds an 8 column text field.
+   *
+   * @param label       the label
+   * @param defaultText the text initially displayed
+   */
   def addStringField(label: String, defaultText: String): Unit = {
     addStringField(label, defaultText, 8)
   }
 
   /**
-    * Adds a text field.
-    *
-    * @param label       the label
-    * @param defaultText text initially displayed
-    * @param columns     width of the text field
-    */
+   * Adds a text field.
+   *
+   * @param label       the label
+   * @param defaultText text initially displayed
+   * @param columns     width of the text field
+   */
   def addStringField(label: String, defaultText: String, columns: Int): Unit = {
     val label2 = label.replace('_', ' ')
     val textField = new TextField() {
@@ -310,10 +314,9 @@ trait GenericPaneBase {
     _stringProperties += textField.text
   }
 
-
   /**
-    * Returns the state of the next checkbox
-    */
+   * Returns the state of the next checkbox
+   */
   def nextBoolean(): Boolean = {
     require(_checkBoxNextIndex < _checkBoxes.size)
 
@@ -334,8 +337,8 @@ trait GenericPaneBase {
   }
 
   /**
-    * Returns the value of the next number
-    */
+   * Returns the value of the next number
+   */
   def nextNumber(): Double = {
     require(_numberTextFieldNextIndex < _numberTextFields.size)
 
@@ -346,8 +349,8 @@ trait GenericPaneBase {
   }
 
   /**
-    * Returns the value of the next string
-    */
+   * Returns the value of the next string
+   */
   def nextString(): String = {
     require(_stringPropertyNextIndex < _stringProperties.size)
 
@@ -358,7 +361,7 @@ trait GenericPaneBase {
   }
 
   protected def pane: Node = _grid
-  
+
   protected def requestFocusOnFirstLabeled(): Unit = {
     _labeledControls.headOption.foreach(l => Platform.runLater(l._2.requestFocus()))
   }
