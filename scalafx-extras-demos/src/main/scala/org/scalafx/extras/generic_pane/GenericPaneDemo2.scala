@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2022, ScalaFX Project
+ * Copyright (c) 2011-2023, ScalaFX Project
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,45 +25,44 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.scalafx.extras.generic_dialog
+package org.scalafx.extras.generic_pane
 
-import org.scalafx.extras.initFX
+import scalafx.application.JFXApp3
+import scalafx.application.JFXApp3.PrimaryStage
+import scalafx.geometry.Insets
+import scalafx.scene.Scene
+import scalafx.scene.control.Button
+import scalafx.scene.layout.VBox
+import scalafx.scene.paint.*
+import scalafx.scene.paint.Color.*
+import scalafx.scene.text.Text
 
-object GenericDialogFXDemo2 {
+object GenericPaneDemo2 extends JFXApp3 {
 
-  def main(args: Array[String]): Unit = {
+  override def start(): Unit = {
 
-    // Initialize JavaFX, so we can display the dialog
-    initFX()
+    val gp = new GenericPane()
+    gp.addDirectoryField("Input raw images", "images")
+    gp.addDirectoryField("Output", "output")
 
-
-    // Create dialog
-    val dialog =
-      new GenericDialogFX(
-        title = "GenericDialogFX Demo",
-        header = "Fancy description can go here."
-      ) {
-        // Add fields
-        addCheckbox("Check me out!", defaultValue = false)
-        addCheckbox("Check me too!", defaultValue = true)
+    stage = new PrimaryStage {
+      title = "GenericPane Demo"
+      scene = new Scene {
+        content = new VBox {
+          padding = Insets(7, 7, 7, 7)
+          spacing = 7
+          children = Seq(
+            gp.pane,
+            new Button("Print Fields") {
+              onAction = (_) => {
+                gp.resetReadout()
+                println(gp.nextString())
+                println(gp.nextString())
+              }
+            }
+          )
+        }
       }
-
-    // Show dialog to the user
-    dialog.showDialog()
-
-    // Read input provided by the user
-    if (dialog.wasOKed) {
-      val select1 = dialog.nextBoolean()
-      val select2 = dialog.nextBoolean()
-
-      println(s"Selection 1: $select1")
-      println(s"Selection 2: $select2")
-    } else {
-      println("Dialog was cancelled.")
     }
-
-
-    // Use of initFX() requires explicit application exit
-    System.exit(0)
   }
 }

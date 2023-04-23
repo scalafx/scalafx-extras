@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2022, ScalaFX Project
+ * Copyright (c) 2011-2023, ScalaFX Project
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -28,48 +28,46 @@
 package org.scalafx.extras.auto_dialog
 
 import org.scalafx.extras.auto_dialog.{DialogDecoder, DialogEncoder}
-import org.scalafx.extras.generic_dialog.GenericDialogFX
+import org.scalafx.extras.generic_pane.GenericDialogFX
 import scalafx.stage.Window
 
-
-/** Automatically created a dialog from a case class.
-  * Names of the members of the input `data` will be used as labels for fields corresponding to their values.
-  * Initially case with members of `Boolean`, `Int`, `Double`, and `String` are supported.
-  *
-  * Use methods [[#showDialog]] to display the dialog and retrieve edited content.
-  *
-  * {{{
-  *   case class FilterOptions(kernelSize: Int = 7,
-  *                            start: Double = 3.14,
-  *                            tag: String = "alpha",
-  *                            debugMode: Boolean = false)
-  *
-  *   val result: Option[FilterOptions] =
-  *     new AutoDialog(FilterOptions())
-  *       .showDialog(
-  *         "Filter Options",
-  *         "Fields below were auto generated from `FilterOptions` object")
-  *
-  *   println(s"Result: result")
-  * }}}
-  *
-  * @param data data that will define the dialog and its initial values
-  */
-class AutoDialog[A >: Null : DialogEncoder : DialogDecoder](data: A):
+/**
+ * Automatically created a dialog from a case class.
+ * Names of the members of the input `data` will be used as labels for fields corresponding to their values.
+ * Initially case with members of `Boolean`, `Int`, `Double`, and `String` are supported.
+ *
+ * Use methods [[#showDialog]] to display the dialog and retrieve edited content.
+ *
+ * {{{
+ *   case class FilterOptions(kernelSize: Int = 7,
+ *                            start: Double = 3.14,
+ *                            tag: String = "alpha",
+ *                            debugMode: Boolean = false)
+ *
+ *   val result: Option[FilterOptions] =
+ *     new AutoDialog(FilterOptions())
+ *       .showDialog(
+ *         "Filter Options",
+ *         "Fields below were auto generated from `FilterOptions` object")
+ *
+ *   println(s"Result: result")
+ * }}}
+ *
+ * @param data data that will define the dialog and its initial values
+ */
+class AutoDialog[A >: Null: DialogEncoder: DialogDecoder](data: A):
 
   /**
-    * Display the dialog and block till the dialog is closed.
-    *
-    * @param title        dialog title
-    * @param header       dialog header
-    * @param parentWindow optional parent window that will be blocked when dialog is displayed
-    * @return when dialog was confirmed with OK it will return content of the fields of the dialog.
-    *         If dialog was cancelled it will return `None`
-    */
-  def showDialog(title: String,
-                 header: String = "",
-                 parentWindow: Option[Window] = None): Option[A] =
-    val gd = new GenericDialogFX(title, header = header, parentWindow = parentWindow)
+   * Display the dialog and block till the dialog is closed.
+   *
+   * @param title        dialog title
+   * @param header       dialog header
+   * @param ownerWindow optional parent window that will be blocked when dialog is displayed
+   * @return when dialog was confirmed with OK it will return content of the fields of the dialog.
+   *         If dialog was cancelled it will return `None`
+   */
+  def showDialog(title: String, header: String = "", ownerWindow: Option[Window] = None): Option[A] =
+    val gd = new GenericDialogFX(title, header = header, ownerWindow = ownerWindow)
 
     // Add fields to the dialog
     summon[DialogEncoder[A]].addEditor(gd, "", data)

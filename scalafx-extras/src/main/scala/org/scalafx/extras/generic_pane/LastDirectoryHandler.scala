@@ -25,54 +25,18 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.scalafx.extras.auto_dialog
+package org.scalafx.extras.generic_pane
 
-import org.scalafx.extras.generic_pane.GenericDialogFX
+import java.io.File
 
-import scala.compiletime.{constValueTuple, summonAll}
-import scala.deriving.Mirror
+/**
+  * Customize how directory selections are remembered between uses of the dialog.
+  */
+trait LastDirectoryHandler {
 
-/** Decode current fields from a `GenericDialog` corresponding to type `T` */
-trait DialogDecoder[T]:
-  def decode(dialog: GenericDialogFX): T
+  /** Returns the directory that contains the last file opened or saved, or default directory. */
+  def lastDirectory: File
 
-object DialogDecoder:
-
-  /**
-    * Decode numeric field as integer
-    */
-  given DialogDecoder[Boolean] with
-    override def decode(dialog: GenericDialogFX): Boolean =
-      dialog.nextBoolean()
-
-  /**
-    * Decode numeric field as integer
-    */
-  given DialogDecoder[Int] with
-    override def decode(dialog: GenericDialogFX): Int =
-      math.round(dialog.nextNumber()).toInt
-
-  /**
-    * Decode numeric field as double
-    */
-  given DialogDecoder[Double] with
-    override def decode(dialog: GenericDialogFX): Double =
-      dialog.nextNumber()
-
-  given DialogDecoder[String] with
-    override def decode(dialog: GenericDialogFX): String =
-      dialog.nextString()
-
-  /**
-    * Decode set of fields corresponding to member of a case class
-    */
-  inline given[A <: Product](using m: Mirror.ProductOf[A]): DialogDecoder[A] =
-    new DialogDecoder[A] :
-      type ElemDecoder = Tuple.Map[m.MirroredElemTypes, DialogDecoder]
-      private val elemDecoders: List[DialogDecoder[Any]] =
-        summonAll[ElemDecoder].toList.asInstanceOf[List[DialogDecoder[Any]]]
-
-      def decode(dialog: GenericDialogFX): A =
-        val decoded = elemDecoders.map(_.decode(dialog))
-        val tuple = decoded.foldRight[Tuple](EmptyTuple)(_ *: _)
-        m.fromProduct(tuple)
+  /** Sets the directory containing the last file opened by the user. */
+  def lastDirectory_=(newDir: File): Unit
+}

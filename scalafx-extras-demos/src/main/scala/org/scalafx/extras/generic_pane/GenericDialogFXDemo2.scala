@@ -25,21 +25,45 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.scalafx.extras.generic_dialog
+package org.scalafx.extras.generic_pane
 
-import java.io.File
-import java.util.concurrent.atomic.AtomicReference
+import org.scalafx.extras.initFX
 
-/**
-  * Default implementation of the `LastDirectoryHandler`.
-  */
-class DefaultLastDirectoryHandler extends LastDirectoryHandler {
-  private val _lastDirectory: AtomicReference[File] = new AtomicReference[File](new File("."))
+object GenericDialogFXDemo2 {
 
-  def lastDirectory: File = _lastDirectory.get()
+  def main(args: Array[String]): Unit = {
 
-  def lastDirectory_=(newDir: File): Unit = {
-    require(newDir != null, "Argument `newDir` cannot be `null`.")
-    _lastDirectory.set(newDir)
+    // Initialize JavaFX, so we can display the dialog
+    initFX()
+
+
+    // Create dialog
+    val dialog =
+      new GenericDialogFX(
+        title = "GenericDialogFX Demo",
+        header = "Fancy description can go here."
+      ) {
+        // Add fields
+        addCheckbox("Check me out!", defaultValue = false)
+        addCheckbox("Check me too!", defaultValue = true)
+      }
+
+    // Show dialog to the user
+    dialog.showDialog()
+
+    // Read input provided by the user
+    if (dialog.wasOKed) {
+      val select1 = dialog.nextBoolean()
+      val select2 = dialog.nextBoolean()
+
+      println(s"Selection 1: $select1")
+      println(s"Selection 2: $select2")
+    } else {
+      println("Dialog was cancelled.")
+    }
+
+
+    // Use of initFX() requires explicit application exit
+    System.exit(0)
   }
 }

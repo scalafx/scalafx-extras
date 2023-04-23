@@ -25,7 +25,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.scalafx.extras.generic_dialog
+package org.scalafx.extras.generic_pane
 
 import scalafx.Includes.*
 import scalafx.application.JFXApp3
@@ -40,7 +40,7 @@ import scalafx.stage.Window
 object GenericDialogFXDemo extends JFXApp3 {
 
 
-  def openGenericDialog(parentWindow: Option[Window]): Unit = {
+  def openGenericDialog(ownerWindow: Option[Window]): Unit = {
 
     // We will use a custom control that is nt provided by GenericDialogFX
     val myColorPicker = new ColorPicker()
@@ -49,7 +49,7 @@ object GenericDialogFXDemo extends JFXApp3 {
       new GenericDialogFX(
         title = "GenericDialogFX Demo",
         header = "An attempt to emulate ImageJ's GenericDialog.",
-        parentWindow = parentWindow
+        ownerWindow = ownerWindow
       ) {
         addCheckbox("Check me out!", defaultValue = false)
         addChoice("Make a choice", Array("A", "B", "C", "D"), "B")
@@ -102,7 +102,7 @@ object GenericDialogFXDemo extends JFXApp3 {
 
     //    ShowMessage.information("GenericDialogFX Result", status, result, parentWindow)
 
-    new GenericDialogFX("GenericDialogFX Result", status, parentWindow) {
+    new GenericDialogFX("GenericDialogFX Result", status, ownerWindow) {
       addMessage(result, Font.font("Monospaced", Font.default.size))
     }.showDialog()
   }
