@@ -1,4 +1,3 @@
-import java.net.URL
 import scala.xml.transform.{RewriteRule, RuleTransformer}
 import scala.xml.{Node => XmlNode, NodeSeq => XmlNodeSeq, _}
 
@@ -78,7 +77,7 @@ lazy val scalaFXExtrasDemos = (project in file("scalafx-extras-demos")).settings
   publishArtifact := false,
   libraryDependencies ++= Seq(
     "com.typesafe.scala-logging" %% "scala-logging"   % "3.9.5",
-    "ch.qos.logback"              % "logback-classic" % "1.4.7" % Runtime
+    "ch.qos.logback"              % "logback-classic" % "1.4.11" % Runtime
   )
 ).dependsOn(scalaFXExtras % "compile;test->test")
 
@@ -149,12 +148,12 @@ lazy val scalaFXExtrasSettings = Seq(
   ),
   libraryDependencies ++= Seq(
     "org.scalafx"   %% "scalafx"   % "20.0.0-R31",
-    "org.scalatest" %% "scalatest" % "3.2.15" % "test"
+    "org.scalatest" %% "scalatest" % "3.2.17" % "test"
   ),
   libraryDependencies ++= (
     if (isScala2(scalaVersion.value))
       Seq(
-        "com.beachape"  %% "enumeratum"          % "1.7.2",
+        "com.beachape"  %% "enumeratum"          % "1.7.3",
         "org.scala-lang" % "scala-reflect"       % scalaVersion.value,
         "org.scalafx"   %% "scalafxml-core-sfx8" % "0.5"
       )
@@ -209,9 +208,9 @@ import xerial.sbt.Sonatype.*
 // Metadata needed by Maven Central
 // See also http://maven.apache.org/pom.html#Developers
 lazy val mavenCentralSettings = Seq(
-  homepage               := Some(new URL("https://www.scalafx.org/")),
+  homepage               := Some(new URI("https://www.scalafx.org/").toURL),
   startYear              := Some(2016),
-  licenses               := Seq(("BSD", new URL("https://github.com/scalafx/scalafx-extras/blob/master/LICENSE.txt"))),
+  licenses               := Seq(("BSD", new URI("https://github.com/scalafx/scalafx-extras/blob/master/LICENSE.txt").toURL)),
   sonatypeProfileName    := "org.scalafx",
   sonatypeProjectHosting := Some(GitHubHosting("org.scalafx", "scalafx-extras", "jpsacha@gmail.com")),
   publishMavenStyle      := true,
