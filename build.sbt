@@ -9,7 +9,7 @@ import scala.xml.{Node => XmlNode, NodeSeq => XmlNodeSeq, _}
 // JAR_BUILT_BY      - Name to be added to Jar metadata field "Built-By" (defaults to System.getProperty("user.name")
 //
 
-val projectVersion = "0.8.0.1-SNAPSHOT"
+val projectVersion = "0.8.0-JVM11"
 val versionTagDir  = if (projectVersion.endsWith("SNAPSHOT")) "master" else "v." + projectVersion
 val _scalaVersions = Seq("3.3.1", "2.13.12", "2.12.18")
 val _scalaVersion  = _scalaVersions.head
@@ -147,7 +147,7 @@ lazy val scalaFXExtrasSettings = Seq(
       Seq.empty[sbt.ModuleID]
   ),
   libraryDependencies ++= Seq(
-    "org.scalafx"   %% "scalafx"   % "20.0.0-R31",
+    "org.scalafx"   %% "scalafx"   % "19.0.0-R30",
     "org.scalatest" %% "scalatest" % "3.2.17" % "test"
   ),
   libraryDependencies ++= (
