@@ -147,7 +147,7 @@ lazy val scalaFXExtrasSettings = Seq(
       Seq.empty[sbt.ModuleID]
   ),
   libraryDependencies ++= Seq(
-    "org.scalafx"   %% "scalafx"   % "20.0.0-R31",
+    "org.scalafx"   %% "scalafx"   % "21.0.0-R32",
     "org.scalatest" %% "scalatest" % "3.2.17" % "test"
   ),
   libraryDependencies ++= (
