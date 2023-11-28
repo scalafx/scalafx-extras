@@ -1,7 +1,7 @@
+import xerial.sbt.Sonatype._
+
 import scala.xml.transform.{RewriteRule, RuleTransformer}
 import scala.xml.{Node => XmlNode, NodeSeq => XmlNodeSeq, _}
-
-// @formatter:off
 
 //
 // Environment variables used by the build:
@@ -14,13 +14,22 @@ val versionTagDir  = if (projectVersion.endsWith("SNAPSHOT")) "master" else "v."
 val _scalaVersions = Seq("3.3.1", "2.13.12", "2.12.18")
 val _scalaVersion  = _scalaVersions.head
 
-ThisBuild / version             := projectVersion
-ThisBuild / crossScalaVersions  := _scalaVersions
-ThisBuild / scalaVersion        := _scalaVersion
-ThisBuild / organization        := "org.scalafx"
+ThisBuild / version            := projectVersion
+ThisBuild / crossScalaVersions := _scalaVersions
+ThisBuild / scalaVersion       := _scalaVersion
+ThisBuild / organization       := "org.scalafx"
 
-publishArtifact     := false
-publish / skip      := true
+publishArtifact := false
+publish / skip  := true
+
+lazy val libEnumeratum     = "com.beachape"               %% "enumeratum"          % "1.7.3"
+lazy val libLogbackClassic = "ch.qos.logback"              % "logback-classic"     % "1.4.12"
+lazy val libParadise       = "org.scalamacros"             % "paradise"            % "2.1.1" cross CrossVersion.full
+lazy val libScalaLogging   = "com.typesafe.scala-logging" %% "scala-logging"       % "3.9.5"
+lazy val libScalaFX        = "org.scalafx"                %% "scalafx"             % "21.0.0-R32"
+lazy val libScalaFXML      = "org.scalafx"                %% "scalafxml-core-sfx8" % "0.5"
+lazy val libScalaTest      = "org.scalatest"              %% "scalatest"           % "3.2.17"
+lazy val libScalaReflect   = "org.scala-lang"              % "scala-reflect"
 
 def isScala2(scalaVersion: String): Boolean = {
   CrossVersion.partialVersion(scalaVersion) match {
@@ -62,7 +71,7 @@ lazy val scalaFXExtras = (project in file("scalafx-extras")).settings(
     baseDirectory.value.toString,
     "-doc-root-content",
     baseDirectory.value + "/src/main/scala/root-doc.creole"
-  ),
+  )
 )
 
 // ScalaFX Extras Demos project
@@ -76,8 +85,8 @@ lazy val scalaFXExtrasDemos = (project in file("scalafx-extras-demos")).settings
   ),
   publishArtifact := false,
   libraryDependencies ++= Seq(
-    "com.typesafe.scala-logging" %% "scala-logging"   % "3.9.5",
-    "ch.qos.logback"              % "logback-classic" % "1.4.11" % Runtime
+    libScalaLogging,
+    libLogbackClassic % Runtime
   )
 ).dependsOn(scalaFXExtras % "compile;test->test")
 
@@ -98,14 +107,15 @@ lazy val scalaFXExtrasSettings = Seq(
     "-encoding",
     "utf8",
     "-feature",
-    "-release", "8"
+    "-release",
+    "8"
   ) ++
     (
       if (isScala2(scalaVersion.value))
         Seq(
           "-explaintypes",
           "-Xcheckinit",
-          "-Xsource:3",
+          "-Xsource:3"
 //          "-Xlint",
 //          "-Xcheckinit",
 //          "-Xlint:missing-interpolator",
@@ -122,10 +132,11 @@ lazy val scalaFXExtrasSettings = Seq(
   Compile / doc / scalacOptions ++= Opts.doc.version(projectVersion),
   Compile / doc / scalacOptions ++= Seq("-doc-footer", s"ScalaFX Extras API v.$projectVersion"),
   Compile / doc / scalacOptions ++= (
-    if(isScala2(scalaVersion.value))
+    if (isScala2(scalaVersion.value))
       Seq(
         s"-doc-external-doc:${scalaInstance.value.libraryJars.head}#https://www.scala-lang.org/api/${scalaVersion.value}/",
-        "-doc-source-url", "https://github.com/SscalaFX-Extras/scalafx-extras/blob/" + versionTagDir + "/scalafx/€{FILE_PATH}.scala"
+        "-doc-source-url",
+        "https://github.com/SscalaFX-Extras/scalafx-extras/blob/" + versionTagDir + "/scalafx/€{FILE_PATH}.scala"
       ) ++ (
         Option(System.getenv("GRAPHVIZ_DOT_PATH")) match {
           case Some(path) => Seq("-diagrams", "-diagrams-dot-path", path)
@@ -140,22 +151,20 @@ lazy val scalaFXExtrasSettings = Seq(
   // If using Scala 2.12 or lower, enable macro processing through compiler plugin
   libraryDependencies ++= (
     if (isScala2_12(scalaVersion.value))
-      Seq(compilerPlugin(
-        "org.scalamacros" % "paradise" % "2.1.1" cross CrossVersion.full
-      ))
+      Seq(compilerPlugin(libParadise))
     else
       Seq.empty[sbt.ModuleID]
   ),
   libraryDependencies ++= Seq(
-    "org.scalafx"   %% "scalafx"   % "21.0.0-R32",
-    "org.scalatest" %% "scalatest" % "3.2.17" % "test"
+    libScalaFX,
+    libScalaTest % "test"
   ),
   libraryDependencies ++= (
     if (isScala2(scalaVersion.value))
       Seq(
-        "com.beachape"  %% "enumeratum"          % "1.7.3",
-        "org.scala-lang" % "scala-reflect"       % scalaVersion.value,
-        "org.scalafx"   %% "scalafxml-core-sfx8" % "0.5"
+        libEnumeratum,
+        libScalaReflect % scalaVersion.value,
+        libScalaFXML
       )
     else
       Seq.empty[sbt.ModuleID]
@@ -163,17 +172,18 @@ lazy val scalaFXExtrasSettings = Seq(
   // Use `pomPostProcess` to remove dependencies marked as "provided" from publishing in POM
   // This is to avoid dependency on wrong OS version JavaFX libraries
   // See also [https://stackoverflow.com/questions/27835740/sbt-exclude-certain-dependency-only-during-publish]
-  pomPostProcess := { node: XmlNode =>
-    new RuleTransformer(new RewriteRule {
-      override def transform(node: XmlNode): XmlNodeSeq = node match {
-        case e: Elem if e.label == "dependency" && e.child.exists(c => c.label == "scope" && c.text == "provided") =>
-          val organization = e.child.filter(_.label == "groupId").flatMap(_.text).mkString
-          val artifact     = e.child.filter(_.label == "artifactId").flatMap(_.text).mkString
-          val version      = e.child.filter(_.label == "version").flatMap(_.text).mkString
-          Comment(s"provided dependency $organization#$artifact;$version has been omitted")
-        case _ => node
-      }
-    }).transform(node).head
+  pomPostProcess := {
+    node: XmlNode =>
+      new RuleTransformer(new RewriteRule {
+        override def transform(node: XmlNode): XmlNodeSeq = node match {
+          case e: Elem if e.label == "dependency" && e.child.exists(c => c.label == "scope" && c.text == "provided") =>
+            val organization = e.child.filter(_.label == "groupId").flatMap(_.text).mkString
+            val artifact     = e.child.filter(_.label == "artifactId").flatMap(_.text).mkString
+            val version      = e.child.filter(_.label == "version").flatMap(_.text).mkString
+            Comment(s"provided dependency $organization#$artifact;$version has been omitted")
+          case _ => node
+        }
+      }).transform(node).head
   },
   autoAPIMappings := true,
   manifestSetting,
@@ -203,14 +213,12 @@ lazy val manifestSetting = packageOptions += {
   )
 }
 
-import xerial.sbt.Sonatype.*
-
 // Metadata needed by Maven Central
 // See also http://maven.apache.org/pom.html#Developers
 lazy val mavenCentralSettings = Seq(
-  homepage               := Some(new URI("https://www.scalafx.org/").toURL),
-  startYear              := Some(2016),
-  licenses               := Seq(("BSD", new URI("https://github.com/scalafx/scalafx-extras/blob/master/LICENSE.txt").toURL)),
+  homepage  := Some(new URI("https://www.scalafx.org/").toURL),
+  startYear := Some(2016),
+  licenses  := Seq(("BSD", new URI("https://github.com/scalafx/scalafx-extras/blob/master/LICENSE.txt").toURL)),
   sonatypeProfileName    := "org.scalafx",
   sonatypeProjectHosting := Some(GitHubHosting("org.scalafx", "scalafx-extras", "jpsacha@gmail.com")),
   publishMavenStyle      := true,
