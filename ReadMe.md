@@ -154,17 +154,14 @@ A complete example in Scala 3. Shows a pane with 2 directory selection fields an
 button is pressed values
 of the directory fields are printed
 
-[//]: # (@formatter:off)
-```scala
+```scala 3
+import org.scalafx.extras.generic_pane.GenericPane
 import scalafx.application.JFXApp3
 import scalafx.application.JFXApp3.PrimaryStage
 import scalafx.geometry.Insets
 import scalafx.scene.Scene
 import scalafx.scene.control.Button
 import scalafx.scene.layout.VBox
-import scalafx.scene.paint.*
-import scalafx.scene.paint.Color.*
-import scalafx.scene.text.Text
 
 object GenericPaneDemo extends JFXApp3:
 
@@ -189,7 +186,6 @@ object GenericPaneDemo extends JFXApp3:
                 println(s"Output dir: ${gp.nextString()}")
           )
 ```
-[//]: # (@formatter:off)
 
 ![GenericPane Demo](notes/assets/GenericPane.png)
 
