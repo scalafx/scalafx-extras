@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2021, ScalaFX Project
+ * Copyright (c) 2011-2024, ScalaFX Project
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -139,7 +139,7 @@ object BusyWorkerDemo extends JFXApp3 {
       ).map(_.delegate)
     }
 
-    lazy val busyWorker: BusyWorker = new BusyWorker("BusyWorker Demo", buttonPane) {
+    lazy val busyWorker: BusyWorker = new BusyWorker(title = "BusyWorker Demo", disabledNode = buttonPane) {
       progressLabel.text <== progressMessage
       progressBar.progress <== progressValue
     }
