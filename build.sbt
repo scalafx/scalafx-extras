@@ -11,7 +11,7 @@ import scala.xml.{Node => XmlNode, NodeSeq => XmlNodeSeq, _}
 
 val projectVersion = "0.8.0.1-SNAPSHOT"
 val versionTagDir  = if (projectVersion.endsWith("SNAPSHOT")) "master" else "v." + projectVersion
-val _scalaVersions = Seq("3.3.1", "2.13.12", "2.12.18")
+val _scalaVersions = Seq("3.3.3", "2.13.13", "2.12.19")
 val _scalaVersion  = _scalaVersions.head
 
 ThisBuild / version            := projectVersion
@@ -23,12 +23,12 @@ publishArtifact := false
 publish / skip  := true
 
 lazy val libEnumeratum     = "com.beachape"               %% "enumeratum"          % "1.7.3"
-lazy val libLogbackClassic = "ch.qos.logback"              % "logback-classic"     % "1.4.12"
+lazy val libLogbackClassic = "ch.qos.logback"              % "logback-classic"     % "1.5.3"
 lazy val libParadise       = "org.scalamacros"             % "paradise"            % "2.1.1" cross CrossVersion.full
 lazy val libScalaLogging   = "com.typesafe.scala-logging" %% "scala-logging"       % "3.9.5"
 lazy val libScalaFX        = "org.scalafx"                %% "scalafx"             % "21.0.0-R32"
 lazy val libScalaFXML      = "org.scalafx"                %% "scalafxml-core-sfx8" % "0.5"
-lazy val libScalaTest      = "org.scalatest"              %% "scalatest"           % "3.2.17"
+lazy val libScalaTest      = "org.scalatest"              %% "scalatest"           % "3.2.18"
 lazy val libScalaReflect   = "org.scala-lang"              % "scala-reflect"
 
 def isScala2(scalaVersion: String): Boolean = {
