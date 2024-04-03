@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2022, ScalaFX Project
+ * Copyright (c) 2011-2024, ScalaFX Project
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -29,6 +29,7 @@ package org.scalafx
 
 import javafx.concurrent as jfxc
 import javafx.embed.swing.JFXPanel
+import scalafx.Includes.*
 import scalafx.application.Platform
 import scalafx.scene.Node
 import scalafx.stage.Window
@@ -130,47 +131,47 @@ package object extras {
   }
 
   /**
-    * Show a modal dialog with an expandable details about an exception (stack trace).
-    *
-    * @param title       dialog title
-    * @param message     message shown in the dialog header.
-    * @param t           exception.
-    * @param ownerWindow owner window that will be blacked by the dialog. Can be `null`.
-    */
+   * Show a modal dialog with an expandable details about an exception (stack trace).
+   *
+   * @param title       dialog title
+   * @param message     message shown in the dialog header.
+   * @param t           exception.
+   * @param ownerWindow owner window that will be blacked by the dialog. Can be `null`.
+   */
   @deprecated("Use org.scalafx.extras.ShowMessage.exception()", "0.6.0")
   def showException(title: String, message: String, t: Throwable, ownerWindow: Node): Unit =
     ShowMessage.exception(title, message, t, ownerWindow)
 
   /**
-    * Show a modal dialog with an expandable details about an exception (stack trace).
-    *
-    * @param title       dialog title
-    * @param message     message shown in the dialog header.
-    * @param t           exception.
-    * @param ownerWindow owner window that will be blacked by the dialog. Can be `null` to match JavaFX convention.
-    */
+   * Show a modal dialog with an expandable details about an exception (stack trace).
+   *
+   * @param title       dialog title
+   * @param message     message shown in the dialog header.
+   * @param t           exception.
+   * @param ownerWindow owner window that will be blacked by the dialog. Can be `null` to match JavaFX convention.
+   */
   @deprecated("Use org.scalafx.extras.ShowMessage.exception()", "0.6.0")
   def showException(title: String, message: String, t: Throwable, ownerWindow: Window): Unit =
     ShowMessage.exception(title, message, t, ownerWindow)
 
   /**
-    * Show a modal dialog with an expandable details about an exception (stack trace).
-    *
-    * @param title       dialog title
-    * @param message     message shown in the dialog header.
-    * @param t           exception.
-    * @param ownerWindow owner window that will be blacked by the dialog.
-    */
+   * Show a modal dialog with an expandable details about an exception (stack trace).
+   *
+   * @param title       dialog title
+   * @param message     message shown in the dialog header.
+   * @param t           exception.
+   * @param ownerWindow owner window that will be blacked by the dialog.
+   */
   @deprecated("Use org.scalafx.extras.ShowMessage.exception()", "0.6.0")
   def showException(title: String, message: String, t: Throwable, ownerWindow: Option[Window] = None): Unit =
     ShowMessage.exception(title, message, t, ownerWindow)
 
   /**
-    * Run task on a named daemon thread.
-    *
-    * @param task to run
-    * @param name name for the thread to run the operation. Useful for debugging.
-    */
+   * Run task on a named daemon thread.
+   *
+   * @param task to run
+   * @param name name for the thread to run the operation. Useful for debugging.
+   */
   def runTask[T](task: javafx.concurrent.Task[T], name: String): Unit = {
     val th = new Thread(task, name)
     th.setDaemon(true)
@@ -191,4 +192,16 @@ package object extras {
 
     runTask(task, name)
   }
+
+  /**
+   * Find a parent window for a `node`.
+   *
+   * @return window containing this `node`.
+   */
+  def parentWindow(node: Node): Option[Window] =
+    Option(node)
+      .flatMap(n =>
+        Option(n.scene())
+          .map(s => jfxWindow2sfx(s.window()))
+      )
 }
