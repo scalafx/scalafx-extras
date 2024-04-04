@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2023, ScalaFX Project
+ * Copyright (c) 2011-2024, ScalaFX Project
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -34,15 +34,12 @@ import scalafx.collections.ObservableBuffer
 import scalafx.geometry.Insets
 import scalafx.scene.Node
 import scalafx.scene.control.{CheckBox, ChoiceBox, Label, TextField}
-import scalafx.scene.layout.{ColumnConstraints, GridPane, HBox, Priority}
+import scalafx.scene.layout.{ColumnConstraints, GridPane, Priority}
 import scalafx.scene.text.Font
 import scalafx.stage.Window
 
 import scala.collection.mutable.ListBuffer
 
-/**
- * @param lastDirectoryHandler customize how directory selections are remembered between uses of the dialog. Used with `addDirectoryField` and `addFileField`.
- */
 trait GenericPaneBase {
   require(lastDirectoryHandler != null, "Argument 'lastDirectoryHandler' cannot be 'null'")
 
@@ -52,6 +49,9 @@ trait GenericPaneBase {
   private val _numberTextFields = ListBuffer.empty[NumberTextField]
   private val _stringProperties = ListBuffer.empty[StringProperty]
 
+  /**
+   * Customize how directory selections are remembered between uses of the dialog. Used with `addDirectoryField` and `addFileField`
+   */
   def lastDirectoryHandler: LastDirectoryHandler
 
   private val _grid: GridPane = new GridPane() {
@@ -77,8 +77,7 @@ trait GenericPaneBase {
   private var _numberTextFieldNextIndex = 0
   private var _stringPropertyNextIndex  = 0
 
-  protected def parentWindow: Option[Window] =
-    Option(_grid).flatMap(n => Option(n.scene()).map(s => jfxWindow2sfx(s.window())))
+  protected def parentWindow: Option[Window] = org.scalafx.extras.parentWindow(_grid)
 
   protected def resetReadout(): Unit = {
     _stringPropertyNextIndex = 0

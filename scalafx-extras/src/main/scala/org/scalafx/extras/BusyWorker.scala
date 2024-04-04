@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2021, ScalaFX Project
+ * Copyright (c) 2011-2024, ScalaFX Project
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -32,7 +32,7 @@ import org.scalafx.extras.BusyWorker.SimpleTask
 import scalafx.Includes.*
 import scalafx.application.Platform
 import scalafx.beans.property.*
-import scalafx.concurrent.Worker
+import scalafx.concurrent.{Worker, WorkerStateEvent}
 import scalafx.scene.{Cursor, Node}
 import scalafx.stage.Window
 
@@ -82,8 +82,16 @@ object BusyWorker {
      * Method called whenever the state of the Task has transitioned to the FAILED state.
      * This method is invoked on the FX Application Thread after any listeners of the state property and after the
      * Task has been fully transitioned to the new state.
+     *
+     * Implementation should consume the event to stop execution of automated error handling by
+     * the `BusyWorker` for this event.
+     *
+     * When custom error handling is implemented, it may be more convenient to do it in `onFinish`,
+     * as more information about the failure can be accessed there using `Try(result.get)`.
+     *
+     * @param e event state issued during the failure.
      */
-    def onFailed(): Unit = {}
+    def onFailed(e: WorkerStateEvent): Unit = {}
 
     /**
      * Message that can be updated while task is executed.
@@ -385,33 +393,28 @@ class BusyWorker private (
     val jfxTask = new javafx.concurrent.Task[R] {
       override def call(): R = task.call()
 
-      override def scheduled(): Unit = task.onScheduled()
-
-      override def running(): Unit = task.onRunning()
-
-      override def succeeded(): Unit = task.onSucceeded()
-
-      override def cancelled(): Unit = task.onCancelled()
-
-      override def failed(): Unit = task.onFailed()
+      onScheduledProperty.value = () => task.onScheduled()
+      onRunningProperty.value = () => task.onRunning()
+      onSucceededProperty.value = () => task.onSucceeded()
+      onCancelledProperty.value = () => task.onCancelled()
+      onFailedProperty.value = e => task.onFailed(e)
 
       task.message.onChange((_, _, newValue) => updateMessage(newValue))
       task.progress.onChange((_, _, newValue) => updateProgress(newValue.doubleValue(), 1.0))
-
     }
     _doTask(jfxTask, task.onFinish, name)
   }
 
   /**
-   * @param task    task to run
-   * @param cleanup operation to perform after task completed (success or failure)
-   * @param name    name of the thread on which to run the task/
+   * @param task     task to run
+   * @param onFinish operation to perform after task completed (success or failure)
+   * @param name     name of the thread on which to run the task/
    * @tparam R type of the task return value
    * @return future representing value returned by the task.
    */
   private def _doTask[R](
     task: javafx.concurrent.Task[R],
-    cleanup: (Future[R], Boolean) => Unit,
+    onFinish: (Future[R], Boolean) => Unit,
     name: String = title
   ): Future[R] = {
 
@@ -425,7 +428,7 @@ class BusyWorker private (
     }
     _busyWorkloadName = name
 
-    def resetProgress(): Unit = {
+    def finishUp(): Unit = {
       Platform.runLater {
         _progressValue.unbind()
         _progressMessage.unbind()
@@ -442,7 +445,7 @@ class BusyWorker private (
         }
       }
 
-      cleanup(task, task.state.value == Worker.State.Succeeded.delegate)
+      onFinish(task, task.state.value == Worker.State.Succeeded.delegate)
     }
 
     // Prepare task for execution
@@ -456,20 +459,40 @@ class BusyWorker private (
       }
     }
 
-    task.onSucceeded = () => resetProgress()
-    task.onCancelled = () => resetProgress()
-    task.onFailed = () => {
-      task.getException match {
-        case NonFatal(t) =>
-          val message =
-            s"Unexpected error while performing a UI task: '$name'. " // + Option(t.getMessage).getOrElse("")
-          showException(title, message, t)
-        case t =>
-          // Propagate fatal errors
-          throw t
+    // Preserve existing handler, if there is one
+    def appendHandler(
+      property: ObjectProperty[javafx.event.EventHandler[javafx.concurrent.WorkerStateEvent]],
+      op: WorkerStateEvent => Unit
+    ): Unit = {
+      val oldHandler = property.value
+      property.value = { (e: javafx.concurrent.WorkerStateEvent) =>
+        Option(oldHandler).foreach(_.handle(e))
+        op(e)
       }
-      resetProgress()
     }
+
+    appendHandler(task.onSucceeded, _ => finishUp())
+    appendHandler(task.onCancelled, _ => finishUp())
+    appendHandler(
+      task.onFailed,
+      event =>
+        try {
+          if (!event.isConsumed) {
+            // Exising handler should consume events to prevent activation of the default error handler.
+            task.getException match {
+              case NonFatal(t) =>
+                val message =
+                  s"Unexpected error while performing a UI task: '$name'. " // + Option(t.getMessage).getOrElse("")
+                showException(title, message, t)
+              case t =>
+                // Propagate fatal errors
+                throw t
+            }
+          }
+        } finally {
+          finishUp()
+        }
+    )
 
     // Run task on a separate thread
     val th = new Thread(task, name)

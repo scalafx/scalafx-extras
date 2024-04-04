@@ -31,6 +31,7 @@ import org.scalafx.extras.BusyWorker.SimpleTask
 import scalafx.Includes.*
 import scalafx.application.JFXApp3
 import scalafx.application.JFXApp3.PrimaryStage
+import scalafx.concurrent.WorkerStateEvent
 import scalafx.geometry.{Insets, Pos}
 import scalafx.scene.Scene
 import scalafx.scene.control.{Button, Label, ProgressBar, ToolBar}
@@ -38,11 +39,12 @@ import scalafx.scene.image.Image
 import scalafx.scene.layout.{BorderPane, HBox, Priority, VBox}
 
 import java.util.concurrent.Future
+import scala.util.{Failure, Success, Try}
 
 /**
- * An application illustrating use of `BusyWorker`, including progress and message updates.
+ * An application illustrating use of `BusyWorker` and handling of exception in execution of the task.
  */
-object BusyWorkerDemo extends JFXApp3 {
+object BusyWorkerErrorHandlingDemo extends JFXApp3 {
 
   override def start(): Unit = {
 
@@ -55,12 +57,12 @@ object BusyWorkerDemo extends JFXApp3 {
     }
 
     // noinspection ConvertExpressionToSAM
-    lazy val buttonPane = new VBox {
+    lazy val buttonPane = new VBox { parentNode =>
       spacing = 9
       alignment = Pos.Center
       padding = Insets(21)
       children ++= Seq(
-        new Button("Task with explicit progress value") {
+        new Button("No errors") {
           onAction = () =>
             busyWorker.doTask("Task 1")(
               new SimpleTask[String] {
@@ -87,17 +89,9 @@ object BusyWorkerDemo extends JFXApp3 {
             )
           maxWidth = Double.MaxValue
         },
-        new Button("Task with simple progress indicator") {
+        new Button("Exception on 3 - default error handling") {
           onAction = () =>
-            busyWorker.doTask("Task 2") { () =>
-              println("Task 2")
-              Thread.sleep(3000)
-            }
-          maxWidth = Double.MaxValue
-        },
-        new Button("Task failing with exception (on 7)") {
-          onAction = () =>
-            busyWorker.doTask("Task 3")(
+            busyWorker.doTask("Task 2")(
               new SimpleTask[String] {
                 override def call(): String = {
                   val maxItems = 10
@@ -107,7 +101,7 @@ object BusyWorkerDemo extends JFXApp3 {
                     progress() = (i - 1) / 10.0
                     Thread.sleep(250)
 
-                    if (i == 7) {
+                    if (i == 3) {
                       throw new Exception("Simulating task failure.")
                     }
                   }
@@ -126,31 +120,63 @@ object BusyWorkerDemo extends JFXApp3 {
             )
           maxWidth = Double.MaxValue
         },
-        new Button("Print execution thread") {
+        new Button("Exception on 3 - custom error handling") {
           onAction = () =>
-            busyWorker.doTask("Task 4") { () =>
-              println("1: Thread '" + Thread.currentThread().getName + "'")
-              println("2: Thread '" + Thread.currentThread().getName + "'")
-              println("3: Thread '" + Thread.currentThread().getName + "'")
-              println("4: Thread '" + Thread.currentThread().getName + "'")
-            }
+            busyWorker.doTask("Task 3")(
+              new SimpleTask[String] {
+                override def call(): String = {
+                  val maxItems = 10
+                  for (i <- 1 to maxItems) {
+                    println(i)
+                    message() = s"Processing item $i/$maxItems"
+                    progress() = (i - 1) / 10.0
+                    Thread.sleep(250)
+
+                    if (i == 3) {
+                      throw new Exception("Simulating task failure.")
+                    }
+                  }
+                  progress() = 1
+                  "Done"
+                }
+
+                override def onFailed(e: WorkerStateEvent): Unit =
+                  // Mark event as consumed to prevent default error handlig
+                  e.consume()
+
+                override def onFinish(result: Future[String], successful: Boolean): Unit = {
+                  Try(result.get()) match {
+                    case Success(value) =>
+                      ShowMessage.information(
+                        "Task Success",
+                        s"Task completion was successful: '$successful'",
+                        s"Task produced result: '$value'",
+                        parent.value
+                      )
+                    case Failure(exception) =>
+                      ShowMessage.exception("Task Failure", "Custom error handling", exception, parent.value)
+                  }
+                }
+              }
+            )
           maxWidth = Double.MaxValue
         }
       ).map(_.delegate)
     }
 
-    lazy val busyWorker: BusyWorker = new BusyWorker(title = "BusyWorker Demo", disabledNode = buttonPane) {
-      progressLabel.text <== progressMessage
-      progressBar.progress <== progressValue
-    }
+    lazy val busyWorker: BusyWorker =
+      new BusyWorker(title = "BusyWorker Error Handling Demo", disabledNode = buttonPane) {
+        progressLabel.text <== progressMessage
+        progressBar.progress <== progressValue
+      }
 
     stage = new PrimaryStage {
       scene = new Scene {
         icons += new Image("/org/scalafx/extras/sfx.png")
-        title = "BusyWorker Demo"
+        title = "BusyWorker Error Handling Demo"
         root = {
           new BorderPane {
-            padding = Insets(3)
+            padding = Insets(7)
             top = new ToolBar()
             center = buttonPane
             bottom = new HBox {
