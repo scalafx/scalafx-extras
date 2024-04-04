@@ -86,11 +86,18 @@ object ShowMessage {
    * @param t            exception.
    * @param parentWindow owner window that will be blacked by the dialog.
    */
-  def exception(title: String, message: String, t: Throwable, parentWindow: Option[Window] = None): Unit = {
+  def exception(
+    title: String,
+    message: String,
+    t: Throwable,
+    parentWindow: Option[Window] = None,
+    resizable: Boolean = false
+  ): Unit = {
     t.printStackTrace()
 
     // Rename to avoid name clashes
-    val dialogTitle = title
+    val _title     = title
+    val _resizable = resizable
 
     // Create expandable Exception.
     val exceptionText = {
@@ -118,11 +125,12 @@ object ShowMessage {
     onFXAndWait {
       new Alert(AlertType.Error) {
         initOwner(parentWindow.orNull)
-        this.title = dialogTitle
+        this.title = _title
         headerText = message
         contentText = Option(t.getMessage).getOrElse("")
         // Set expandable Exception into the dialog pane.
         dialogPane().expandableContent = expContent
+        this.resizable = _resizable
       }.showAndWait()
     }
   }
@@ -237,7 +245,7 @@ trait ShowMessage {
    * @param message Message (excluding t.getMessage(), it is automatically displayed)
    * @param t       exception to be displayed in the dialog
    */
-  def showException(title: String, message: String, t: Throwable): Unit = {
+  def showException(title: String, message: String, t: Throwable, resizable: Boolean = false): Unit = {
     messageLogger.foreach(_.error(s"<$title> $message", t))
     ShowMessage.exception(title, message, t, parentWindow)
   }
