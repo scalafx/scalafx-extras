@@ -211,17 +211,21 @@ trait ShowMessage {
    * @param header  header text.
    * @param content main content text.
    */
-  def showError(title: String, header: String, content: String = ""): Unit = {
+  def showError(title: String, header: String, content: String = "", resizable: Boolean = false): Unit = {
     messageLogger.foreach(_.error(s"<$title> $header $content"))
     // Rename to avoid name clashes
-    val dialogTitle = title
+    val _title     = title
+    val _resizable = resizable
 
     onFXAndWait {
       new Alert(AlertType.Error) {
         initOwner(parentWindow.orNull)
-        this.title = dialogTitle
+        this.title = _title
         headerText = header
         contentText = content
+        this.resizable = _resizable
+        dialogPane().setMinWidth(Region.USE_PREF_SIZE)
+        dialogPane().setMinHeight(Region.USE_PREF_SIZE)
       }.showAndWait()
     }
   }
@@ -248,18 +252,18 @@ trait ShowMessage {
   def showInformation(title: String, header: String, content: String, resizable: Boolean = false): Unit = {
     //    messageLogger.info(s"<$title> $header $content")
     // Rename to avoid name clashes
-    val dialogTitle = title
-
+    val _title     = title
     val _resizable = resizable
 
     onFXAndWait {
       new Alert(AlertType.Information) {
         initOwner(parentWindow.orNull)
-        this.title = dialogTitle
+        this.title = _title
         headerText = header
         contentText = content
         this.resizable = _resizable
-        dialogPane().minHeight(Region.USE_PREF_SIZE)
+        dialogPane().setMinWidth(Region.USE_PREF_SIZE)
+        dialogPane().setMinHeight(Region.USE_PREF_SIZE)
       }.showAndWait()
     }
   }
@@ -271,17 +275,21 @@ trait ShowMessage {
    * @param header  header text.
    * @param content main content text.
    */
-  def showWarning(title: String, header: String, content: String): Unit = {
+  def showWarning(title: String, header: String, content: String, resizable: Boolean = false): Unit = {
     messageLogger.foreach(_.warn(s"<$title> $header $content"))
     // Rename to avoid name clashes
-    val dialogTitle = title
+    val _title     = title
+    val _resizable = resizable
 
     onFXAndWait {
       new Alert(AlertType.Warning) {
         initOwner(parentWindow.orNull)
-        this.title = dialogTitle
+        this.title = _title
         headerText = header
         contentText = content
+        this.resizable = _resizable
+        dialogPane().setMinWidth(Region.USE_PREF_SIZE)
+        dialogPane().setMinHeight(Region.USE_PREF_SIZE)
       }.showAndWait()
     }
   }
@@ -294,16 +302,20 @@ trait ShowMessage {
    * @param content content text.
    * @return `true` when user selected 'OK' and `false` when user selected `Cancel` or dismissed the dialog.
    */
-  def showConfirmation(title: String, header: String, content: String = ""): Boolean = {
+  def showConfirmation(title: String, header: String, content: String = "", resizable: Boolean = false): Boolean = {
     // Rename to avoid name clashes
-    val dialogTitle = title
+    val _title     = title
+    val _resizable = resizable
 
     val result = onFXAndWait {
       new Alert(AlertType.Confirmation) {
         initOwner(parentWindow.orNull)
-        this.title = dialogTitle
+        this.title = _title
         headerText = header
         contentText = content
+        this.resizable = _resizable
+        dialogPane().setMinWidth(Region.USE_PREF_SIZE)
+        dialogPane().setMinHeight(Region.USE_PREF_SIZE)
       }.showAndWait()
     }
     result match {
@@ -321,16 +333,25 @@ trait ShowMessage {
    * @return `Some(true)` when user selected 'OK', `Some(false)` when user selected `No`,
    *         and `None` user selected `Cancel` or dismissed the dialog.
    */
-  def showConfirmationYesNoCancel(title: String, header: String, content: String = ""): Option[Boolean] = {
+  def showConfirmationYesNoCancel(
+    title: String,
+    header: String,
+    content: String = "",
+    resizable: Boolean = false
+  ): Option[Boolean] = {
     // Rename to avoid name clashes
-    val dialogTitle = title
+    val _title     = title
+    val _resizable = resizable
 
     val result = onFXAndWait {
       new Alert(AlertType.Confirmation) {
         initOwner(parentWindow.orNull)
-        this.title = dialogTitle
+        this.title = _title
         headerText = header
         contentText = content
+        this.resizable = _resizable
+        dialogPane().setMinWidth(Region.USE_PREF_SIZE)
+        dialogPane().setMinHeight(Region.USE_PREF_SIZE)
         buttonTypes = Seq(ButtonType.OK, ButtonType.No, ButtonType.Cancel)
       }.showAndWait()
     }
