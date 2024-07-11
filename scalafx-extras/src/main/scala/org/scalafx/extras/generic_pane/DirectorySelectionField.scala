@@ -43,8 +43,9 @@ object DirectorySelectionField {
    * Find existing part of the input file path. If the input file exists return that file otherwise look for first
    * existing parent
    */
+  //noinspection ScalaWeakerAccess
   @tailrec
-  private def existingOrParent(file: File): File =
+  def existingOrParent(file: File): File =
     if (file.exists()) file
     else existingOrParent(file.getCanonicalFile.getParentFile)
 }
