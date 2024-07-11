@@ -24,6 +24,7 @@ Extras do not have direct corresponding concepts in JavaFX.
       * [Example 2](#example-2)
     * [Simpler Use of FXML with MVCfx Pattern](#simpler-use-of-fxml-with-mvcfx-pattern)
     * [ImageDisplay Component](#imagedisplay-component)
+    * [Batch Processing and Progress Dialog](#batch-processing-and-progress-dialog)
   * [Demos](#demos)
     * [StopWatch Application](#stopwatch-application)
     * [ShowMessage Demo](#showmessage-demo)
@@ -328,8 +329,12 @@ The demos module has a complete example of a simple application: [StopWatchApp][
 
 ### ImageDisplay Component
 
-ImageDisplay Component is an image view with ability to zoom in, zoom out, zoom to fit. It can also automatically resize
+ImageDisplay Component is an image view with the ability to zoom in, zoom out, zoom to fit. It can also automatically resize
 to parent size.
+
+### Batch Processing and Progress Dialog
+
+Work in progress, see `ProgressStatusDemoApp` for example of use
 
 
 Demos
