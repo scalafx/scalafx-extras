@@ -334,7 +334,9 @@ to parent size.
 
 ### Batch Processing and Progress Dialog
 
-Work in progress, see `ProgressStatusDemoApp` for example of use
+Work in progress
+* Helper UI for running batch processing tasks, see `BatchRunnerProgressHelperDemoApp` for example of use
+* Component for display of progress of batch processing tasks, see `ProgressStatusDemoApp` for example of use
 
 
 Demos
