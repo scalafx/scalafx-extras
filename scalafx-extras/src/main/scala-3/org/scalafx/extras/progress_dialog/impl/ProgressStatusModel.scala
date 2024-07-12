@@ -30,7 +30,7 @@ package org.scalafx.extras.progress_dialog.impl
 import org.scalafx.extras.mvcfx.ModelFX
 import scalafx.beans.property.{DoubleProperty, StringProperty}
 
-class ProgressStatusModel extends ModelFX {
+class ProgressStatusModel extends ModelFX:
 
   val statusText      = new StringProperty()
   val progress        = new DoubleProperty()
@@ -42,4 +42,3 @@ class ProgressStatusModel extends ModelFX {
   val successfulCountText = new StringProperty()
   val failedCountText     = new StringProperty()
   val cancelledCountText  = new StringProperty()
-}

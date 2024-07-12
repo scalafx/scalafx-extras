@@ -33,20 +33,24 @@ import scalafx.geometry.{Insets, Pos}
 import scalafx.stage.Window
 
 import java.util.concurrent.atomic.AtomicBoolean
-import scala.util.{Failure, Success}
+import scala.util.{Failure, Success, Try}
 
-abstract class BatchRunnerProgressHelper[T](
+abstract class BatchRunnerWithProgress[T](
   val title: String,
   val parentWindow: Option[Window],
   val useParallelProcessing: Boolean
 ):
 
-  def run(): Unit =
+  import BatchRunnerWithProgress.TaskResult
+
+  def run(): Seq[TaskResult[T]] =
     // TODO: handle exceptions
-    val itemTasks: Seq[ItemTask[T]] = createSampleTasks()
+
+    val itemTasks: Seq[ItemTask[T]] = createTasks()
+
     processItems(itemTasks)
 
-  private def processItems(items: Seq[ItemTask[T]]): Unit =
+  private def processItems(items: Seq[ItemTask[T]]): Seq[TaskResult[T]] =
 
     val abort           = new AtomicBoolean(false)
     val abortingMessage = title + " - processing aborted by user. Waiting to complete..."
@@ -64,7 +68,7 @@ abstract class BatchRunnerProgressHelper[T](
       isCanceled: Boolean,
       perc: Double,
       message: String
-    ): Unit = {
+    ): Unit =
       //      val m =
       //        f"R:$running%2d, S:$successful%2d, F:$failed%2d, E:$executed%2d, T:$total%d, C:$canceled%d" +
       //          f"C:$isCanceled, perc:${perc.toInt}%3d, $message"
@@ -73,14 +77,13 @@ abstract class BatchRunnerProgressHelper[T](
       onFX {
         progressStatus.progress.value = perc / 100d
         progressStatus.statusText.value =
-          if abort.get then abortingMessage else s"Processed ${executed.toInt} of $total..."
+          if abort.get then abortingMessage else s"Processed ${executed.toInt} of $total - $message"
         progressStatus.totalCount.value = f"$total%d"
         progressStatus.processedCount.value = f"$executed%d"
         progressStatus.successfulCount.value = f"$successful%d"
         progressStatus.failedCount.value = f"$failed%d"
         progressStatus.cancelledCount.value = f"$canceled%d"
       }
-    }
 
     try
 
@@ -93,11 +96,10 @@ abstract class BatchRunnerProgressHelper[T](
         }
         progressStatus.abortFlag.onChange { (_, _, newValue) =>
           //          println(s"abortFlag changed to $newValue")
-          if newValue then {
+          if newValue then
             offFX {
               runner.cancel()
             }
-          }
         }
 
         onFX {
@@ -108,7 +110,7 @@ abstract class BatchRunnerProgressHelper[T](
       }
 
       // TODO deal with canceled execution
-      val results = runner.execute()
+      val results: Seq[(String, Try[Option[T]])] = runner.execute()
 
       //      println()
       //      println("Summarize processing")
@@ -126,23 +128,22 @@ abstract class BatchRunnerProgressHelper[T](
 
       val errorDetails: Seq[String] =
         results.flatMap {
-          case (name, Success(r1)) =>
-            r1 match
-              case Success(r2) =>
-                r2 match
-                  case Left(value) =>
-                    Option(s"$name: $value")
-                  case Right(_) =>
-                    None
-              case Failure(e2) =>
-                Option(s"$name: ERROR: ${Option(e2.getMessage).getOrElse(e2.getClass.getName)}")
-
+          case (name, Success(r)) =>
+            r match
+              case None    => Option(s"$name: Cancelled")
+              case Some(_) => None
           case (name, Failure(e)) =>
             Option(s"$name: ERROR: ${Option(e.getMessage).getOrElse(e.getClass.getName)}")
         }
 
-      showFinalSummary(counts, errorDetails, Option(progressStatus.window))
+      // Flatten the results, keep task name
+      val completedResults: Seq[TaskResult[T]] = results.flatMap { (name, t) =>
+        for ov <- t.toOption; v <- ov yield TaskResult(name, v)
+      }
 
+      assert(completedResults.length == counts.successful.toInt)
+
+      showFinalSummary(counts, errorDetails, Option(progressStatus.window))
       //
       //      results.foreach {
       //        case Success(r) =>
@@ -152,7 +153,7 @@ abstract class BatchRunnerProgressHelper[T](
       //          println(s"ERROR  : ${Option(e.getMessage).getOrElse(e.getClass.getName)}")
       //          e.printStackTrace()
       //      }
-
+      completedResults
     catch
       case t: Throwable =>
         t.printStackTrace()
@@ -161,10 +162,10 @@ abstract class BatchRunnerProgressHelper[T](
       onFX {
         Option(progressStatus).foreach(_.close())
       }
-
+    end try
   end processItems
 
-  private def showFinalSummary(counts: CountSummary, errorDetails: Seq[String], parentWindow: Option[Window]): Unit = {
+  private def showFinalSummary(counts: CountSummary, errorDetails: Seq[String], parentWindow: Option[Window]): Unit =
 
     import scalafx.Includes.*
     import scalafx.scene.control.Alert.AlertType
@@ -210,12 +211,10 @@ abstract class BatchRunnerProgressHelper[T](
           maxHeight = Double.MaxValue
           vgrow = Priority.Always
           hgrow = Priority.Always
-
         val expContent = new GridPane:
           maxWidth = Double.MaxValue
           add(label, 0, 0)
           add(textArea, 0, 1)
-
         Some(expContent)
 
     val alertType = if noErrors then AlertType.Information else AlertType.Warning
@@ -234,11 +233,12 @@ abstract class BatchRunnerProgressHelper[T](
 
       }.showAndWait()
     }
+  end showFinalSummary
 
-  }
-
-  def createSampleTasks(): Seq[ItemTask[T]]
+  def createTasks(): Seq[ItemTask[T]]
 
   private case class CountSummary(total: String, successful: String, failed: String, cancelled: String)
+end BatchRunnerWithProgress
 
-end BatchRunnerProgressHelper
+object BatchRunnerWithProgress:
+  case class TaskResult[T](taskName:String, result:T)

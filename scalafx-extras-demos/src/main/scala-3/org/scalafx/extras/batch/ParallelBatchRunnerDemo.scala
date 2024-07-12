@@ -29,9 +29,16 @@ package org.scalafx.extras.batch
 
 import scala.util.{Failure, Success}
 
+import scala.util.{Failure, Success, Try}
 
+/**
+ * Example of using `ParallelBatchRunner` and `ItemTask`.
+ * Results are printed to standard output.
+ *
+ * @author Jarek Sacha
+ */
 object ParallelBatchRunnerDemo {
-  class DemoTaskItem(n: Int) extends ItemTask[Int] {
+  private class DemoTaskItem(n: Int) extends ItemTask[Int] {
     val name = s"Demo TaskItem $n"
 
     def run(): Int = {
@@ -46,13 +53,12 @@ object ParallelBatchRunnerDemo {
     }
   }
 
-
   def main(args: Array[String]): Unit = {
     val items: Seq[DemoTaskItem] = Range(0, 10).map { i => new DemoTaskItem(i) }
 
     val batchHelper = new ParallelBatchRunner(items, progressUpdate, useParallelProcessing = true)
 
-    val results = batchHelper.execute()
+    val results: Seq[(String, Try[Option[Int]])] = batchHelper.execute()
 
     println()
     println("Summarize processing")
@@ -62,19 +68,21 @@ object ParallelBatchRunnerDemo {
     }
   }
 
-  def progressUpdate(running   : Long,
-                     successful: Long,
-                     failed    : Long,
-                     canceled : Long,
-                     executed  : Long,
-                     total     : Long,
-                     isCanceled  : Boolean,
-                     perc      : Double,
-                     message   : String) : Unit = {
+  @FunctionalInterface
+  private def progressUpdate(
+    running: Long,
+    successful: Long,
+    failed: Long,
+    canceled: Long,
+    executed: Long,
+    total: Long,
+    isCanceled: Boolean,
+    perc: Double,
+    message: String
+  ): Unit = {
     val m =
       f"R:$running%2d, S:$successful%2d, F:$failed%2d, E:$executed%2d, C:$canceled, T:$total%d, " +
         f"C:$isCanceled, perc:${perc.toInt}%3d, $message"
     println(m)
   }
-
 }

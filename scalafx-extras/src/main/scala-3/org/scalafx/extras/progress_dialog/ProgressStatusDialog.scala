@@ -41,7 +41,7 @@ import scalafx.stage.{Stage, Window}
 
 import java.time.Duration
 
-class ProgressStatusDialog(dialogTitle: String, parentWindow: Option[Window]) {
+class ProgressStatusDialog(dialogTitle: String, parentWindow: Option[Window]):
 
   private val elapsedTimeService = new ElapsedTimeService()
   private val progressStatus     = new ProgressStatus()
@@ -51,28 +51,25 @@ class ProgressStatusDialog(dialogTitle: String, parentWindow: Option[Window]) {
 
   val abortFlag: BooleanProperty = BooleanProperty(false)
 
-  def updateETA(): Unit = {
-    val strVal = {
+  private def updateETA(): Unit =
+    val strVal =
       val progress = progressStatus.model.progress.value
-      if progress <= 0 then {
+      if progress <= 0 then
         "?"
-      } else {
-        // TODO: prevent jittering of estimate when progress value changes,
+      else
+        // TODO: prevent jitter of estimate when progress value changes,
         //       compute running average of last predictions or something...
         val et        = elapsedTimeService.elapsedTime.value
         val eta: Long = (et * (1 - progress) / progress).ceil.toLong
         formatDuration(Duration.ofMillis(eta))
-      }
-    }
     progressStatus.model.etaTimeText.value = strVal
-  }
 
   elapsedTimeService.elapsedTime.onChange { (_, _, newValue) =>
     progressStatus.model.elapsedTimeText.value = formatDuration(Duration.ofMillis(newValue.longValue()))
     updateETA()
   }
 
-  private val abortButton = new Button {
+  private val abortButton = new Button:
     text = "Abort batch processing"
     padding = Insets(7)
     margin = Insets(7)
@@ -88,49 +85,43 @@ class ProgressStatusDialog(dialogTitle: String, parentWindow: Option[Window]) {
       }
     disable <== abortFlag
     alignmentInParent = Pos.Center
-  }
 
-  private val dialog: Stage = new Stage {
+  private val dialog: Stage = new Stage:
     initOwner(parentWindow.orNull)
     parentWindow.foreach { w =>
-      w.delegate match {
+      w.delegate match
         case s: javafx.stage.Stage =>
           icons ++= s.icons
         case x =>
           throw new Exception(s"Invalid parent window delegate: $x")
-      }
     }
     title = dialogTitle
     resizable = false
-    scene = new Scene {
-      root = new BorderPane {
+    scene = new Scene:
+      root = new BorderPane:
         padding = Insets(14)
         center = progressStatus.view
         bottom = abortButton
-      }
       parentWindow.foreach(w => stylesheets = w.scene().stylesheets)
-    }
 
-    onShown = _ => {
+    onShown = _ =>
       // TODO: prevent double initialization
       elapsedTimeService.doStart()
-    }
-    onCloseRequest = e => {
+    onCloseRequest = e =>
       abortFlag.value = true
-      // Do not allow to close the window
+      // Do not allow closing the window
       e.consume()
-    }
-  }
 
-  private def formatDuration(duration: Duration): String = {
+  private def formatDuration(duration: Duration): String =
     val seconds    = duration.getSeconds
     val absSeconds = Math.abs(seconds)
-    val positive   = String.format("%d:%02d:%02d", absSeconds / 3600, (absSeconds % 3600) / 60, absSeconds % 60)
-    if seconds < 0 then "-" + positive
-    else positive
-  }
+    val positive   = f"${absSeconds / 3600}%d:${absSeconds % 3600 / 60}%02d:${absSeconds % 60}%02d"
+    if seconds < 0 then
+      "-" + positive
+    else
+      positive
 
-  private class ElapsedTimeService extends jfxc.ScheduledService[Long] {
+  private class ElapsedTimeService extends jfxc.ScheduledService[Long]:
 
     private var startTime: Long = _
 
@@ -141,21 +132,18 @@ class ProgressStatusDialog(dialogTitle: String, parentWindow: Option[Window]) {
 
     this.period = 250.ms
 
-    override def createTask(): jfxc.Task[Long] = () => {
+    override def createTask(): jfxc.Task[Long] = () =>
       val ct = System.currentTimeMillis()
       val et = ct - startTime
       onFX { _elapsedTime.value = et }
       et
-    }
 
-    def doStart(): Unit = {
+    def doStart(): Unit =
       this.restart()
       startTime = System.currentTimeMillis()
       onFX {
         _elapsedTime.value = 0
       }
-    }
-  }
 
   def window: Window = dialog
 
@@ -173,12 +161,10 @@ class ProgressStatusDialog(dialogTitle: String, parentWindow: Option[Window]) {
 
   def cancelledCount: StringProperty = progressStatus.model.cancelledCountText
 
-  def close(): Unit = {
+  def close(): Unit =
     elapsedTimeService.cancel()
     dialog.close()
-  }
 
-  def show(): Unit = {
+  def show(): Unit =
     dialog.show()
-  }
-}
+end ProgressStatusDialog

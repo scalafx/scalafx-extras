@@ -27,7 +27,7 @@
 
 package org.scalafx.extras.batch
 
-object BatchRunner {
+object BatchRunner:
 
   @FunctionalInterface
   trait ProgressUpdater:
@@ -42,14 +42,13 @@ object BatchRunner {
       perc: Double,
       message: String
     ): Unit
-}
-trait BatchRunner[T, I <: ItemTask[T]] {
+
+trait BatchRunner[T, I <: ItemTask[T]]:
+
+  // TODO Is BatchRunner trait needed? It is not used on its own?
 
   import BatchRunner.ProgressUpdater
-
-  // TODO: Is this trait needed
 
   protected def itemTasks: Seq[I]
 
   protected def progressUpdater: ProgressUpdater
-}

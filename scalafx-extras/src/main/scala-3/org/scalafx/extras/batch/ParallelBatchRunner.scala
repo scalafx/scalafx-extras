@@ -37,43 +37,49 @@ class ParallelBatchRunner[T, I <: ItemTask[T]](
   protected val itemTasks: Seq[I],
   protected val progressUpdater: BatchRunner.ProgressUpdater,
   protected val useParallelProcessing: Boolean
-) extends BatchRunner[T, I] {
-  private val executor = {
+) extends BatchRunner[T, I]:
+
+  // TODO: should it be just `BatchRunner` since parallel execution is an optional?
+
+  private val executor =
     val processors: Int = Runtime.getRuntime.availableProcessors
     val processorsToUse = if useParallelProcessing then Math.max(1, processors - 1) else 1
-//    println(s"Using $processorsToUse processors")
+    //    println(s"Using $processorsToUse processors")
     Executors.newFixedThreadPool(processorsToUse).asInstanceOf[ThreadPoolExecutor]
-  }
 
   private val total = itemTasks.length
 
-  enum TaskState:
+  private enum TaskState:
     case NotStarted, Running, Succeeded, Failed, Cancelled
 
-  private class TaskHelper[T, I <: ItemTask[T]](val itemTask: I) extends Callable[Try[Either[String, T]]] {
+  private class TaskHelper(val itemTask: I) extends Callable[Try[Option[T]]]:
 
-    // TODO: redesign return type to be a 3-state `Try`: `Success`, `Failure`, `Cancelled`
+    // TODO: redesign return type to be a 3-state `Try`:
+    //  `Success`, `Failure`, `Cancelled` or `Result`, `Error`, `Cancelled`
 
     private val _state = new AtomicReference[TaskState](TaskState.NotStarted)
 
-    def state: TaskState = _state.get()
+    private def state: TaskState = _state.get()
 
     private def state_=(v: TaskState): Unit = _state.set(v)
 
     /**
-     * @return `Success` when finished without exception or `Failure` with the exception.
-     *         If a task completes a run, the `Success` will contain `Either.Right` with the result.
-     *         If a task was canceled and did not run, `Success` will contain `Either.Left`.
+     * @return `Success` when ended without exception or `Failure` with the exception.
+     *         The value wrapped by `Success` will be the result computed by the task.
+     *         If the task is able to complete and compute a result, it will return a computed value (non-empty Option).
+     *         If the task is canceled, it will return `None` (`Success(None)`)
+     *         If the task failed, it will return `Failure`.
      */
-    override def call(): Try[Either[String, T]] = {
+    override def call(): Try[Option[T]] =
       if isCanceled then
-//        println(s"Task Cancelled: ${itemTask.name}")
+        //        println(s"Task Cancelled: ${itemTask.name}")
         state = TaskState.Cancelled
         incrementCancelled()
 
-        Success(Left("Cancelled"))
+        // Mark cancellation with `None`
+        Success(None)
       else
-        try {
+        try
           state = TaskState.Running
           incrementRunning()
 
@@ -82,16 +88,14 @@ class ParallelBatchRunner[T, I <: ItemTask[T]](
           state = TaskState.Succeeded
           incrementSucceeded()
 
-          Success(Right(result))
-        } catch {
+          Success(Option(result))
+        catch
           case t: Throwable =>
             state = TaskState.Failed
             incrementFailed()
 
             Failure(t)
-        }
-    }
-  }
+  end TaskHelper
 
   private val _runningCount    = new AtomicLong(0)
   private val _successfulCount = new AtomicLong(0)
@@ -100,34 +104,31 @@ class ParallelBatchRunner[T, I <: ItemTask[T]](
   private val _canceledCount   = new AtomicLong(0)
   private val _cancelFlag      = new AtomicBoolean(false)
 
-  private def incrementRunning(): Unit = {
+  private def incrementRunning(): Unit =
     _runningCount.incrementAndGet()
     updateState()
-  }
 
-  private def incrementSucceeded(): Unit = {
+  private def incrementSucceeded(): Unit =
     _runningCount.decrementAndGet()
     _successfulCount.incrementAndGet()
     _executedCount.incrementAndGet()
     updateState()
-  }
 
-  private def incrementCancelled(): Unit = {
+  private def incrementCancelled(): Unit =
     _canceledCount.incrementAndGet()
     _executedCount.incrementAndGet()
     updateState()
-  }
 
-  private def incrementFailed(): Unit = {
+  private def incrementFailed(): Unit =
     _runningCount.decrementAndGet()
     _failedCount.incrementAndGet()
     _executedCount.incrementAndGet()
     updateState()
-  }
 
-  private def updateState(): Unit = {
+  private def updateState(): Unit =
 
     // TODO: Update state on a separate thread to avoid blocking by the callback `progressUpdate` of current thread
+    // TODO: `perc` and `message` are simple derived values, do we need pass them explicitly?
 
     val perc = _executedCount.get().toDouble / total.toDouble * 100
     progressUpdater.update(
@@ -141,7 +142,6 @@ class ParallelBatchRunner[T, I <: ItemTask[T]](
       perc = perc,
       message = s"${_executedCount.get()}/$total"
     )
-  }
 
   def runningCount: Long = _runningCount.get()
 
@@ -158,42 +158,39 @@ class ParallelBatchRunner[T, I <: ItemTask[T]](
   /**
    * Cancel execution.
    */
-  def cancel(): Unit = {
-
+  def cancel(): Unit =
     // Prevent new tasks from tanning computations
     _cancelFlag.set(true)
 
     // TODO: set cancel flag for each itemTask
     //    itemTasks.foreach(i => i.name)
     //    updateState()
-  }
 
   /**
-   * @return results returned by each task or error
+   * @return results returned by each task or error.
+   *         The first part of a tuple is task name, the second part is the result of processing.
    */
-  def execute(): Seq[(String, Try[Try[Either[String, T]]])] = {
-    val batchTasks: Seq[TaskHelper[T, I]] = itemTasks.map(item => new TaskHelper(item))
+  def execute(): Seq[(String, Try[Option[T]])] =
+    val batchTasks: Seq[TaskHelper] = itemTasks.map(item => new TaskHelper(item))
 
     //      val futures = batchTasks.map { t => executor.submit(t).asInstanceOf[JFuture[T]] }
 
     // Submit tasks
-    val namedFutures: Seq[(String, JFuture[Try[Either[String, T]]])] =
+    val namedFutures: Seq[(String, JFuture[Try[Option[T]]])] =
       batchTasks.map(t => (t.itemTask.name, executor.submit(t)))
     //    _futures = Option(futures)
 
     // Mark for executor shutdown when all tasks finished
     executor.shutdown()
 
-    while executor.getActiveCount > 0 do {
+    while executor.getActiveCount > 0 do
       Thread.sleep(100)
-    }
 
     //    println(s"Executor getTaskCount         : ${executor.getTaskCount}")
     //    println(s"Executor getActiveCount       : ${executor.getActiveCount}")
     //    println(s"Executor getCompletedTaskCount: ${executor.getCompletedTaskCount}")
 
-    val result = namedFutures.map((name, f) => (name, Try(f.get())))
-//    println("Completed waiting for the futures")
+    val result = namedFutures.map((name, f) => (name, Try(f.get()).flatten))
+    //    println("Completed waiting for the futures")
     result
-  }
-}
+end ParallelBatchRunner

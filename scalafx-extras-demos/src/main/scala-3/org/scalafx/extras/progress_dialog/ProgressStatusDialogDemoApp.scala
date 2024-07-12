@@ -32,51 +32,44 @@ import org.scalafx.extras.{initFX, offFX, onFX, onFXAndWait}
 import scalafx.application.Platform
 
 /**
-  * Example showing use of ProgressStatusDialog
-  */
-object ProgressStatusDemoApp {
+ * Example showing use of ProgressStatusDialog
+ */
+object ProgressStatusDialogDemoApp:
 
   // TODO implement simulated processing using batch processing backend
 
-  def main(args: Array[String]): Unit = {
+  def main(args: Array[String]): Unit =
 
     initFX()
     Platform.implicitExit = true
 
-    val progressStatusDialog = onFXAndWait {
-      new ProgressStatusDialog("Processing sample tasks", None)
-    }
+    val progressStatusDialog = onFXAndWait:
+      new ProgressStatusDialog("Progress Status Dialog Demo", None)
 
     progressStatusDialog.abortFlag.onChange { (_, _, newValue) =>
-      if newValue then {
+      if newValue then
         // Do not block UI, but wait till shutdown completed
-        offFX {
-          // Simulate delay due to shut down
+        offFX:
+          // Simulate delay due to shutdown
           Thread.sleep(3000)
-          onFX {
+          onFX:
             progressStatusDialog.close()
-          }
-        }
-      }
     }
 
-    onFXAndWait {
+    onFXAndWait:
       progressStatusDialog.show()
-    }
+
     val n = 500
-    for i <- 1 to n if !progressStatusDialog.abortFlag.value do {
-      onFX {
+    for i <- 1 to n if !progressStatusDialog.abortFlag.value do
+      onFX:
         progressStatusDialog.statusText.value = s"Processing item $i / $n"
         progressStatusDialog.progress.value = i / n.toDouble
-      }
+
       Thread.sleep(250)
-    }
 
     // In case of abort leave to abort handler o close the dialog when shutdown actions are complete
     if !progressStatusDialog.abortFlag.value then
-      onFX {
+      onFX:
         progressStatusDialog.close()
-      }
-  }
 
-}
+end ProgressStatusDialogDemoApp
