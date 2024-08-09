@@ -371,10 +371,18 @@ and [ShowMessageDemo Scala 3] files for details.
 
 ### ImageDisplay Demo
 
-[ImageDisplayDemoApp][ImageDisplayDemo] a simple example of an application that can display images, with ability to zoom
-in, zoom out, and fit to current window. Illustrates use of the `ImageDisplay` component.
+[ImageDisplayDemoApp][ImageDisplayDemo] a simple example of an application that can display images, 
+with the ability to zoom in, zoom out, and fit to the current window, flip, and rotate the image. 
+Illustrates use of the `ImageDisplay` component.
 
 ![Image Display Demo](notes/assets/ImageDisplayDemo.gif)
+
+### BatchRunnerWithProgress Demo
+
+[BatchRunnerWithProgressDemoApp] demo of `BatchRunnerWithProgress` GUI.
+
+![BatchRunnerWithProgress Demo](notes/assets/BatchRunnerProgressDemoApp.gif) 
+
 
 Status
 ------
@@ -412,6 +420,8 @@ BSD-3-Clause ScalaFX license.
 [StopWatchDemo Scala 2]: scalafx-extras-demos/src/main/scala-2/org/scalafx/extras/mvcfx/stopwatch
 
 [StopWatchDemo Scala 3]: scalafx-extras-demos/src/main/scala-3/org/scalafx/extras/mvcfx/stopwatch
+
+[BatchRunnerWithProgressDemoApp]: scalafx-extras-demos/src/main/scala-3/org/scalafx/extras/batch/BatchRunnerWithProgressDemoApp.scala
 
 [ScalaFX Users Group]: https://groups.google.com/forum/#!forum/scalafx-users
 
