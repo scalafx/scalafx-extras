@@ -5,11 +5,11 @@ import scala.xml.{Node => XmlNode, NodeSeq => XmlNodeSeq, _}
 
 //
 // Environment variables used by the build:
-// GRAPHVIZ_DOT_PATH - Full path to Graphviz dot utility. If not defined Scaladocs will be build without diagrams.
+// GRAPHVIZ_DOT_PATH - Full path to Graphviz dot utility. If not defined, Scaladocs will be built without diagrams.
 // JAR_BUILT_BY      - Name to be added to Jar metadata field "Built-By" (defaults to System.getProperty("user.name")
 //
 
-val projectVersion = "0.9.0.6-SNAPSHOT"
+val projectVersion = "0.10.0"
 val versionTagDir  = if (projectVersion.endsWith("SNAPSHOT")) "master" else "v." + projectVersion
 val _scalaVersions = Seq("3.3.3", "2.13.14", "2.12.19")
 val _scalaVersion  = _scalaVersions.head
@@ -91,7 +91,7 @@ lazy val scalaFXExtrasDemos = (project in file("scalafx-extras-demos")).settings
 ).dependsOn(scalaFXExtras % "compile;test->test")
 
 // Resolvers
-// Add snapshots to root project to enable compilation with Scala SNAPSHOT compiler,
+// Add snapshots to the root project to enable compilation with Scala SNAPSHOT compiler,
 // e.g., 2.11.0-SNAPSHOT
 resolvers ++= Resolver.sonatypeOssRepos("snapshots")
 
