@@ -107,7 +107,7 @@ object ImageDisplayDemoApp extends JFXApp3 {
     // ---------------------------------------------------------------------------
 
     /**
-     * Let user select image file and load it.
+     * Let user select an image file and load it.
      */
     def onFileOpen(): Unit = {
       val fileChooser = new FileChooser()
