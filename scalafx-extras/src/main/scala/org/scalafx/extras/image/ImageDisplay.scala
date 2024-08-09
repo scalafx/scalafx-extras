@@ -140,6 +140,12 @@ class ImageDisplay() {
    */
   val view: Node = scrollPane
 
+  /** Flip image on X axis, this is done before applying rotation */
+  val flipX: BooleanProperty = BooleanProperty(value = false)
+
+  /** Flip image on Y axis, this is done before applying rotation */
+  val flipY: BooleanProperty = BooleanProperty(value = false)
+
   /**
    * Property containing image to be displayed. If `null` the display will be blank (following JavaFX convention)
    */
@@ -148,7 +154,9 @@ class ImageDisplay() {
   initialize()
 
   /**
-   * Image rotation in degrees. Default value is 0 (no rotation).
+   * Image rotation in degrees.
+   * The default value is 0 (no rotation).
+   * This is done after applying flip operations.
    */
   def rotation: Double = imageView.rotate()
 
@@ -196,6 +204,16 @@ class ImageDisplay() {
         case None =>
           overlayPane.children.clear()
       }
+    }
+
+    flipX.onChange { (_, _, newValue) =>
+      val v = math.abs(imageView.scaleX.value)
+      imageView.scaleX.value = if (newValue) -v else v
+    }
+
+    flipY.onChange { (_, _, newValue) =>
+      val v = math.abs(imageView.scaleY.value)
+      imageView.scaleY.value = if (newValue) -v else v
     }
 
     updateFit()

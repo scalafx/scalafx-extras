@@ -72,9 +72,14 @@ object ImageDisplayDemoApp extends JFXApp3 {
               new ToggleButton("Zoom to fit") {
                 selected <==> imageDisplay.zoomToFit
               },
+              new ToggleButton("Flip X") {
+                selected <==> imageDisplay.flipX
+              },
+              new ToggleButton("Flip Y") {
+                selected <==> imageDisplay.flipY
+              },
               new ChoiceBox(rotationItems) {
                 selectionModel().selectedItem.onChange { (_, _, newValue) =>
-                  println(s"$newValue chosen in ChoiceBox")
                   imageDisplay.rotation = newValue
                 }
                 selectionModel().selectFirst()
