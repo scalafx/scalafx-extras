@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2022, ScalaFX Project
+ * Copyright (c) 2011-2024, ScalaFX Project
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -32,6 +32,7 @@ import org.scalafx.extras.ShowMessage
 import scalafx.Includes.*
 import scalafx.application.JFXApp3
 import scalafx.application.JFXApp3.PrimaryStage
+import scalafx.collections.ObservableBuffer
 import scalafx.scene.Scene
 import scalafx.scene.control.*
 import scalafx.scene.image.Image
@@ -42,6 +43,8 @@ import scalafx.stage.FileChooser
  * Demonstrates use of `ImageDisplay` class.
  */
 object ImageDisplayDemoApp extends JFXApp3 {
+
+  private val rotationItems = ObservableBuffer(0, 90, 180, 270)
 
   override def start(): Unit = {
 
@@ -68,6 +71,18 @@ object ImageDisplayDemoApp extends JFXApp3 {
               },
               new ToggleButton("Zoom to fit") {
                 selected <==> imageDisplay.zoomToFit
+              },
+              new ToggleButton("Flip X") {
+                selected <==> imageDisplay.flipX
+              },
+              new ToggleButton("Flip Y") {
+                selected <==> imageDisplay.flipY
+              },
+              new ChoiceBox(rotationItems) {
+                selectionModel().selectedItem.onChange { (_, _, newValue) =>
+                  imageDisplay.rotation = newValue
+                }
+                selectionModel().selectFirst()
               }
             )
           }
@@ -92,7 +107,7 @@ object ImageDisplayDemoApp extends JFXApp3 {
     // ---------------------------------------------------------------------------
 
     /**
-     * Let user select image file and load it.
+     * Let user select an image file and load it.
      */
     def onFileOpen(): Unit = {
       val fileChooser = new FileChooser()

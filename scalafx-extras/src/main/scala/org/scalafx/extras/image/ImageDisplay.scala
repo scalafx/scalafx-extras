@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2021, ScalaFX Project
+ * Copyright (c) 2011-2024, ScalaFX Project
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -78,7 +78,7 @@ import scalafx.scene.shape.Rectangle
  * }
  * }}}
  */
-class ImageDisplay() {
+class ImageDisplay {
 
   private val imageView = new ImageView {
     preserveRatio = true
@@ -95,12 +95,12 @@ class ImageDisplay() {
 
   private val scrollPane: ScrollPane = new ScrollPane {
     self =>
-    // setting `fitTo* = true` makes the image centered when view point is larger than the zoomed image.
+    // setting `fitTo* = true` makes the image centered when the view point is larger than the zoomed image.
     fitToHeight = true
     fitToWidth = true
     // Wrap content in a group, as advised in ScrollPane documentation,
-    // to get proper size for fitting with using `zoomToFit`.
-    // This may not be needed, as wrapping in a group makes it difficult to center.
+    // to get the proper size for fitting with using `zoomToFit`.
+    // This may not be necessary, as wrapping in a group makes it difficult to center.
     //    content = new Group {
     //      children = new StackPane {
     //        children = Seq(imageView, overlayPane)
@@ -112,13 +112,15 @@ class ImageDisplay() {
   }
 
   /**
-   * Controls image zoom when `zoomToFit` is off. Value of 1 mean no scaling.
-   * Values larger than 1 make image larger. Values smaller than 1 make image smaller.
+   * Controls image zoom when `zoomToFit` is off.
+   * The value of 1 means no scaling.
+   * Values larger than 1 make image larger.
+   * Values smaller than 1 make image smaller.
    */
   val zoom: ObjectProperty[ZoomScale] = ObjectProperty[ZoomScale](this, "Zoom", ZoomScale.Zoom100Perc)
 
   /**
-   * When set to `true` the image fits to the size of the available view, maintaining its aspect ratio.
+   * When set to `true`, the image fits to the size of the available view, maintaining its aspect ratio.
    */
   val zoomToFit: BooleanProperty = BooleanProperty(value = false)
 
@@ -140,15 +142,23 @@ class ImageDisplay() {
    */
   val view: Node = scrollPane
 
+  /** Flip image on X axis, this is done before applying rotation */
+  val flipX: BooleanProperty = BooleanProperty(value = false)
+
+  /** Flip image on Y axis, this is done before applying rotation */
+  val flipY: BooleanProperty = BooleanProperty(value = false)
+
   /**
-   * Property containing image to be displayed. If `null` the display will be blank (following JavaFX convention)
+   * Property containing image to be displayed. If `null`, the display will be blank (following JavaFX convention)
    */
   val image: ObjectProperty[javafx.scene.image.Image] = imageView.image
 
   initialize()
 
   /**
-   * Image rotation in degrees. Default value is 0 (no rotation).
+   * Image rotation in degrees.
+   * The default value is 0 (no rotation).
+   * This is done after applying flip operations.
    */
   def rotation: Double = imageView.rotate()
 
@@ -196,6 +206,16 @@ class ImageDisplay() {
         case None =>
           overlayPane.children.clear()
       }
+    }
+
+    flipX.onChange { (_, _, newValue) =>
+      val v = math.abs(imageView.scaleX.value)
+      imageView.scaleX.value = if (newValue) -v else v
+    }
+
+    flipY.onChange { (_, _, newValue) =>
+      val v = math.abs(imageView.scaleY.value)
+      imageView.scaleY.value = if (newValue) -v else v
     }
 
     updateFit()

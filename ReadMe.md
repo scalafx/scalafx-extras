@@ -24,6 +24,7 @@ Extras do not have direct corresponding concepts in JavaFX.
       * [Example 2](#example-2)
     * [Simpler Use of FXML with MVCfx Pattern](#simpler-use-of-fxml-with-mvcfx-pattern)
     * [ImageDisplay Component](#imagedisplay-component)
+    * [Batch Processing and Progress Dialog](#batch-processing-and-progress-dialog)
   * [Demos](#demos)
     * [StopWatch Application](#stopwatch-application)
     * [ShowMessage Demo](#showmessage-demo)
@@ -328,8 +329,14 @@ The demos module has a complete example of a simple application: [StopWatchApp][
 
 ### ImageDisplay Component
 
-ImageDisplay Component is an image view with ability to zoom in, zoom out, zoom to fit. It can also automatically resize
+ImageDisplay Component is an image view with the ability to zoom in, zoom out, zoom to fit. It can also automatically resize
 to parent size.
+
+### Batch Processing and Progress Dialog
+
+Work in progress
+* Helper UI for running batch processing tasks, see `BatchRunnerProgressDemoApp` for example of use
+* Component for display of progress of batch processing tasks, see `ProgressStatusDemoApp` for example of use
 
 
 Demos
@@ -364,10 +371,18 @@ and [ShowMessageDemo Scala 3] files for details.
 
 ### ImageDisplay Demo
 
-[ImageDisplayDemoApp][ImageDisplayDemo] a simple example of an application that can display images, with ability to zoom
-in, zoom out, and fit to current window. Illustrates use of the `ImageDisplay` component.
+[ImageDisplayDemoApp][ImageDisplayDemo] a simple example of an application that can display images, 
+with the ability to zoom in, zoom out, and fit to the current window, flip, and rotate the image. 
+Illustrates use of the `ImageDisplay` component.
 
 ![Image Display Demo](notes/assets/ImageDisplayDemo.gif)
+
+### BatchRunnerWithProgress Demo
+
+[BatchRunnerWithProgressDemoApp] demo of `BatchRunnerWithProgress` GUI.
+
+![BatchRunnerWithProgress Demo](notes/assets/BatchRunnerProgressDemoApp.gif) 
+
 
 Status
 ------
@@ -405,6 +420,8 @@ BSD-3-Clause ScalaFX license.
 [StopWatchDemo Scala 2]: scalafx-extras-demos/src/main/scala-2/org/scalafx/extras/mvcfx/stopwatch
 
 [StopWatchDemo Scala 3]: scalafx-extras-demos/src/main/scala-3/org/scalafx/extras/mvcfx/stopwatch
+
+[BatchRunnerWithProgressDemoApp]: scalafx-extras-demos/src/main/scala-3/org/scalafx/extras/batch/BatchRunnerWithProgressDemoApp.scala
 
 [ScalaFX Users Group]: https://groups.google.com/forum/#!forum/scalafx-users
 
