@@ -9,9 +9,9 @@ import scala.xml.{Node => XmlNode, NodeSeq => XmlNodeSeq, _}
 // JAR_BUILT_BY      - Name to be added to Jar metadata field "Built-By" (defaults to System.getProperty("user.name")
 //
 
-val projectVersion = "0.10.0"
+val projectVersion = "0.10.0.1-SNAPSHOT"
 val versionTagDir  = if (projectVersion.endsWith("SNAPSHOT")) "master" else "v." + projectVersion
-val _scalaVersions = Seq("3.3.3", "2.13.14", "2.12.19")
+val _scalaVersions = Seq("3.3.4", "2.13.15", "2.12.20")
 val _scalaVersion  = _scalaVersions.head
 
 ThisBuild / version            := projectVersion
@@ -22,11 +22,11 @@ ThisBuild / organization       := "org.scalafx"
 publishArtifact := false
 publish / skip  := true
 
-lazy val libEnumeratum     = "com.beachape"               %% "enumeratum"          % "1.7.4"
-lazy val libLogbackClassic = "ch.qos.logback"              % "logback-classic"     % "1.5.6"
+lazy val libEnumeratum     = "com.beachape"               %% "enumeratum"          % "1.7.5"
+lazy val libLogbackClassic = "ch.qos.logback"              % "logback-classic"     % "1.5.11"
 lazy val libParadise       = "org.scalamacros"             % "paradise"            % "2.1.1" cross CrossVersion.full
 lazy val libScalaLogging   = "com.typesafe.scala-logging" %% "scala-logging"       % "3.9.5"
-lazy val libScalaFX        = "org.scalafx"                %% "scalafx"             % "22.0.0-R33"
+lazy val libScalaFX        = "org.scalafx"                %% "scalafx"             % "23.0.1-R34"
 lazy val libScalaFXML      = "org.scalafx"                %% "scalafxml-core-sfx8" % "0.5"
 lazy val libScalaTest      = "org.scalatest"              %% "scalatest"           % "3.2.19"
 lazy val libScalaReflect   = "org.scala-lang"              % "scala-reflect"
