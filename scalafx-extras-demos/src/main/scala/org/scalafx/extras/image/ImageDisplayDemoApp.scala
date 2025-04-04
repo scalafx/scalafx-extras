@@ -55,7 +55,6 @@ object ImageDisplayDemoApp extends JFXApp3 {
   override def start(): Unit = {
 
     val imageDisplay = new ImageDisplay()
-    //  private var roi: Option[Rectangle] = None
 
     stage = new PrimaryStage {
       scene = new Scene(640, 480) {
@@ -136,12 +135,12 @@ object ImageDisplayDemoApp extends JFXApp3 {
               stroke = Color.Yellow
               strokeWidth = 1
             }
-            imageDisplay.overlays = Seq(roi)
+            imageDisplay.overlays.value = Seq(roi)
           case None =>
-            imageDisplay.overlays = Seq.empty[Rectangle]
+            imageDisplay.overlays.value = Seq.empty[Rectangle]
         }
       else
-        imageDisplay.overlays = Seq.empty[Rectangle]
+        imageDisplay.overlays.value = Seq.empty[Rectangle]
       //      imageView.scaleY.value = if (newValue) -v else v
     }
 
@@ -178,14 +177,5 @@ object ImageDisplayDemoApp extends JFXApp3 {
         }
       }
     }
-
-    //  private def setROI(): Unit = {
-    //    roi = roi match {
-    //      case Some(r) => None
-    //      case None => Some(Rectangle(278, 205, 37, 10))
-    //    }
-    //
-    //    imageDisplay.roi() = roi
-    //  }
   }
 }

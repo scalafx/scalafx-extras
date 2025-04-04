@@ -27,17 +27,15 @@
 
 package org.scalafx.extras.image
 
-import javafx.scene.image as jfxsi
 import scalafx.Includes.*
 import scalafx.beans.property.*
 import scalafx.geometry.Pos
 import scalafx.scene.canvas.Canvas
 import scalafx.scene.control.ScrollPane
+import scalafx.scene.image.Image
 import scalafx.scene.layout.StackPane
 import scalafx.scene.shape.Rectangle
 import scalafx.scene.{Group, Node}
-
-import scala.collection.mutable
 
 /**
  * Displays an image view with the ability to zoom in, zoom out, zoom to fit.
@@ -153,7 +151,7 @@ class ImageDisplay {
    * Property containing image to be displayed.
    * If `null`, the display will be blank (following JavaFX convention)
    */
-  val image: ObjectProperty[Option[javafx.scene.image.Image]] = new ObjectProperty[Option[jfxsi.Image]] {
+  val image: ObjectProperty[Option[Image]] = new ObjectProperty[Option[Image]] {
     value = None
     onChange { (_, _, newImageOpt) =>
       newImageOpt match {
@@ -173,34 +171,29 @@ class ImageDisplay {
     }
   }
 
-  def setImage(newImage: scalafx.scene.image.Image): Unit = {
+  def setImage(newImage: Image): Unit = {
     image.value = Option(newImage)
   }
 
-  private val _overlays: mutable.ListBuffer[Rectangle] = mutable.ListBuffer.empty[Rectangle]
-
   /**
-   * Set overlays to display on the image. A rectangle represents individual overlay.
+   * Overlays displayed on the image.
+   * Changes in individual members of the overlay collection, like size or location, are __not__ being observed.
+   * To force an update, you need to assign a new collection.
+   *
+   * Each rectangle represents individual overlay.
    * Rectangle properties used to draw the overlay:
    *   - stroke - color/paint of the outline. If `null`, no outline will be drawn.
    *   - strokeWidth - width of the line in screen pixels. The width is maintained constant to the display, regardless of zoom.
    *   - fill - fill color/paint. If `null`, no outline will be drawn.
    *
    * Note that the opacity of is controlled by opacity of the `stroke` and `fill` paint.
-   *
-   * @param ovls overlays to display on the image.
    */
-  def overlays_=(ovls: Seq[Rectangle]): Unit = {
-    _overlays.clear()
-    _overlays.appendAll(ovls)
-    drawOverlays()
+  val overlays: ObjectProperty[Seq[Rectangle]] = new ObjectProperty[Seq[Rectangle]] {
+    value = Seq.empty
+    onChange { (_, _, _) =>
+      drawOverlays()
+    }
   }
-
-  /**
-   * Overlays displayed on the image.
-   * @see #overlays_=()
-   */
-  def overlays: Seq[Rectangle] = _overlays.toSeq
 
   initialize()
 
@@ -286,7 +279,7 @@ class ImageDisplay {
     val gc = overlayCanvas.graphicsContext2D
     gc.clearRect(0, 0, overlayCanvas.width(), overlayCanvas.height())
 
-    overlays.foreach { r =>
+    overlays.value.foreach { r =>
       // Draw outline
       Option(r.stroke()).foreach { stroke =>
         // Maintain displayed width of the line regardless of zoom
