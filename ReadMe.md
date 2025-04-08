@@ -11,28 +11,30 @@ Extras do not have direct corresponding concepts in JavaFX.
 **Contents**
 
 <!-- TOC -->
-  * [Project Structure](#project-structure)
-  * [SBT](#sbt)
-  * [Features](#features)
+
+* [Project Structure](#project-structure)
+* [SBT](#sbt)
+* [Features](#features)
     * [Helper Methods](#helper-methods)
     * [Simpler Display of Standard Dialogs](#simpler-display-of-standard-dialogs)
     * [Easy Custom Panes](#easy-custom-panes)
     * [Easy Custom Dialogs](#easy-custom-dialogs)
     * [Edit a Case Class object with AutoDialog](#edit-a-case-class-object-with-autodialog)
     * [BusyWorker](#busyworker)
-      * [Example 1](#example-1)
-      * [Example 2](#example-2)
+        * [Example 1](#example-1)
+        * [Example 2](#example-2)
     * [Simpler Use of FXML with MVCfx Pattern](#simpler-use-of-fxml-with-mvcfx-pattern)
     * [ImageDisplay Component](#imagedisplay-component)
     * [Batch Processing and Progress Dialog](#batch-processing-and-progress-dialog)
-  * [Demos](#demos)
+* [Demos](#demos)
     * [StopWatch Application](#stopwatch-application)
     * [ShowMessage Demo](#showmessage-demo)
     * [BusyWorker Demo](#busyworker-demo)
     * [ImageDisplay Demo](#imagedisplay-demo)
-  * [Status](#status)
-  * [Discussion and Support](#discussion-and-support)
-  * [License](#license)
+* [Status](#status)
+* [Discussion and Support](#discussion-and-support)
+* [License](#license)
+
 <!-- TOC -->
 
 Project Structure
@@ -239,7 +241,7 @@ A more elaborate example is in the `GenericDialogFXDemo`.
 ### Edit a Case Class object with AutoDialog
 
 `AutoDialog` can be used too quickly open auto generated dialog from case class. After closing, the dialog will return
-edited version of the input case class.
+an edited version of the input case class.
 
 Here is an example of usage:
 
@@ -266,10 +268,10 @@ println(s"Result: $result")
 
 ### BusyWorker
 
-BusyWorker helps running a UI task on separate threads (other than the JavaFX Application thread). It will show busy
+BusyWorker helps to run a UI task on separate threads (other than the JavaFX Application thread). It will show busy
 cursor and disable specified nodes while the task is performed. It gives an option to show progress and status messages.
 `BusyWorker` takes care of handling exceptions and displaying error dialogs. It provides for an option to perform custom
-finish actions after task is completed.
+finish actions after the task is completed.
 
 #### Example 1
 
@@ -323,21 +325,24 @@ The full code example can be found in the
 ### Simpler Use of FXML with MVCfx Pattern
 
 Package `org.scalafx.extras.mvcfx` contains classes for creating with UI components based on FXML that use
-Model-View-Controller, here we call it the MVCfx Pattern. See wiki page [MVCfx Pattern] for details.
+Model-View-Controller, here we call it the MVCfx Pattern. See the wiki page [MVCfx Pattern] for details.
 
 The demos module has a complete example of a simple application: [StopWatchApp][StopWatchDemo].
 
 ### ImageDisplay Component
 
-ImageDisplay Component is an image view with the ability to zoom in, zoom out, zoom to fit. It can also automatically resize
-to parent size.
+ImageDisplay Component is an image view with the ability to zoom in, zoom out, zoom to fit.
+It can also automatically resize to parent size (zoom-to-fit).
+Image cane also rotated and flipped along the X and Y axis.
+
+ImageDisplay provides an option to show overlay on top of the image. Overlays scale and rotate with the image.
 
 ### Batch Processing and Progress Dialog
 
 Work in progress
-* Helper UI for running batch processing tasks, see `BatchRunnerProgressDemoApp` for example of use
-* Component for display of progress of batch processing tasks, see `ProgressStatusDemoApp` for example of use
 
+* Helper UI for running batch processing tasks, see `BatchRunnerProgressDemoApp` for example of use
+* Component for display of the progress of batch processing tasks, see `ProgressStatusDemoApp` for example of use
 
 Demos
 -----
@@ -371,8 +376,8 @@ and [ShowMessageDemo Scala 3] files for details.
 
 ### ImageDisplay Demo
 
-[ImageDisplayDemoApp][ImageDisplayDemo] a simple example of an application that can display images, 
-with the ability to zoom in, zoom out, and fit to the current window, flip, and rotate the image. 
+[ImageDisplayDemoApp][ImageDisplayDemo] a simple example of an application that can display images,
+with the ability to zoom in, zoom out, and fit to the current window, flip, and rotate the image.
 Illustrates use of the `ImageDisplay` component.
 
 ![Image Display Demo](notes/assets/ImageDisplayDemo.gif)
@@ -381,7 +386,7 @@ Illustrates use of the `ImageDisplay` component.
 
 [BatchRunnerWithProgressDemoApp] demo of `BatchRunnerWithProgress` GUI.
 
-![BatchRunnerWithProgress Demo](notes/assets/BatchRunnerProgressDemoApp.gif) 
+![BatchRunnerWithProgress Demo](notes/assets/BatchRunnerProgressDemoApp.gif)
 
 
 Status

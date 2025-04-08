@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2024, ScalaFX Project
+ * Copyright (c) 2011-2025, ScalaFX Project
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -32,11 +32,15 @@ import org.scalafx.extras.ShowMessage
 import scalafx.Includes.*
 import scalafx.application.JFXApp3
 import scalafx.application.JFXApp3.PrimaryStage
+import scalafx.beans.property.BooleanProperty
 import scalafx.collections.ObservableBuffer
+import scalafx.geometry.Orientation.Horizontal
 import scalafx.scene.Scene
 import scalafx.scene.control.*
 import scalafx.scene.image.Image
 import scalafx.scene.layout.{BorderPane, FlowPane}
+import scalafx.scene.paint.Color
+import scalafx.scene.shape.Rectangle
 import scalafx.stage.FileChooser
 
 /**
@@ -44,12 +48,13 @@ import scalafx.stage.FileChooser
  */
 object ImageDisplayDemoApp extends JFXApp3 {
 
-  private val rotationItems = ObservableBuffer(0, 90, 180, 270)
+  /** Show example ROI in the center of the Image */
+  private val showROI: BooleanProperty = BooleanProperty(value = false)
+  private val rotationItems            = ObservableBuffer(0, 90, 180, 270)
 
   override def start(): Unit = {
 
     val imageDisplay = new ImageDisplay()
-    //  private var roi: Option[Rectangle] = None
 
     stage = new PrimaryStage {
       scene = new Scene(640, 480) {
@@ -61,6 +66,7 @@ object ImageDisplayDemoApp extends JFXApp3 {
               new Button("Open...") {
                 onAction = () => onFileOpen()
               },
+              Separator(Horizontal),
               new Button("Zoom In") {
                 onAction = () => imageDisplay.zoomIn()
                 disable <== imageDisplay.zoomToFit
@@ -72,6 +78,7 @@ object ImageDisplayDemoApp extends JFXApp3 {
               new ToggleButton("Zoom to fit") {
                 selected <==> imageDisplay.zoomToFit
               },
+              Separator(Horizontal),
               new ToggleButton("Flip X") {
                 selected <==> imageDisplay.flipX
               },
@@ -83,6 +90,10 @@ object ImageDisplayDemoApp extends JFXApp3 {
                   imageDisplay.rotation = newValue
                 }
                 selectionModel().selectFirst()
+              },
+              Separator(Horizontal),
+              new ToggleButton("Show ROI") {
+                selected <==> showROI
               }
             )
           }
@@ -105,6 +116,33 @@ object ImageDisplayDemoApp extends JFXApp3 {
 
     //  setROI()
     // ---------------------------------------------------------------------------
+    showROI.onChange { (_, _, _) =>
+      updateROI()
+    }
+
+    def updateROI(): Unit = {
+      if (showROI())
+        imageDisplay.image() match {
+          case Some(im) =>
+            val w = im.width.value
+            val h = im.height.value
+            val roi = new Rectangle {
+              x = w / 4
+              y = h / 4 + h / 8
+              width = w / 2
+              height = h / 4
+              fill = Color(1, 1, 1, 0.5)
+              stroke = Color.Yellow
+              strokeWidth = 1
+            }
+            imageDisplay.overlays.value = Seq(roi)
+          case None =>
+            imageDisplay.overlays.value = Seq.empty[Rectangle]
+        }
+      else
+        imageDisplay.overlays.value = Seq.empty[Rectangle]
+      //      imageView.scaleY.value = if (newValue) -v else v
+    }
 
     /**
      * Let user select an image file and load it.
@@ -116,7 +154,8 @@ object ImageDisplayDemoApp extends JFXApp3 {
         try {
           val image = new Image("file:" + file.getCanonicalPath)
           if (!image.error()) {
-            imageDisplay.image() = image
+            imageDisplay.setImage(image)
+            updateROI()
           } else {
             image.exception().printStackTrace()
             ShowMessage.exception(
@@ -135,18 +174,8 @@ object ImageDisplayDemoApp extends JFXApp3 {
               t = ex,
               parentWindow = stage
             )
-
         }
       }
     }
-
-    //  private def setROI(): Unit = {
-    //    roi = roi match {
-    //      case Some(r) => None
-    //      case None => Some(Rectangle(278, 205, 37, 10))
-    //    }
-    //
-    //    imageDisplay.roi() = roi
-    //  }
   }
 }
