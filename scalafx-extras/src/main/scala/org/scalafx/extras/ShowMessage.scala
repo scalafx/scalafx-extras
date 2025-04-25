@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2024, ScalaFX Project
+ * Copyright (c) 2011-2025, ScalaFX Project
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -150,7 +150,7 @@ object ShowMessage {
     showMessage(parentWindow(ownerNode)).showInformation(title, header, content)
 
   /**
-   * Show warning dialog
+   * Show a warning dialog
    *
    * @param title        dialog title
    * @param header       header text.
@@ -167,7 +167,7 @@ object ShowMessage {
    * @param header       header text.
    * @param content      content text.
    * @param parentWindow owner window that will be blacked by the dialog.
-   * @return `true` when user selected 'OK' and `false` when user selected `Cancel` or dismissed the dialog.
+   * @return `true` when the user selected 'OK' and `false` when the user selected `Cancel` or dismissed the dialog.
    */
   def confirmation(title: String, header: String, content: String = "", parentWindow: Option[Window] = None): Boolean =
     showMessage(parentWindow).showConfirmation(title, header, content)
@@ -179,7 +179,7 @@ object ShowMessage {
    * @param header       header text.
    * @param content      content text.
    * @param parentWindow owner window that will be blacked by the dialog.
-   * @return `Some(true)` when user selected 'OK', `Some(false)` when user selected `No`,
+   * @return `Some(true)` when the user selected 'OK', `Some(false)` when the user selected `No`,
    *         and `None` user selected `Cancel` or dismissed the dialog.
    */
   def confirmationYesNoCancel(
@@ -193,7 +193,7 @@ object ShowMessage {
 }
 
 /**
- * Mixin that adds ability to easily show message dialogs.
+ * Mixin that adds the ability to easily show message dialogs.
  * A messageLogger can be provided, so when the error or warning dialogs are shown, they are also logged.
  *
  * A ShowMessage mixin will typically be used with the [[org.scalafx.extras.mvcfx.ModelFX ModelFX]].
@@ -203,7 +203,7 @@ object ShowMessage {
 trait ShowMessage {
 
   /**
-   * Parent window for a dialog. Dialogs are shown modal, the window will be blocked while dialog is displayed.
+   * Parent window for a dialog. Dialogs are shown as modal, the window will be blocked while the dialog is displayed.
    */
   protected def parentWindow: Option[Window]
 
@@ -232,14 +232,14 @@ trait ShowMessage {
         headerText = header
         contentText = content
         this.resizable = _resizable
-        dialogPane().setMinWidth(Region.USE_PREF_SIZE)
-        dialogPane().setMinHeight(Region.USE_PREF_SIZE)
+        dialogPane().setMinWidth(Region.UsePrefSize)
+        dialogPane().setMinHeight(Region.UsePrefSize)
       }.showAndWait()
     }
   }
 
   /**
-   * Displays error dialog with expandable exception information.
+   * Displays an error dialog with expandable exception information.
    *
    * @param title   Dialog title
    * @param message Message (excluding t.getMessage(), it is automatically displayed)
@@ -270,14 +270,14 @@ trait ShowMessage {
         headerText = header
         contentText = content
         this.resizable = _resizable
-        dialogPane().setMinWidth(Region.USE_PREF_SIZE)
-        dialogPane().setMinHeight(Region.USE_PREF_SIZE)
+        dialogPane().setMinWidth(Region.UsePrefSize)
+        dialogPane().setMinHeight(Region.UsePrefSize)
       }.showAndWait()
     }
   }
 
   /**
-   * Show warning dialog
+   * Show a warning dialog
    *
    * @param title   dialog title
    * @param header  header text.
@@ -296,8 +296,8 @@ trait ShowMessage {
         headerText = header
         contentText = content
         this.resizable = _resizable
-        dialogPane().setMinWidth(Region.USE_PREF_SIZE)
-        dialogPane().setMinHeight(Region.USE_PREF_SIZE)
+        dialogPane().setMinWidth(Region.UsePrefSize)
+        dialogPane().setMinHeight(Region.UsePrefSize)
       }.showAndWait()
     }
   }
@@ -308,7 +308,7 @@ trait ShowMessage {
    * @param title   dialog title.
    * @param header  header text.
    * @param content content text.
-   * @return `true` when user selected 'OK' and `false` when user selected `Cancel` or dismissed the dialog.
+   * @return `true` when the user selected 'OK' and `false` when the user selected `Cancel` or dismissed the dialog.
    */
   def showConfirmation(title: String, header: String, content: String = "", resizable: Boolean = false): Boolean = {
     // Rename to avoid name clashes
@@ -322,8 +322,8 @@ trait ShowMessage {
         headerText = header
         contentText = content
         this.resizable = _resizable
-        dialogPane().setMinWidth(Region.USE_PREF_SIZE)
-        dialogPane().setMinHeight(Region.USE_PREF_SIZE)
+        dialogPane().setMinWidth(Region.UsePrefSize)
+        dialogPane().setMinHeight(Region.UsePrefSize)
       }.showAndWait()
     }
     result match {
@@ -338,7 +338,7 @@ trait ShowMessage {
    * @param title   dialog title.
    * @param header  header text.
    * @param content content text.
-   * @return `Some(true)` when user selected 'OK', `Some(false)` when user selected `No`,
+   * @return `Some(true)` when the user selected 'OK', `Some(false)` when the user selected `No`,
    *         and `None` user selected `Cancel` or dismissed the dialog.
    */
   def showConfirmationYesNoCancel(
@@ -358,8 +358,8 @@ trait ShowMessage {
         headerText = header
         contentText = content
         this.resizable = _resizable
-        dialogPane().setMinWidth(Region.USE_PREF_SIZE)
-        dialogPane().setMinHeight(Region.USE_PREF_SIZE)
+        dialogPane().setMinWidth(Region.UsePrefSize)
+        dialogPane().setMinHeight(Region.UsePrefSize)
         buttonTypes = Seq(ButtonType.OK, ButtonType.No, ButtonType.Cancel)
       }.showAndWait()
     }
