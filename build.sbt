@@ -26,7 +26,7 @@ lazy val libEnumeratum     = "com.beachape"               %% "enumeratum"       
 lazy val libLogbackClassic = "ch.qos.logback"              % "logback-classic"     % "1.5.18"
 lazy val libParadise       = "org.scalamacros"             % "paradise"            % "2.1.1" cross CrossVersion.full
 lazy val libScalaLogging   = "com.typesafe.scala-logging" %% "scala-logging"       % "3.9.5"
-lazy val libScalaFX        = "org.scalafx"                %% "scalafx"             % "23.0.1-R34"
+lazy val libScalaFX        = "org.scalafx"                %% "scalafx"             % "24.0.0-R35"
 lazy val libScalaFXML      = "org.scalafx"                %% "scalafxml-core-sfx8" % "0.5"
 lazy val libScalaTest      = "org.scalatest"              %% "scalatest"           % "3.2.19"
 lazy val libScalaReflect   = "org.scala-lang"              % "scala-reflect"
@@ -146,9 +146,9 @@ lazy val scalaFXExtrasSettings = Seq(
     else
       Seq.empty[String]
   ),
-  // If using Scala 2.13 or better, enable macro processing through compiler option
+  // If using Scala 2.13, enable macro processing through a compiler option
   scalacOptions += (if (isScala2_13(scalaVersion.value)) "-Ymacro-annotations" else ""),
-  // If using Scala 2.12 or lower, enable macro processing through compiler plugin
+  // If using Scala 2.12, enable macro processing through a compiler plugin
   libraryDependencies ++= (
     if (isScala2_12(scalaVersion.value))
       Seq(compilerPlugin(libParadise))
@@ -170,7 +170,7 @@ lazy val scalaFXExtrasSettings = Seq(
       Seq.empty[sbt.ModuleID]
   ),
   // Use `pomPostProcess` to remove dependencies marked as "provided" from publishing in POM
-  // This is to avoid dependency on wrong OS version JavaFX libraries
+  // This is to avoid dependency on a wrong OS version of JavaFX libraries
   // See also [https://stackoverflow.com/questions/27835740/sbt-exclude-certain-dependency-only-during-publish]
   pomPostProcess := {
     node: XmlNode =>
