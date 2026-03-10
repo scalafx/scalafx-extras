@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2021, ScalaFX Project
+ * Copyright (c) 2011-2026, ScalaFX Project
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -27,11 +27,10 @@
 
 package org.scalafx.extras.showmessage
 
-import javafx.scene.{control as jfxsc, layout as jfxsl}
-import javafx.{event as jfxe, fxml as jfxf}
+import javafx.scene.control as jfxsc
+import javafx.fxml as jfxf
 import org.scalafx.extras.mvcfx.ControllerFX
 import scalafx.Includes.*
-import scalafx.scene.control.{Button, Label}
 
 /**
  * ShowMessage UI view. It is intended to create bindings between UI definition

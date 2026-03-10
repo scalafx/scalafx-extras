@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2022, ScalaFX Project
+ * Copyright (c) 2011-2026, ScalaFX Project
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -27,17 +27,8 @@
 
 package org.scalafx.extras.generic_pane
 
-import scalafx.Includes.*
-import scalafx.beans.property.StringProperty
-import scalafx.collections.ObservableBuffer
-import scalafx.geometry.Insets
 import scalafx.scene.Node
-import scalafx.scene.control.{CheckBox, ChoiceBox, Label, TextField}
-import scalafx.scene.layout.{ColumnConstraints, GridPane, HBox, Priority}
-import scalafx.scene.text.Font
 import scalafx.stage.Window
-
-import scala.collection.mutable.ListBuffer
 
 /**
  * A helper for crating custom panes. Particularly suited for creation of input controls.
@@ -51,7 +42,7 @@ import scala.collection.mutable.ListBuffer
  *
  * 3. User interaction, after the pane is displayed
  *
- * 4. Optionally, reading of input. Pane editable content can be read using `next*()` methods.
+ * 4. Optionally, reading of input. Pane-editable content can be read using `next*()` methods.
  *    Content is read in the order it is added.
  *    The whole pane content can be read multiple tiles.
  *    Remember to call `resetReadout()` to ensure that reading is restarted from the beginning of the pane.

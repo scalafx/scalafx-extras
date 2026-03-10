@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2022, ScalaFX Project
+ * Copyright (c) 2011-2026, ScalaFX Project
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -33,9 +33,6 @@ import scalafx.geometry.Insets
 import scalafx.scene.Scene
 import scalafx.scene.control.Button
 import scalafx.scene.layout.VBox
-import scalafx.scene.paint.*
-import scalafx.scene.paint.Color.*
-import scalafx.scene.text.Text
 
 /**
  * Example of using `GenericPane`.

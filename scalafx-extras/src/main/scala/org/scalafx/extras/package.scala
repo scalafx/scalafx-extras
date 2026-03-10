@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2024, ScalaFX Project
+ * Copyright (c) 2011-2026, ScalaFX Project
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -28,9 +28,10 @@
 package org.scalafx
 
 import javafx.concurrent as jfxc
-import javafx.embed.swing.JFXPanel
+import javafx.embed.swing as jfxes
 import scalafx.Includes.*
 import scalafx.application.Platform
+import scalafx.concurrent.Task
 import scalafx.scene.Node
 import scalafx.stage.Window
 
@@ -42,25 +43,25 @@ import java.util.concurrent
 package object extras {
 
   /**
-   * Attempt to initialize JavaFX Toolkit. This is only needed when application is not
+   * Attempt to initialize JavaFX Toolkit. This is only needed when the application is not
    * started by `JFXApp3` or JavaFX `Application`.
    *
-   * When JavaFX toolkit is not initialized and you attempt to use JavaFX components you will get exception:
+   * When JavaFX toolkit is not initialized, and you attempt to use JavaFX components, you will get an exception:
    * `java.lang.IllegalStateException: Toolkit not initialized`.
    *
-   * In JavaFX 9 and newer you can use `Platform.startup(() -> {})`.
+   * In JavaFX 9 and newer, you can use `Platform.startup(() -> {})`.
    */
   def initFX(): Unit = {
     // Make sure that JavaFX Toolkit is not shutdown implicitly, it may not be possible to restart it.
     Platform.implicitExit = false
-    // Create SFXPanel() to force initialization of JavaFX application thread.
-    new JFXPanel()
+    // Create SFXPanel() to force initialization of the JavaFX application thread.
+    new jfxes.JFXPanel()
   }
 
   /**
-   * Run operation `op` on FX application thread.
-   * If on FX Application thread it will wait for operation to compete,
-   * if not on FX Application thread it will return without waiting for the operation to complete.
+   * Run operation `op` on the FX application thread.
+   * If on the FX Application thread it will wait for the operation to compete,
+   * if not on the FX Application thread, it will return without waiting for the operation to complete.
    *
    * @param op operation to be performed.
    */
@@ -75,7 +76,7 @@ package object extras {
   }
 
   /**
-   * Run operation `op` on FX application thread and wait for completion.
+   * Run operation `op` on the FX application thread and wait for completion.
    * If the current thread is the FX application, the operation will be run on it.
    *
    * @param op operation to be performed.
@@ -97,7 +98,7 @@ package object extras {
   }
 
   /**
-   * Runs an operation `op` on a separate thread. Exceptions during execution are ignored.
+   * Runs operation `op` on a separate thread. Exceptions during execution are ignored.
    * Similar to [[org.scalafx.extras#run]], with default name for the thread: "offFX".
    *
    * @param op operation to be performed.
@@ -107,8 +108,8 @@ package object extras {
   }
 
   /**
-   * Run operation `op` off FX application thread and wait for completion.
-   * If the current thread is not the FX application, the operation will be run on it (no new thread will ne created).
+   * Run operation `op` off the FX application thread and wait for completion.
+   * If the current thread is not the FX application, the operation will be run on it (no new thread will be created).
    *
    * @param op operation to be performed.
    * @throws java.util.concurrent.CancellationException - if the computation was cancelled
@@ -131,7 +132,7 @@ package object extras {
   }
 
   /**
-   * Show a modal dialog with an expandable details about an exception (stack trace).
+   * Show a modal dialog with expandable details about an exception (stack trace).
    *
    * @param title       dialog title
    * @param message     message shown in the dialog header.
@@ -143,7 +144,7 @@ package object extras {
     ShowMessage.exception(title, message, t, ownerWindow)
 
   /**
-   * Show a modal dialog with an expandable details about an exception (stack trace).
+   * Show a modal dialog with expandable details about an exception (stack trace).
    *
    * @param title       dialog title
    * @param message     message shown in the dialog header.
@@ -155,7 +156,7 @@ package object extras {
     ShowMessage.exception(title, message, t, ownerWindow)
 
   /**
-   * Show a modal dialog with an expandable details about an exception (stack trace).
+   * Show a modal dialog with expandable details about an exception (stack trace).
    *
    * @param title       dialog title
    * @param message     message shown in the dialog header.
@@ -167,19 +168,19 @@ package object extras {
     ShowMessage.exception(title, message, t, ownerWindow)
 
   /**
-   * Run task on a named daemon thread.
+   * Run a task on a named daemon thread.
    *
    * @param task to run
    * @param name name for the thread to run the operation. Useful for debugging.
    */
-  def runTask[T](task: javafx.concurrent.Task[T], name: String): Unit = {
-    val th = new Thread(task, name)
+  def runTask[T](task: Task[T], name: String): Unit = {
+    val th = new Thread(task.delegate, name)
     th.setDaemon(true)
     th.start()
   }
 
   /**
-   * Runs an operation `op` on a separate thread. Exceptions during execution are ignored.
+   * Runs operation `op` on a separate thread. Exceptions during execution are ignored.
    *
    * @param op   operation to run
    * @param name name for the thread to run the operation. Useful for debugging.

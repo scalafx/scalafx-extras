@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2024, ScalaFX Project
+ * Copyright (c) 2011-2026, ScalaFX Project
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -27,10 +27,8 @@
 
 package org.scalafx.extras.batch
 
-import java.util
 import java.util.concurrent.atomic.{AtomicBoolean, AtomicLong, AtomicReference}
 import java.util.concurrent.{Callable, Executors, ThreadPoolExecutor, Future as JFuture}
-import scala.jdk.FutureConverters.*
 import scala.util.{Failure, Success, Try}
 
 class ParallelBatchRunner[T, I <: ItemTask[T]](
@@ -168,7 +166,7 @@ class ParallelBatchRunner[T, I <: ItemTask[T]](
 
   /**
    * @return results returned by each task or error.
-   *         The first part of a tuple is task name, the second part is the result of processing.
+   *         The first part of a tuple is the task name, the second part is the result of processing.
    */
   def execute(): Seq[(String, Try[Option[T]])] =
     val batchTasks: Seq[TaskHelper] = itemTasks.map(item => new TaskHelper(item))
