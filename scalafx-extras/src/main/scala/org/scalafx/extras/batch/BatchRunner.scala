@@ -25,28 +25,30 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.scalafx.extras.mvcfx.stopwatch
+package org.scalafx.extras.batch
 
-import scalafx.application.JFXApp3
-import scalafx.scene.Scene
-import scalafx.scene.image.Image
-import scalafx.scene.layout.BorderPane
+object BatchRunner:
 
-/**
- * StopWatchApp is an application illustrating use of [[org.scalafx.extras.mvcfx ModelFX-ControllerFX]] pattern,
- * where layout of the UI is loaded from FXML definition and behaviour is defined in a model.
- */
-object StopWatchApp extends JFXApp3 {
+  @FunctionalInterface
+  trait ProgressUpdater:
+    def update(
+      running: Long,
+      successful: Long,
+      failed: Long,
+      canceled: Long,
+      executed: Long,
+      total: Long,
+      isCanceled: Boolean,
+      perc: Double,
+      message: String
+    ): Unit
 
-  override def start(): Unit = {
-    stage = new JFXApp3.PrimaryStage {
-      icons += new Image("/org/scalafx/extras/sfx.png")
-      title = "StopWatch"
-      scene = new Scene {
-        root = new BorderPane {
-          center = new StopWatch().view
-        }
-      }
-    }
-  }
-}
+trait BatchRunner[T, I <: ItemTask[T]]:
+
+  // TODO Is BatchRunner trait needed? It is not used on its own?
+
+  import BatchRunner.ProgressUpdater
+
+  protected def itemTasks: Seq[I]
+
+  protected def progressUpdater: ProgressUpdater

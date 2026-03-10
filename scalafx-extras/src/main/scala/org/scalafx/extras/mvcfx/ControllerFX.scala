@@ -25,28 +25,45 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.scalafx.extras.mvcfx.stopwatch
+package org.scalafx.extras.mvcfx
 
-import scalafx.application.JFXApp3
-import scalafx.scene.Scene
-import scalafx.scene.image.Image
-import scalafx.scene.layout.BorderPane
+import javafx.fxml as jfxf
 
 /**
- * StopWatchApp is an application illustrating use of [[org.scalafx.extras.mvcfx ModelFX-ControllerFX]] pattern,
- * where layout of the UI is loaded from FXML definition and behaviour is defined in a model.
+ * The ControllerFX creates connection of the FXML to Scala code and underlying ModelFX for the application logic.
+ *
+ * Constructor argument names correspond to controls defined in FXML and the model. The constructor is used by ScalaFXML
+ * macro to automatically expose FXML controls in Scala code of the view class.
+ *
+ * See more details in the [[org.scalafx.extras.mvcfx `org.scalafx.extras.mvcfx`]] documentation.
+ *
+ * Example:
+ * {{{
+ * import org.scalafx.extras.mvcfx.ControllerFX
+ *
+ * import scalafx.Includes.*
+ * import scalafx.scene.control.Button
+ *
+ * import javafx.scene.control as jfxsc
+ * import javafx.fxml as jfxf
+ *
+ * class StopWatchController(model: StopWatchModel) extends ControllerFX:
+ *
+ *   @jfxf.FXML
+ *   private var startButton: jfxsc.Button = _
+ *
+ *   override def initialize(): Unit =
+ *     startButton.disable <== model.running
+ *     startButton.onAction = () => model.onStart()
+ * }}}
  */
-object StopWatchApp extends JFXApp3 {
+trait ControllerFX:
 
-  override def start(): Unit = {
-    stage = new JFXApp3.PrimaryStage {
-      icons += new Image("/org/scalafx/extras/sfx.png")
-      title = "StopWatch"
-      scene = new Scene {
-        root = new BorderPane {
-          center = new StopWatch().view
-        }
-      }
-    }
-  }
-}
+  /**
+   * Performs custom initialization of the this controller.
+   * It is called by JavaFX runtime after associated FXML from was loaded and controls instantiated.
+   */
+  def initialize(): Unit
+
+  @jfxf.FXML
+  private def initializeImpl(): Unit = initialize()

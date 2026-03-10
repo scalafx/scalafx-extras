@@ -25,28 +25,20 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.scalafx.extras.mvcfx.stopwatch
+package org.scalafx.extras.progress_dialog.impl
 
-import scalafx.application.JFXApp3
-import scalafx.scene.Scene
-import scalafx.scene.image.Image
-import scalafx.scene.layout.BorderPane
+import org.scalafx.extras.mvcfx.ModelFX
+import scalafx.beans.property.{DoubleProperty, StringProperty}
 
-/**
- * StopWatchApp is an application illustrating use of [[org.scalafx.extras.mvcfx ModelFX-ControllerFX]] pattern,
- * where layout of the UI is loaded from FXML definition and behaviour is defined in a model.
- */
-object StopWatchApp extends JFXApp3 {
+class ProgressStatusModel extends ModelFX:
 
-  override def start(): Unit = {
-    stage = new JFXApp3.PrimaryStage {
-      icons += new Image("/org/scalafx/extras/sfx.png")
-      title = "StopWatch"
-      scene = new Scene {
-        root = new BorderPane {
-          center = new StopWatch().view
-        }
-      }
-    }
-  }
-}
+  val statusText      = new StringProperty()
+  val progress        = new DoubleProperty()
+  val elapsedTimeText = new StringProperty()
+  val etaTimeText     = new StringProperty()
+
+  val totalCountText      = new StringProperty()
+  val processedCountText  = new StringProperty()
+  val successfulCountText = new StringProperty()
+  val failedCountText     = new StringProperty()
+  val cancelledCountText  = new StringProperty()

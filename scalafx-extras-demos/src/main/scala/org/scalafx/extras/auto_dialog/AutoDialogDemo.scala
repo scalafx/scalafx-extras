@@ -25,28 +25,31 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.scalafx.extras.mvcfx.stopwatch
+package org.scalafx.extras.auto_dialog
 
-import scalafx.application.JFXApp3
-import scalafx.scene.Scene
-import scalafx.scene.image.Image
-import scalafx.scene.layout.BorderPane
+import org.scalafx.extras.initFX
 
-/**
- * StopWatchApp is an application illustrating use of [[org.scalafx.extras.mvcfx ModelFX-ControllerFX]] pattern,
- * where layout of the UI is loaded from FXML definition and behaviour is defined in a model.
- */
-object StopWatchApp extends JFXApp3 {
+object AutoDialogDemo:
 
-  override def start(): Unit = {
-    stage = new JFXApp3.PrimaryStage {
-      icons += new Image("/org/scalafx/extras/sfx.png")
-      title = "StopWatch"
-      scene = new Scene {
-        root = new BorderPane {
-          center = new StopWatch().view
-        }
-      }
-    }
-  }
-}
+  case class FilterOptions(kernelSize: Int = 7,
+                           start: Double = 3.14,
+                           tag: String = "alpha",
+                           debugMode: Boolean = false)
+
+  def main(args: Array[String]): Unit =
+
+    initFX()
+
+    val filterOptions = FilterOptions()
+
+    val result: Option[FilterOptions] =
+      new AutoDialog(filterOptions)
+        .showDialog(
+          "AutoDialog Demo",
+          "Fields are auto generated from `FilterOptions` object")
+
+    println(s"Result: $result")
+
+    System.exit(0)
+
+

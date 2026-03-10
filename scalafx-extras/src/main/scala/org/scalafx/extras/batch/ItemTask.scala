@@ -25,28 +25,19 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.scalafx.extras.mvcfx.stopwatch
-
-import scalafx.application.JFXApp3
-import scalafx.scene.Scene
-import scalafx.scene.image.Image
-import scalafx.scene.layout.BorderPane
+package org.scalafx.extras.batch
 
 /**
- * StopWatchApp is an application illustrating use of [[org.scalafx.extras.mvcfx ModelFX-ControllerFX]] pattern,
- * where layout of the UI is loaded from FXML definition and behaviour is defined in a model.
+ * Processing task that can be run by a batch processor
+ *
+ * @tparam T type of the status result of processing an item, it can be `Unit`
  */
-object StopWatchApp extends JFXApp3 {
+trait ItemTask[T]:
 
-  override def start(): Unit = {
-    stage = new JFXApp3.PrimaryStage {
-      icons += new Image("/org/scalafx/extras/sfx.png")
-      title = "StopWatch"
-      scene = new Scene {
-        root = new BorderPane {
-          center = new StopWatch().view
-        }
-      }
-    }
-  }
-}
+  // TODO add 'cancel' flag and listener callback
+
+  /** Name of the item */
+  def name: String
+
+  /** Task performed by the item */
+  def run(): T
