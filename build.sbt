@@ -84,7 +84,10 @@ lazy val scalaFXExtrasSettings = Seq(
     "-explain-types",
     "-rewrite",
     "-source:3.3-migration",
-    "-Wunused:all"
+    "-Wunused:all",
+    // To deal with classes implementing `ControllerFX` and using @FXML annotations to passing variables from FXML declarations
+    // or "-Wunused:-privates"
+    "-Wconf:msg=unset private var:s"
   ),
   Compile / doc / scalacOptions ++= Opts.doc.title("ScalaFX Extras API"),
   Compile / doc / scalacOptions ++= Opts.doc.version(projectVersion),
