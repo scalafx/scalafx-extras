@@ -31,9 +31,10 @@ ThisBuild / scmInfo              := Option(
 // e.g., 2.11.0-SNAPSHOT
 ThisBuild / resolvers += Resolver.sonatypeCentralSnapshots
 ThisBuild / resolvers += Resolver.mavenLocal
+ThisBuild / Test / publishArtifact := false
 
-ThisBuild / publishArtifact := false
-ThisBuild / publish / skip  := true
+publishArtifact := false
+publish / skip  := true
 
 lazy val libLogbackClassic = "ch.qos.logback"              % "logback-classic" % "1.5.32"
 lazy val libScalaLogging   = "com.typesafe.scala-logging" %% "scala-logging"   % "3.9.6"
@@ -51,7 +52,8 @@ lazy val scalaFXExtras = (project in file("scalafx-extras")).settings(
     "-doc-root-content",
     baseDirectory.value + "/src/main/scala/root-doc.creole"
   ),
-  publishArtifact := true
+  publishArtifact := true,
+  Test / publishArtifact := false
 )
 
 // ScalaFX Extras Demos project
