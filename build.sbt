@@ -1,7 +1,5 @@
-import xerial.sbt.Sonatype._
-
 import scala.xml.transform.{RewriteRule, RuleTransformer}
-import scala.xml.{Node => XmlNode, NodeSeq => XmlNodeSeq, _}
+import scala.xml.{Node as XmlNode, NodeSeq as XmlNodeSeq, *}
 
 //
 // Environment variables used by the build:
@@ -9,57 +7,38 @@ import scala.xml.{Node => XmlNode, NodeSeq => XmlNodeSeq, _}
 // JAR_BUILT_BY      - Name to be added to Jar metadata field "Built-By" (defaults to System.getProperty("user.name")
 //
 
-val projectVersion = "0.11.0.1-SNAPSHOT"
-val versionTagDir  = if (projectVersion.endsWith("SNAPSHOT")) "master" else "v." + projectVersion
-val _scalaVersions = Seq("3.3.5", "2.13.16", "2.12.20")
-val _scalaVersion  = _scalaVersions.head
+lazy val projectVersion    = "0.11.0.1-SNAPSHOT"
+lazy val versionTagDir     = if (projectVersion.endsWith("SNAPSHOT")) "master" else "v." + projectVersion
+lazy val javaTargetVersion = "21"
 
-ThisBuild / version            := projectVersion
-ThisBuild / crossScalaVersions := _scalaVersions
-ThisBuild / scalaVersion       := _scalaVersion
-ThisBuild / organization       := "org.scalafx"
+ThisBuild / version          := projectVersion
+ThisBuild / scalaVersion     := "3.3.7"
+ThisBuild / organization     := "org.scalafx"
+ThisBuild / organizationName := "ScalaFX"
+ThisBuild / homepage         := Some(url("https://www.scalafx.org/"))
+ThisBuild / startYear        := Some(2016)
+ThisBuild / licenses         := Seq(("BSD", url("https://github.com/scalafx/scalafx-extras/blob/master/LICENSE.txt")))
+ThisBuild / organizationHomepage := Some(url("https://github.com/scalafx"))
+ThisBuild / scmInfo              := Option(
+  ScmInfo(
+    url("https://github.com/scalafx/scalafx-extras"),
+    "scm:https://github.com/scalafx/scalafx-extras.git"
+  )
+)
 
-publishArtifact := false
-publish / skip  := true
+// Resolvers
+// Add snapshots to the root project to enable compilation with Scala SNAPSHOT compiler,
+// e.g., 2.11.0-SNAPSHOT
+ThisBuild / resolvers += Resolver.sonatypeCentralSnapshots
+ThisBuild / resolvers += Resolver.mavenLocal
 
-lazy val libEnumeratum     = "com.beachape"               %% "enumeratum"          % "1.7.6"
-lazy val libLogbackClassic = "ch.qos.logback"              % "logback-classic"     % "1.5.18"
-lazy val libParadise       = "org.scalamacros"             % "paradise"            % "2.1.1" cross CrossVersion.full
-lazy val libScalaLogging   = "com.typesafe.scala-logging" %% "scala-logging"       % "3.9.5"
-lazy val libScalaFX        = "org.scalafx"                %% "scalafx"             % "24.0.0-R35"
-lazy val libScalaFXML      = "org.scalafx"                %% "scalafxml-core-sfx8" % "0.5"
-lazy val libScalaTest      = "org.scalatest"              %% "scalatest"           % "3.2.19"
-lazy val libScalaReflect   = "org.scala-lang"              % "scala-reflect"
+ThisBuild / publishArtifact := false
+ThisBuild / publish / skip  := true
 
-def isScala2(scalaVersion: String): Boolean = {
-  CrossVersion.partialVersion(scalaVersion) match {
-    case Some((2, _)) => true
-    case _            => false
-  }
-}
-
-def isScala2_12(scalaVersion: String): Boolean = {
-  CrossVersion.partialVersion(scalaVersion) match {
-    case Some((2, 12)) => true
-    case _             => false
-  }
-}
-
-def isScala2_13(scalaVersion: String): Boolean = {
-  CrossVersion.partialVersion(scalaVersion) match {
-    case Some((2, 13)) => true
-    case _             => false
-  }
-}
-
-// Add src/main/scala-3- for Scala 2.13 and older
-//   and src/main/scala-3+ for Scala versions older than 3 and newer
-def versionSubDir(scalaVersion: String): String =
-  CrossVersion.partialVersion(scalaVersion) match {
-    case Some((2, _)) => "scala-2"
-    case Some((3, _)) => "scala-3"
-    case _            => throw new Exception(s"Unsupported scala version $scalaVersion")
-  }
+lazy val libLogbackClassic = "ch.qos.logback"              % "logback-classic" % "1.5.32"
+lazy val libScalaLogging   = "com.typesafe.scala-logging" %% "scala-logging"   % "3.9.6"
+lazy val libScalaFX        = "org.scalafx"                %% "scalafx"         % "25.0.2-R37"
+lazy val libScalaTest      = "org.scalatest"              %% "scalatest"       % "3.2.19"
 
 // ScalaFX Extras project
 lazy val scalaFXExtras = (project in file("scalafx-extras")).settings(
@@ -71,7 +50,8 @@ lazy val scalaFXExtras = (project in file("scalafx-extras")).settings(
     baseDirectory.value.toString,
     "-doc-root-content",
     baseDirectory.value + "/src/main/scala/root-doc.creole"
-  )
+  ),
+  publishArtifact := true
 )
 
 // ScalaFX Extras Demos project
@@ -90,17 +70,8 @@ lazy val scalaFXExtrasDemos = (project in file("scalafx-extras-demos")).settings
   )
 ).dependsOn(scalaFXExtras % "compile;test->test")
 
-// Resolvers
-// Add snapshots to the root project to enable compilation with Scala SNAPSHOT compiler,
-// e.g., 2.11.0-SNAPSHOT
-resolvers ++= Resolver.sonatypeOssRepos("snapshots")
-
 // Common settings
 lazy val scalaFXExtrasSettings = Seq(
-  // SAdd version specific directories
-  Compile / unmanagedSourceDirectories += (Compile / sourceDirectory).value / versionSubDir(scalaVersion.value),
-  Test / unmanagedSourceDirectories += (Test / sourceDirectory).value / versionSubDir(scalaVersion.value),
-  //
   scalacOptions ++= Seq(
     "-unchecked",
     "-deprecation",
@@ -108,66 +79,20 @@ lazy val scalaFXExtrasSettings = Seq(
     "utf8",
     "-feature",
     "-release",
-    "8"
-  ) ++
-    (
-      if (isScala2(scalaVersion.value))
-        Seq(
-          "-explaintypes",
-          "-Xcheckinit",
-          "-Xsource:3"
-//          "-Xlint",
-//          "-Xcheckinit",
-//          "-Xlint:missing-interpolator",
-//          "-Ywarn-dead-code",
-//          "-Ywarn-unused:-patvars,_",
-        )
-      else
-        Seq(
-          "-explain",
-          "-explain-types"
-        )
-    ),
+    javaTargetVersion,
+    "-explain",
+    "-explain-types",
+    "-rewrite",
+    "-source:3.3-migration",
+    "-Wunused:all"
+  ),
   Compile / doc / scalacOptions ++= Opts.doc.title("ScalaFX Extras API"),
   Compile / doc / scalacOptions ++= Opts.doc.version(projectVersion),
   Compile / doc / scalacOptions ++= Seq("-doc-footer", s"ScalaFX Extras API v.$projectVersion"),
-  Compile / doc / scalacOptions ++= (
-    if (isScala2(scalaVersion.value))
-      Seq(
-        s"-doc-external-doc:${scalaInstance.value.libraryJars.head}#https://www.scala-lang.org/api/${scalaVersion.value}/",
-        "-doc-source-url",
-        "https://github.com/SscalaFX-Extras/scalafx-extras/blob/" + versionTagDir + "/scalafx/€{FILE_PATH}.scala"
-      ) ++ (
-        Option(System.getenv("GRAPHVIZ_DOT_PATH")) match {
-          case Some(path) => Seq("-diagrams", "-diagrams-dot-path", path)
-          case None       => Seq.empty[String]
-        }
-      )
-    else
-      Seq.empty[String]
-  ),
-  // If using Scala 2.13, enable macro processing through a compiler option
-  scalacOptions += (if (isScala2_13(scalaVersion.value)) "-Ymacro-annotations" else ""),
   // If using Scala 2.12, enable macro processing through a compiler plugin
-  libraryDependencies ++= (
-    if (isScala2_12(scalaVersion.value))
-      Seq(compilerPlugin(libParadise))
-    else
-      Seq.empty[sbt.ModuleID]
-  ),
   libraryDependencies ++= Seq(
     libScalaFX,
     libScalaTest % "test"
-  ),
-  libraryDependencies ++= (
-    if (isScala2(scalaVersion.value))
-      Seq(
-        libEnumeratum,
-        libScalaReflect % scalaVersion.value,
-        libScalaFXML
-      )
-    else
-      Seq.empty[sbt.ModuleID]
   ),
   // Use `pomPostProcess` to remove dependencies marked as "provided" from publishing in POM
   // This is to avoid dependency on a wrong OS version of JavaFX libraries
@@ -190,13 +115,12 @@ lazy val scalaFXExtrasSettings = Seq(
   run / fork               := true,
   Test / fork              := true,
   Test / parallelExecution := false,
-  resolvers ++= Resolver.sonatypeOssRepos("snapshots"),
   // print junit-style XML for CI
   Test / testOptions += {
     val t = (Test / target).value
     Tests.Argument(TestFrameworks.ScalaTest, "-u", s"$t/junitxmldir")
   }
-) ++ mavenCentralSettings
+)
 
 lazy val manifestSetting = packageOptions += {
   Package.ManifestAttributes(
@@ -215,20 +139,12 @@ lazy val manifestSetting = packageOptions += {
 
 // Metadata needed by Maven Central
 // See also http://maven.apache.org/pom.html#Developers
-lazy val mavenCentralSettings = Seq(
-  homepage  := Some(new URI("https://www.scalafx.org/").toURL),
-  startYear := Some(2016),
-  licenses  := Seq(("BSD", new URI("https://github.com/scalafx/scalafx-extras/blob/master/LICENSE.txt").toURL)),
-  sonatypeProfileName    := "org.scalafx",
-  sonatypeProjectHosting := Some(GitHubHosting("org.scalafx", "scalafx-extras", "jpsacha@gmail.com")),
-  publishMavenStyle      := true,
-  publishTo              := sonatypePublishToBundle.value,
-  developers := List(
-    Developer(
-      id = "jpsacha",
-      name = "Jarek Sacha",
-      email = "jpsacha@gmail.com",
-      url = url("https://github.com/jpsacha")
-    )
+ThisBuild / publishMavenStyle := true
+ThisBuild / developers        := List(
+  Developer(
+    id = "jpsacha",
+    name = "Jarek Sacha",
+    email = "jpsacha@gmail.com",
+    url = url("https://github.com/jpsacha")
   )
 )
