@@ -27,6 +27,7 @@
 
 package org.scalafx.extras.image
 
+import javafx.scene.effect as jfxe
 import scalafx.Includes.*
 import scalafx.beans.property.*
 import scalafx.geometry.Pos
@@ -187,8 +188,7 @@ class ImageDisplay {
   /**
    * Specifies an effect applied to this image display.
    */
-  def effect: Option[Effect] =
-    Option(imageCanvas.effect.value)
+  val effect: ObjectProperty[jfxe.Effect] = imageCanvas.effect
 
   /**
    * Specifies an effect to apply to this image display.
