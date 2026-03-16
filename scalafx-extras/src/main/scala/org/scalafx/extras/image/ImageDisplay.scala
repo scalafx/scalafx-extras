@@ -207,7 +207,7 @@ class ImageDisplay {
    * The default value is 0 (no rotation).
    * This is done after applying flip operations.
    */
-  def rotation: Double = transformTarget.rotate()
+  val rotation: DoubleProperty = transformTarget.rotate
 
   def rotation_=(r: Double): Unit =
     transformTarget.rotate() = r
@@ -256,7 +256,7 @@ class ImageDisplay {
             new Rectangle {
               width = im.width()
               height = im.height()
-              rotate = rotation
+              rotate = rotation.value
             }.boundsInParent()
 
           // Compute the zoom-to-fit scale
