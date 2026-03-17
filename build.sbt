@@ -37,7 +37,7 @@ lazy val javaTargetVersion = "21"
 
 lazy val libLogbackClassic = "ch.qos.logback"              % "logback-classic" % "1.5.32"
 lazy val libScalaLogging   = "com.typesafe.scala-logging" %% "scala-logging"   % "3.9.6"
-lazy val libScalaFX        = "org.scalafx"                %% "scalafx"         % "25.0.2-R37"
+lazy val libScalaFX        = "org.scalafx"                %% "scalafx"         % "23.0.1-R34"
 lazy val libScalaTest      = "org.scalatest"              %% "scalatest"       % "3.2.19"
 
 // ScalaFX Extras project

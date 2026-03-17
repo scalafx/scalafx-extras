@@ -232,8 +232,8 @@ trait ShowMessage {
         headerText = header
         contentText = content
         this.resizable = _resizable
-        dialogPane().setMinWidth(Region.UsePrefSize)
-        dialogPane().setMinHeight(Region.UsePrefSize)
+        dialogPane().setMinWidth(Region.USE_PREF_SIZE)
+        dialogPane().setMinHeight(Region.USE_PREF_SIZE)
       }.showAndWait()
     }
   }
@@ -270,8 +270,8 @@ trait ShowMessage {
         headerText = header
         contentText = content
         this.resizable = _resizable
-        dialogPane().setMinWidth(Region.UsePrefSize)
-        dialogPane().setMinHeight(Region.UsePrefSize)
+        dialogPane().setMinWidth(Region.USE_PREF_SIZE)
+        dialogPane().setMinHeight(Region.USE_PREF_SIZE)
       }.showAndWait()
     }
   }
@@ -296,8 +296,8 @@ trait ShowMessage {
         headerText = header
         contentText = content
         this.resizable = _resizable
-        dialogPane().setMinWidth(Region.UsePrefSize)
-        dialogPane().setMinHeight(Region.UsePrefSize)
+        dialogPane().setMinWidth(Region.USE_PREF_SIZE)
+        dialogPane().setMinHeight(Region.USE_PREF_SIZE)
       }.showAndWait()
     }
   }
@@ -322,8 +322,8 @@ trait ShowMessage {
         headerText = header
         contentText = content
         this.resizable = _resizable
-        dialogPane().setMinWidth(Region.UsePrefSize)
-        dialogPane().setMinHeight(Region.UsePrefSize)
+        dialogPane().setMinWidth(Region.USE_PREF_SIZE)
+        dialogPane().setMinHeight(Region.USE_PREF_SIZE)
       }.showAndWait()
     }
     result match {
@@ -358,8 +358,8 @@ trait ShowMessage {
         headerText = header
         contentText = content
         this.resizable = _resizable
-        dialogPane().setMinWidth(Region.UsePrefSize)
-        dialogPane().setMinHeight(Region.UsePrefSize)
+        dialogPane().setMinWidth(Region.USE_PREF_SIZE)
+        dialogPane().setMinHeight(Region.USE_PREF_SIZE)
         buttonTypes = Seq(ButtonType.OK, ButtonType.No, ButtonType.Cancel)
       }.showAndWait()
     }
