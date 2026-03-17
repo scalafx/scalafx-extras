@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2025, ScalaFX Project
+ * Copyright (c) 2011-2026, ScalaFX Project
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -37,6 +37,7 @@ import scalafx.collections.ObservableBuffer
 import scalafx.geometry.Orientation.Horizontal
 import scalafx.scene.Scene
 import scalafx.scene.control.*
+import scalafx.scene.effect.SepiaTone
 import scalafx.scene.image.Image
 import scalafx.scene.layout.{BorderPane, FlowPane}
 import scalafx.scene.paint.Color
@@ -48,84 +49,84 @@ import scalafx.stage.FileChooser
  */
 object ImageDisplayDemoApp extends JFXApp3 {
 
-  /** Show example ROI in the center of the Image */
+  /** Show an example ROI in the center of the Image */
   private val showROI: BooleanProperty = BooleanProperty(value = false)
-  private val rotationItems            = ObservableBuffer(0, 90, 180, 270)
+
+  /** Show an example Effect in the center of the Image */
+  private val showEffect: BooleanProperty = BooleanProperty(value = false)
+  private val rotationItems               = ObservableBuffer(0, 90, 180, 270)
 
   override def start(): Unit = {
 
     val imageDisplay = new ImageDisplay()
 
-    stage = new PrimaryStage {
-      scene = new Scene(640, 480) {
+    stage = new PrimaryStage:
+      scene = new Scene(640, 480):
         icons += new Image("/org/scalafx/extras/sfx.png")
         title = "ImageDisplay Demo"
-        root = new BorderPane {
-          top = new ToolBar {
+        root = new BorderPane:
+          top = new ToolBar:
             items = Seq(
-              new Button("Open...") {
+              new Button("Open..."):
                 onAction = () => onFileOpen()
-              },
+              ,
               Separator(Horizontal),
-              new Button("Zoom In") {
+              new Button("Zoom In"):
                 onAction = () => imageDisplay.zoomIn()
                 disable <== imageDisplay.zoomToFit
-              },
-              new Button("Zoom Out") {
+              ,
+              new Button("Zoom Out"):
                 onAction = () => imageDisplay.zoomOut()
                 disable <== imageDisplay.zoomToFit
-              },
-              new ToggleButton("Zoom to fit") {
+              ,
+              new ToggleButton("Zoom to fit"):
                 selected <==> imageDisplay.zoomToFit
-              },
+              ,
               Separator(Horizontal),
-              new ToggleButton("Flip X") {
+              new ToggleButton("Flip X"):
                 selected <==> imageDisplay.flipX
-              },
-              new ToggleButton("Flip Y") {
+              ,
+              new ToggleButton("Flip Y"):
                 selected <==> imageDisplay.flipY
-              },
-              new ChoiceBox(rotationItems) {
-                selectionModel().selectedItem.onChange { (_, _, newValue) =>
+              ,
+              new ChoiceBox(rotationItems):
+                selectionModel().selectedItem.onChange: (_, _, newValue) =>
                   imageDisplay.rotation = newValue
-                }
                 selectionModel().selectFirst()
-              },
+              ,
               Separator(Horizontal),
-              new ToggleButton("Show ROI") {
+              new ToggleButton("Show ROI"):
                 selected <==> showROI
-              }
+              ,
+              new ToggleButton("Show Effect"):
+                selected <==> showEffect
             )
-          }
           center = imageDisplay.view
-          bottom = new FlowPane {
-            children = Seq {
-              new Label("???") {
+          bottom = new FlowPane:
+            children = Seq(
+              new Label("???"):
                 text <==
                   when(!imageDisplay.zoomToFit) choose {
                     jfxbb.Bindings.format("Zoom %.2f%%", (imageDisplay.actualZoom * 100).delegate)
                   } otherwise {
                     jfxbb.Bindings.format("Zoom to fit (%.2f%%)", (imageDisplay.actualZoom * 100).delegate)
                   }
-              }
-            }
-          }
-        }
-      }
-    }
+            )
 
     //  setROI()
     // ---------------------------------------------------------------------------
-    showROI.onChange { (_, _, _) =>
+    showROI.onChange: (_, _, _) =>
       updateROI()
-    }
+
+    showEffect.onChange: (_, _, _) =>
+      updateEffect()
 
     def updateROI(): Unit = {
       if (showROI())
         imageDisplay.image() match {
           case Some(im) =>
-            val w = im.width.value
-            val h = im.height.value
+            val w   = im.width.value
+            val h   = im.height.value
             val roi = new Rectangle {
               x = w / 4
               y = h / 4 + h / 8
@@ -144,13 +145,16 @@ object ImageDisplayDemoApp extends JFXApp3 {
       //      imageView.scaleY.value = if (newValue) -v else v
     }
 
+    def updateEffect(): Unit =
+      imageDisplay.effect = if showEffect() then Option(new SepiaTone()) else None
+
     /**
-     * Let user select an image file and load it.
+     * Let the user select an image file and load it.
      */
     def onFileOpen(): Unit = {
       val fileChooser = new FileChooser()
       val file        = fileChooser.showOpenDialog(stage)
-      if (file != null) {
+      if file != null then
         try {
           val image = new Image("file:" + file.getCanonicalPath)
           if (!image.error()) {
@@ -175,7 +179,6 @@ object ImageDisplayDemoApp extends JFXApp3 {
               parentWindow = stage
             )
         }
-      }
     }
   }
 }

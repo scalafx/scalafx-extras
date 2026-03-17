@@ -25,41 +25,36 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.scalafx.extras.generic_pane
+package org.scalafx.extras.showmessage
 
-import scalafx.application.JFXApp3
-import scalafx.application.JFXApp3.PrimaryStage
-import scalafx.geometry.Insets
-import scalafx.scene.Scene
-import scalafx.scene.control.Button
-import scalafx.scene.layout.VBox
+import javafx.scene.control as jfxsc
+import javafx.fxml as jfxf
+import org.scalafx.extras.mvcfx.ControllerFX
+import scalafx.Includes.*
 
-object GenericPaneDemo2 extends JFXApp3 {
+/**
+ * ShowMessage UI view. It is intended to create bindings between UI definition
+ * loaded from FXML configuration and the UI model
+ */
+class ShowMessageDemoController(val model: ShowMessageDemoModel) extends ControllerFX:
 
-  override def start(): Unit = {
+  @jfxf.FXML
+  private var showConfirmationButton: jfxsc.Button = _
+  @jfxf.FXML
+  private var showConfirmationYNCButton: jfxsc.Button = _
+  @jfxf.FXML
+  private var showInformationButton: jfxsc.Button = _
+  @jfxf.FXML
+  private var showWarningButton: jfxsc.Button = _
+  @jfxf.FXML
+  private var showErrorButton: jfxsc.Button = _
+  @jfxf.FXML
+  private var showExceptionButton: jfxsc.Button = _
 
-    val gp = new GenericPane()
-    gp.addDirectoryField("Input raw images", "images")
-    gp.addDirectoryField("Output", "output")
-
-    stage = new PrimaryStage {
-      title = "GenericPane Demo"
-      scene = new Scene {
-        content = new VBox {
-          padding = Insets(7, 7, 7, 7)
-          spacing = 7
-          children = Seq(
-            gp.pane,
-            new Button("Print Fields") {
-              onAction = (_) => {
-                gp.resetReadout()
-                println(gp.nextString())
-                println(gp.nextString())
-              }
-            }
-          )
-        }
-      }
-    }
-  }
-}
+  override def initialize(): Unit =
+    showConfirmationButton.onAction = () => model.onShowConfirmation()
+    showConfirmationYNCButton.onAction = () => model.onShowConfirmationYesNoCancel()
+    showInformationButton.onAction = () => model.onShowInformation()
+    showWarningButton.onAction = () => model.onShowWarning()
+    showErrorButton.onAction = () => model.onShowError()
+    showExceptionButton.onAction = () => model.onShowException()

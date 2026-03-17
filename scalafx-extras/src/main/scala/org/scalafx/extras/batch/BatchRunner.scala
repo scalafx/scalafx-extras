@@ -25,41 +25,30 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.scalafx.extras.generic_pane
+package org.scalafx.extras.batch
 
-import scalafx.application.JFXApp3
-import scalafx.application.JFXApp3.PrimaryStage
-import scalafx.geometry.Insets
-import scalafx.scene.Scene
-import scalafx.scene.control.Button
-import scalafx.scene.layout.VBox
+object BatchRunner:
 
-object GenericPaneDemo2 extends JFXApp3 {
+  @FunctionalInterface
+  trait ProgressUpdater:
+    def update(
+      running: Long,
+      successful: Long,
+      failed: Long,
+      canceled: Long,
+      executed: Long,
+      total: Long,
+      isCanceled: Boolean,
+      perc: Double,
+      message: String
+    ): Unit
 
-  override def start(): Unit = {
+trait BatchRunner[T, I <: ItemTask[T]]:
 
-    val gp = new GenericPane()
-    gp.addDirectoryField("Input raw images", "images")
-    gp.addDirectoryField("Output", "output")
+  // TODO Is BatchRunner trait needed? It is not used on its own?
 
-    stage = new PrimaryStage {
-      title = "GenericPane Demo"
-      scene = new Scene {
-        content = new VBox {
-          padding = Insets(7, 7, 7, 7)
-          spacing = 7
-          children = Seq(
-            gp.pane,
-            new Button("Print Fields") {
-              onAction = (_) => {
-                gp.resetReadout()
-                println(gp.nextString())
-                println(gp.nextString())
-              }
-            }
-          )
-        }
-      }
-    }
-  }
-}
+  import BatchRunner.ProgressUpdater
+
+  protected def itemTasks: Seq[I]
+
+  protected def progressUpdater: ProgressUpdater

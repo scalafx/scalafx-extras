@@ -25,41 +25,15 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.scalafx.extras.generic_pane
+package org.scalafx.extras.mvcfx.stopwatch
 
-import scalafx.application.JFXApp3
-import scalafx.application.JFXApp3.PrimaryStage
-import scalafx.geometry.Insets
-import scalafx.scene.Scene
-import scalafx.scene.control.Button
-import scalafx.scene.layout.VBox
+import org.scalafx.extras.mvcfx.MVCfx
+import org.scalafx.extras.mvcfx.stopwatch.StopWatchModel
 
-object GenericPaneDemo2 extends JFXApp3 {
+/**
+ * StopWatch generator/loader.
+ */
+class StopWatch(val model: StopWatchModel = new StopWatchModel())
+    extends MVCfx[StopWatchController]("/org/scalafx/extras/mvcfx/stopwatch/StopWatch.fxml"):
 
-  override def start(): Unit = {
-
-    val gp = new GenericPane()
-    gp.addDirectoryField("Input raw images", "images")
-    gp.addDirectoryField("Output", "output")
-
-    stage = new PrimaryStage {
-      title = "GenericPane Demo"
-      scene = new Scene {
-        content = new VBox {
-          padding = Insets(7, 7, 7, 7)
-          spacing = 7
-          children = Seq(
-            gp.pane,
-            new Button("Print Fields") {
-              onAction = (_) => {
-                gp.resetReadout()
-                println(gp.nextString())
-                println(gp.nextString())
-              }
-            }
-          )
-        }
-      }
-    }
-  }
-}
+  def controllerInstance: StopWatchController = new StopWatchController(model)

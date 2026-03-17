@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2025, ScalaFX Project
+ * Copyright (c) 2011-2026, ScalaFX Project
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -27,11 +27,13 @@
 
 package org.scalafx.extras.image
 
+import javafx.scene.effect as jfxe
 import scalafx.Includes.*
 import scalafx.beans.property.*
 import scalafx.geometry.Pos
 import scalafx.scene.canvas.Canvas
 import scalafx.scene.control.ScrollPane
+import scalafx.scene.effect.Effect
 import scalafx.scene.image.Image
 import scalafx.scene.layout.StackPane
 import scalafx.scene.shape.Rectangle
@@ -42,7 +44,7 @@ import scalafx.scene.{Group, Node}
  * It can be also automatically resized to the parent's size.
  * When `zoomToFit` is set to `true`, the image is sized to fit the parent scroll pane.
  *
- * Sample usage (full detains in `ImageDisplayDemoApp`)
+ * Sample usage (fully detained in `ImageDisplayDemoApp`)
  * {{{
  * object ImageDisplayDemoApp extends JFXApp3 {
  *
@@ -50,32 +52,27 @@ import scalafx.scene.{Group, Node}
  *
  *     private val imageDisplay = new ImageDisplay()
  *
- *     stage = new PrimaryStage {
- *       scene = new Scene(640, 480) {
+ *     stage = new PrimaryStage:
+ *       scene = new Scene(640, 480):
  *         title = "ImageDisplay Demo"
- *         root = new BorderPane {
- *           top = new ToolBar {
+ *         root = new BorderPane:
+ *           top = new ToolBar:
  *             items = Seq(
- *               new Button("Open...") {
+ *               new Button("Open..."):
  *                 onAction = () => onFileOpen()
- *               },
- *               new Button("Zoom In") {
+ *               ,
+ *               new Button("Zoom In"):
  *                 onAction = () => imageDisplay.zoomIn()
  *                 disable <== imageDisplay.zoomToFit
- *               },
- *               new Button("Zoom Out") {
+ *               ,
+ *               new Button("Zoom Out"):
  *                 onAction = () => imageDisplay.zoomOut()
  *                 disable <== imageDisplay.zoomToFit
- *               },
- *               new ToggleButton("Zoom to fit") {
+ *               ,
+ *               new ToggleButton("Zoom to fit"):
  *                 selected <==> imageDisplay.zoomToFit
- *               }
  *             )
- *           }
  *           center = imageDisplay.view
- *         }
- *       }
- *     }
  *   }
  * }
  * }}}
@@ -83,46 +80,40 @@ import scalafx.scene.{Group, Node}
 class ImageDisplay {
 
   /** Later for displaying the image */
-  private val imageCanvas = new Canvas {
+  private val imageCanvas = new Canvas:
     alignmentInParent = Pos.Center
-  }
 
   /** Layer for displaying the overlays */
-  private val overlayCanvas = new Canvas {
+  private val overlayCanvas = new Canvas:
     alignmentInParent = Pos.Center
     width <== imageCanvas.width
     height <== imageCanvas.height
-  }
 
-  private val canvasGroup = new Group {
+  private val canvasGroup = new Group:
     children = Seq(imageCanvas, overlayCanvas)
     alignmentInParent = Pos.Center
-  }
 
   /** The node that will be zoomed, rotated, and flipped */
   private val transformTarget = canvasGroup
 
-  private val scrollPane: ScrollPane = new ScrollPane {
+  private val scrollPane: ScrollPane = new ScrollPane:
     // setting `fitTo* = true` makes the image centered when the view point is larger than the zoomed image.
     fitToHeight = true
     fitToWidth = true
     pannable = true
-    // Group inside StackPane to make image centered in the scroll pane
-    content = new StackPane {
+    // Group inside StackPane to make the image centered in the scroll pane
+    content = new StackPane:
       alignment = Pos.Center
       alignmentInParent = Pos.Center
-      children = new Group {
+      children = new Group:
         children = canvasGroup
         alignmentInParent = Pos.Center
-      }
-    }
-  }
 
   /**
    * Controls image zoom when `zoomToFit` is off.
    * The value of 1 means no scaling.
-   * Values larger than 1 make image larger.
-   * Values smaller than 1 make image smaller.
+   * Values larger than 1 make the image larger.
+   * Values smaller than 1 make the image smaller.
    */
   // noinspection ScalaWeakerAccess
   val zoom: ObjectProperty[ZoomScale] = ObjectProperty[ZoomScale](this, "Zoom", ZoomScale.Zoom100Perc)
@@ -171,64 +162,73 @@ class ImageDisplay {
     }
   }
 
-  def setImage(newImage: Image): Unit = {
+  def setImage(newImage: Image): Unit =
     image.value = Option(newImage)
-  }
 
   /**
    * Overlays displayed on the image.
    * Changes in individual members of the overlay collection, like size or location, are __not__ being observed.
    * To force an update, you need to assign a new collection.
    *
-   * Each rectangle represents individual overlay.
+   * Each rectangle represents an individual overlay.
    * Rectangle properties used to draw the overlay:
    *   - stroke - color/paint of the outline. If `null`, no outline will be drawn.
    *   - strokeWidth - width of the line in screen pixels. The width is maintained constant to the display, regardless of zoom.
    *   - fill - fill color/paint. If `null`, no outline will be drawn.
    *
-   * Note that the opacity of is controlled by opacity of the `stroke` and `fill` paint.
+   * Note that the opacity of is controlled by the opacity of the `stroke` and `fill` paint.
    */
-  val overlays: ObjectProperty[Seq[Rectangle]] = new ObjectProperty[Seq[Rectangle]] {
+  val overlays: ObjectProperty[Seq[Rectangle]] = new ObjectProperty[Seq[Rectangle]]:
     value = Seq.empty
-    onChange { (_, _, _) =>
+    onChange: (_, _, _) =>
       drawOverlays()
-    }
-  }
 
   initialize()
+
+  /**
+   * Specifies an effect applied to this image display.
+   */
+  val effect: ObjectProperty[jfxe.Effect] = imageCanvas.effect
+
+  /**
+   * Specifies an effect to apply to this image display.
+   */
+  def effect_=(effect: Option[Effect]): Unit =
+    imageCanvas.effect.value = effect.orNull
+
+  /**
+   * Specifies an effect to apply to this image display.
+   */
+  def effect_=(effect: Effect): Unit =
+    imageCanvas.effect.value = effect
 
   /**
    * Image rotation in degrees.
    * The default value is 0 (no rotation).
    * This is done after applying flip operations.
    */
-  def rotation: Double = transformTarget.rotate()
+  val rotation: DoubleProperty = transformTarget.rotate
 
-  def rotation_=(r: Double): Unit = {
+  def rotation_=(r: Double): Unit =
     transformTarget.rotate() = r
-  }
 
   /** Zoom in the view. */
-  def zoomIn(): Unit = {
+  def zoomIn(): Unit =
     zoom() = ZoomScale.zoomIn(zoom())
-  }
 
   /** Zoom out the view. */
-  def zoomOut(): Unit = {
+  def zoomOut(): Unit =
     zoom() = ZoomScale.zoomOut(zoom())
-  }
 
   private def initialize(): Unit = {
 
-    flipX.onChange { (_, _, newValue) =>
+    flipX.onChange: (_, _, newValue) =>
       val v = math.abs(transformTarget.scaleX.value)
       transformTarget.scaleX.value = if (newValue) -v else v
-    }
 
-    flipY.onChange { (_, _, newValue) =>
+    flipY.onChange: (_, _, newValue) =>
       val v = math.abs(transformTarget.scaleY.value)
       transformTarget.scaleY.value = if (newValue) -v else v
-    }
 
     updateFit()
 
@@ -248,7 +248,7 @@ class ImageDisplay {
   private def updateFit(): Unit = {
     image().foreach { im =>
       val scale =
-        if (zoomToFit()) {
+        if zoomToFit() then {
           val viewportBounds = scrollPane.viewportBounds()
 
           // Calculate bounds for roted image at scale=1
@@ -256,7 +256,7 @@ class ImageDisplay {
             new Rectangle {
               width = im.width()
               height = im.height()
-              rotate = rotation
+              rotate = rotation.value
             }.boundsInParent()
 
           // Compute the zoom-to-fit scale
@@ -264,9 +264,8 @@ class ImageDisplay {
             viewportBounds.width / rotatedImageBounds.width,
             viewportBounds.height / rotatedImageBounds.height
           )
-        } else {
+        } else
           zoom().scale
-        }
 
       transformTarget.scaleX = if (flipX.value) -scale else scale
       transformTarget.scaleY = if (flipY.value) -scale else scale
@@ -279,19 +278,18 @@ class ImageDisplay {
     val gc = overlayCanvas.graphicsContext2D
     gc.clearRect(0, 0, overlayCanvas.width(), overlayCanvas.height())
 
-    overlays.value.foreach { r =>
+    overlays.value.foreach: r =>
       // Draw outline
-      Option(r.stroke()).foreach { stroke =>
-        // Maintain displayed width of the line regardless of zoom
+      Option(r.stroke()).foreach: stroke =>
+        // Maintain the displayed width of the line regardless of zoom
         gc.lineWidth = r.strokeWidth() / actualZoom()
         gc.stroke = stroke
         gc.strokeRect(r.x.value, r.y.value, r.width.value, r.height.value)
-      }
+
       // Fill-in
-      Option(r.fill()).foreach { fill =>
+      Option(r.fill()).foreach: fill =>
         gc.fill = fill
         gc.fillRect(r.x.value, r.y.value, r.width.value, r.height.value)
-      }
-    }
+
   }
 }

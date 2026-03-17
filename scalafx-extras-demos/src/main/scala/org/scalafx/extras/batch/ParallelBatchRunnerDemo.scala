@@ -25,41 +25,62 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.scalafx.extras.generic_pane
+package org.scalafx.extras.batch
 
-import scalafx.application.JFXApp3
-import scalafx.application.JFXApp3.PrimaryStage
-import scalafx.geometry.Insets
-import scalafx.scene.Scene
-import scalafx.scene.control.Button
-import scalafx.scene.layout.VBox
+import scala.util.{Failure, Success, Try}
 
-object GenericPaneDemo2 extends JFXApp3 {
+/**
+ * Example of using `ParallelBatchRunner` and `ItemTask`.
+ * Results are printed to standard output.
+ *
+ * @author Jarek Sacha
+ */
+object ParallelBatchRunnerDemo {
+  private class DemoTaskItem(n: Int) extends ItemTask[Int] {
+    val name = s"Demo TaskItem $n"
 
-  override def start(): Unit = {
+    def run(): Int = {
+      //      println(s"Item ${n} - start")
+      Thread.sleep(300)
+      if n == 7 then
+        //        println(s"Item ${n} - error")
+        throw new IllegalArgumentException(s"Don't give me $n")
 
-    val gp = new GenericPane()
-    gp.addDirectoryField("Input raw images", "images")
-    gp.addDirectoryField("Output", "output")
-
-    stage = new PrimaryStage {
-      title = "GenericPane Demo"
-      scene = new Scene {
-        content = new VBox {
-          padding = Insets(7, 7, 7, 7)
-          spacing = 7
-          children = Seq(
-            gp.pane,
-            new Button("Print Fields") {
-              onAction = (_) => {
-                gp.resetReadout()
-                println(gp.nextString())
-                println(gp.nextString())
-              }
-            }
-          )
-        }
-      }
+      //      println(s"Item ${n} - end")
+      n
     }
+  }
+
+  def main(args: Array[String]): Unit = {
+    val items: Seq[DemoTaskItem] = Range(0, 10).map { i => new DemoTaskItem(i) }
+
+    val batchHelper = new ParallelBatchRunner(items, progressUpdate, useParallelProcessing = true)
+
+    val results: Seq[(String, Try[Option[Int]])] = batchHelper.execute()
+
+    println()
+    println("Summarize processing")
+    results.foreach {
+      case (name, Success(r)) => println(s"$name: SUCCESS: $r")
+      case (name, Failure(e)) => println(s"$name: ERROR  : ${e.getMessage}")
+    }
+  }
+
+  @FunctionalInterface
+  private def progressUpdate(
+    running: Long,
+    successful: Long,
+    failed: Long,
+    canceled: Long,
+    executed: Long,
+    total: Long,
+    isCanceled: Boolean,
+    perc: Double,
+    message: String
+  ): Unit = {
+    val m =
+      f"R:$running%2d, S:$successful%2d, F:$failed%2d, E:$executed%2d, C:$canceled, T:$total%d, " +
+        f"C:$isCanceled, perc:${perc.toInt}%3d, $message"
+    println(m)
   }
 }

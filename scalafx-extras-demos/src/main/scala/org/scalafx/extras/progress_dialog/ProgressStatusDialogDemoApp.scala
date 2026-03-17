@@ -25,41 +25,51 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.scalafx.extras.generic_pane
+package org.scalafx.extras.progress_dialog
 
-import scalafx.application.JFXApp3
-import scalafx.application.JFXApp3.PrimaryStage
-import scalafx.geometry.Insets
-import scalafx.scene.Scene
-import scalafx.scene.control.Button
-import scalafx.scene.layout.VBox
+import org.scalafx.extras
+import org.scalafx.extras.{initFX, offFX, onFX, onFXAndWait}
+import scalafx.application.Platform
 
-object GenericPaneDemo2 extends JFXApp3 {
+/**
+ * Example showing use of ProgressStatusDialog
+ */
+object ProgressStatusDialogDemoApp:
 
-  override def start(): Unit = {
+  // TODO implement simulated processing using batch processing backend
 
-    val gp = new GenericPane()
-    gp.addDirectoryField("Input raw images", "images")
-    gp.addDirectoryField("Output", "output")
+  def main(args: Array[String]): Unit =
 
-    stage = new PrimaryStage {
-      title = "GenericPane Demo"
-      scene = new Scene {
-        content = new VBox {
-          padding = Insets(7, 7, 7, 7)
-          spacing = 7
-          children = Seq(
-            gp.pane,
-            new Button("Print Fields") {
-              onAction = (_) => {
-                gp.resetReadout()
-                println(gp.nextString())
-                println(gp.nextString())
-              }
-            }
-          )
-        }
-      }
+    initFX()
+    Platform.implicitExit = true
+
+    val progressStatusDialog = onFXAndWait:
+      new ProgressStatusDialog("Progress Status Dialog Demo", None)
+
+    progressStatusDialog.abortFlag.onChange { (_, _, newValue) =>
+      if newValue then
+        // Do not block UI, but wait till shutdown completed
+        offFX:
+          // Simulate delay due to shutdown
+          Thread.sleep(3000)
+          onFX:
+            progressStatusDialog.close()
     }
-  }
-}
+
+    onFXAndWait:
+      progressStatusDialog.show()
+
+    val n = 500
+    for i <- 1 to n if !progressStatusDialog.abortFlag.value do
+      onFX:
+        progressStatusDialog.statusText.value = s"Processing item $i / $n"
+        progressStatusDialog.progress.value = i / n.toDouble
+
+      Thread.sleep(250)
+
+    // In case of abort leave to abort handler o close the dialog when shutdown actions are complete
+    if !progressStatusDialog.abortFlag.value then
+      onFX:
+        progressStatusDialog.close()
+
+end ProgressStatusDialogDemoApp

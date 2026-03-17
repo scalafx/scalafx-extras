@@ -34,32 +34,28 @@ import scalafx.scene.Scene
 import scalafx.scene.control.Button
 import scalafx.scene.layout.VBox
 
-object GenericPaneDemo2 extends JFXApp3 {
+/**
+ * Example of using `GenericPane`.
+ */
+object GenericPaneDemo extends JFXApp3:
 
-  override def start(): Unit = {
+  override def start(): Unit =
 
-    val gp = new GenericPane()
-    gp.addDirectoryField("Input raw images", "images")
-    gp.addDirectoryField("Output", "output")
+    val gp = new GenericPane():
+      addDirectoryField("Input", "images")
+      addDirectoryField("Output", "output")
 
-    stage = new PrimaryStage {
+    stage = new PrimaryStage:
       title = "GenericPane Demo"
-      scene = new Scene {
-        content = new VBox {
+      scene = new Scene:
+        content = new VBox:
           padding = Insets(7, 7, 7, 7)
           spacing = 7
           children = Seq(
             gp.pane,
-            new Button("Print Fields") {
-              onAction = (_) => {
+            new Button("Print Fields"):
+              onAction = (_) =>
                 gp.resetReadout()
-                println(gp.nextString())
-                println(gp.nextString())
-              }
-            }
+                println(s"Input dir : ${gp.nextString()}")
+                println(s"Output dir: ${gp.nextString()}")
           )
-        }
-      }
-    }
-  }
-}

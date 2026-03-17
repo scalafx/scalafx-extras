@@ -25,41 +25,54 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.scalafx.extras.generic_pane
+package org.scalafx.extras.auto_dialog
 
-import scalafx.application.JFXApp3
-import scalafx.application.JFXApp3.PrimaryStage
-import scalafx.geometry.Insets
-import scalafx.scene.Scene
-import scalafx.scene.control.Button
-import scalafx.scene.layout.VBox
+import org.scalafx.extras.generic_pane.GenericDialogFX
 
-object GenericPaneDemo2 extends JFXApp3 {
+import scala.compiletime.summonAll
+import scala.deriving.Mirror
 
-  override def start(): Unit = {
+/** Decode current fields from a `GenericDialog` corresponding to type `T` */
+trait DialogDecoder[T]:
+  def decode(dialog: GenericDialogFX): T
 
-    val gp = new GenericPane()
-    gp.addDirectoryField("Input raw images", "images")
-    gp.addDirectoryField("Output", "output")
+object DialogDecoder:
 
-    stage = new PrimaryStage {
-      title = "GenericPane Demo"
-      scene = new Scene {
-        content = new VBox {
-          padding = Insets(7, 7, 7, 7)
-          spacing = 7
-          children = Seq(
-            gp.pane,
-            new Button("Print Fields") {
-              onAction = (_) => {
-                gp.resetReadout()
-                println(gp.nextString())
-                println(gp.nextString())
-              }
-            }
-          )
-        }
-      }
-    }
-  }
-}
+  /**
+   * Decode a numeric field as integer
+   */
+  given DialogDecoder[Boolean] with
+    override def decode(dialog: GenericDialogFX): Boolean =
+      dialog.nextBoolean()
+
+  /**
+   * Decode a numeric field as integer
+   */
+  given DialogDecoder[Int] with
+    override def decode(dialog: GenericDialogFX): Int =
+      math.round(dialog.nextNumber()).toInt
+
+  /**
+   * Decode the numeric field as double
+   */
+  given DialogDecoder[Double] with
+    override def decode(dialog: GenericDialogFX): Double =
+      dialog.nextNumber()
+
+  given DialogDecoder[String] with
+    override def decode(dialog: GenericDialogFX): String =
+      dialog.nextString()
+
+  /**
+   * Decode a set of fields corresponding to a member of a case class
+   */
+  inline given [A <: Product](using m: Mirror.ProductOf[A]): DialogDecoder[A] =
+    new DialogDecoder[A]:
+      type ElemDecoder = Tuple.Map[m.MirroredElemTypes, DialogDecoder]
+      private val elemDecoders: List[DialogDecoder[Any]] =
+        summonAll[ElemDecoder].toList.asInstanceOf[List[DialogDecoder[Any]]]
+
+      def decode(dialog: GenericDialogFX): A =
+        val decoded = elemDecoders.map(_.decode(dialog))
+        val tuple   = decoded.foldRight[Tuple](EmptyTuple)(_ *: _)
+        m.fromProduct(tuple)

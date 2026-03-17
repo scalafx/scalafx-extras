@@ -25,41 +25,31 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.scalafx.extras.generic_pane
+package org.scalafx.extras.auto_dialog
 
-import scalafx.application.JFXApp3
-import scalafx.application.JFXApp3.PrimaryStage
-import scalafx.geometry.Insets
-import scalafx.scene.Scene
-import scalafx.scene.control.Button
-import scalafx.scene.layout.VBox
+import org.scalafx.extras.initFX
 
-object GenericPaneDemo2 extends JFXApp3 {
+object AutoDialogDemo:
 
-  override def start(): Unit = {
+  case class FilterOptions(kernelSize: Int = 7,
+                           start: Double = 3.14,
+                           tag: String = "alpha",
+                           debugMode: Boolean = false)
 
-    val gp = new GenericPane()
-    gp.addDirectoryField("Input raw images", "images")
-    gp.addDirectoryField("Output", "output")
+  def main(args: Array[String]): Unit =
 
-    stage = new PrimaryStage {
-      title = "GenericPane Demo"
-      scene = new Scene {
-        content = new VBox {
-          padding = Insets(7, 7, 7, 7)
-          spacing = 7
-          children = Seq(
-            gp.pane,
-            new Button("Print Fields") {
-              onAction = (_) => {
-                gp.resetReadout()
-                println(gp.nextString())
-                println(gp.nextString())
-              }
-            }
-          )
-        }
-      }
-    }
-  }
-}
+    initFX()
+
+    val filterOptions = FilterOptions()
+
+    val result: Option[FilterOptions] =
+      new AutoDialog(filterOptions)
+        .showDialog(
+          "AutoDialog Demo",
+          "Fields are auto generated from `FilterOptions` object")
+
+    println(s"Result: $result")
+
+    System.exit(0)
+
+

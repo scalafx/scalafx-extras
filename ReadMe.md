@@ -2,10 +2,10 @@ ScalaFX Extras
 ==============
 
 [![Scala CI](https://github.com/scalafx/scalafx-extras/actions/workflows/scala.yml/badge.svg)](https://github.com/scalafx/scalafx-extras/actions/workflows/scala.yml)
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.scalafx/scalafx-extras_3/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.scalafx/scalafx-extras_3)
+[![Maven Central](https://img.shields.io/maven-central/v/org.scalafx/scalafx-extras_3)](https://central.sonatype.com/artifact/org.scalafx/scalafx-extras_3)
 [![Scaladoc](https://javadoc.io/badge2/org.scalafx/scalafx-extras_3/scaladoc.svg)](https://javadoc.io/doc/org.scalafx/scalafx-extras_3)
 
-ScalaFX Extras are additions to ScalaFX that simplify creation of User interfaces. In contrast to ScalaFX core, the
+ScalaFX Extras are additions to ScalaFX that simplify the creation of User interfaces. In contrast to ScalaFX core, the
 Extras do not have direct corresponding concepts in JavaFX.
 
 **Contents**
@@ -31,6 +31,7 @@ Extras do not have direct corresponding concepts in JavaFX.
     * [ShowMessage Demo](#showmessage-demo)
     * [BusyWorker Demo](#busyworker-demo)
     * [ImageDisplay Demo](#imagedisplay-demo)
+    * [BatchRunnerWithProgress Demo](#batchrunnerwithprogress-demo)
 * [Status](#status)
 * [Discussion and Support](#discussion-and-support)
 * [License](#license)
@@ -46,14 +47,14 @@ of `scalafx-extras`
 SBT
 ---
 
-To use ScalaFX Extras with SBT add following dependency:
+To use ScalaFX Extras with SBT, add the following dependency:
 
 ```
 libraryDependencies += "org.scalafx" %% "scalafx-extras" % scalafx_extras_version
 ```
 
-The latest published ScalaFX Extras
-version: [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.scalafx/scalafx-extras_2.12/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.scalafx/scalafx-extras_2.12)
+The latest published ScalaFX Extras version: 
+[![Maven Central](https://img.shields.io/maven-central/v/org.scalafx/scalafx-extras_3)](https://central.sonatype.com/artifact/org.scalafx/scalafx-extras_3)
 
 Features
 --------
@@ -104,7 +105,7 @@ ShowMessage.information(
 )
 ```
 
-Dialog types supported:
+Supported Dialog types:
 
 * `confirmation`
 * `confirmationYesNoCancel`
@@ -138,24 +139,25 @@ The demos module has a complete example of a simple application in `ShowMessageD
 
 ### Easy Custom Panes
 
-`GenericPane` is a helper class that simplifies creation of panes. Particularly suited for creation of input controls.
+`GenericPane` is a helper class that simplifies creation of panes. Particularly suited for the creation of input
+controls.
 
-Typically there are 4 steps to using a `GenericPane`:
+Typically, there are 4 steps to using a `GenericPane`:
 
 1. Creation, where elements of the pane are appended vertically using `add*(...)` methods, for instance,
    `addStringField(label, defaultText)`
 
 2. Adding the pane to the UI
 
-3. User interaction, after the pane is displayed
+3. User interaction after the pane is displayed
 
 4. Optionally, reading of input. Pane's editable content can be read using `next*()` methods. Content is read in the
    order it is added. The whole pane content can be read multiple tiles. Remember to call `resetReadout()` to ensure
    that reading is restarted from the beginning of the pane.
 
 A complete example in Scala 3. Shows a pane with 2 directory selection fields and a button "Print Fields". When the
-button is pressed values
-of the directory fields are printed
+button is pressed,
+values of the directory fields are printed
 
 ```scala 3
 import org.scalafx.extras.generic_pane.GenericPane
@@ -332,10 +334,10 @@ The demos module has a complete example of a simple application: [StopWatchApp][
 ### ImageDisplay Component
 
 ImageDisplay Component is an image view with the ability to zoom in, zoom out, zoom to fit.
-It can also automatically resize to parent size (zoom-to-fit).
+It can also automatically resize to the parent size (zoom-to-fit).
 Image cane also rotated and flipped along the X and Y axis.
 
-ImageDisplay provides an option to show overlay on top of the image. Overlays scale and rotate with the image.
+ImageDisplay provides an option to show an overlay on top of the image. Overlays scale and rotate with the image.
 
 ### Batch Processing and Progress Dialog
 
@@ -392,7 +394,7 @@ Illustrates use of the `ImageDisplay` component.
 Status
 ------
 
-ScalaFX Extras is still quite experimental and APIs may change significantly.
+ScalaFX Extras is still quite experimental, and APIs may change significantly.
 
 Discussion and Support
 ----------------------

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2022, ScalaFX Project
+ * Copyright (c) 2011-2026, ScalaFX Project
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -29,19 +29,11 @@ package org.scalafx.extras.generic_pane
 
 import org.scalafx.extras.onFXAndWait
 import scalafx.Includes.*
-import scalafx.application.Platform
-import scalafx.beans.property.StringProperty
-import scalafx.collections.ObservableBuffer
-import scalafx.geometry.Insets
-import scalafx.scene.Node
 import scalafx.scene.control.*
 import scalafx.scene.control.ButtonBar.ButtonData
-import scalafx.scene.layout.{ColumnConstraints, GridPane, Priority}
-import scalafx.scene.text.Font
 import scalafx.stage.Window
 
-import java.net.URL
-import scala.collection.mutable.ListBuffer
+import java.net.URI
 
 object GenericDialogFX {
 
@@ -53,7 +45,7 @@ object GenericDialogFX {
 }
 
 /**
- * A helper for crating custom dialogs. Particularly suited for creation of input dialogs.
+ * A helper for crating custom dialogs. Particularly suited for the creation of input dialogs.
  *
  * There are 3 steps to using a dialog:
  * 1. Creation, where elements of the dialog are appended vertically using `add*(...)` methods,
@@ -192,7 +184,7 @@ class GenericDialogFX(
       } else {
         //        val `macro` = "call('ij.plugin.BrowserLauncher.open', '" + helpURL + "');"
         //        new MacroRunner(`macro`) // open on separate thread using BrowserLauncher
-        val url = new URL(helpURL)
+        val url = new URI(helpURL)
         Utils.openWebpage(url)
         //        ij.plugin.BrowserLauncher.open(helpURL)
       }
@@ -205,7 +197,7 @@ class GenericDialogFX(
   def wasCanceled: Boolean = !_wasOKed
 
   /**
-   * `true` if the dialog was closed using OK button
+   * `true` if the dialog was closed using the OK button
    */
   def wasOKed: Boolean = _wasOKed
 
