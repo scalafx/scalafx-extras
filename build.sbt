@@ -3,22 +3,18 @@ import scala.xml.{Node as XmlNode, NodeSeq as XmlNodeSeq, *}
 
 //
 // Environment variables used by the build:
-// GRAPHVIZ_DOT_PATH - Full path to Graphviz dot utility. If not defined, Scaladocs will be built without diagrams.
+// GRAPHVIZ_DOT_PATH - Full path to Graphviz dot utility. If not defined, Scaladoc will be built without diagrams.
 // JAR_BUILT_BY      - Name to be added to Jar metadata field "Built-By" (defaults to System.getProperty("user.name")
 //
 
-lazy val projectVersion    = "0.11.0.1-SNAPSHOT"
-lazy val versionTagDir     = if (projectVersion.endsWith("SNAPSHOT")) "master" else "v." + projectVersion
-lazy val javaTargetVersion = "21"
-
-ThisBuild / version          := projectVersion
+ThisBuild / version          := "0.11.0.2-SNAPSHOT"
 ThisBuild / scalaVersion     := "3.3.7"
 ThisBuild / organization     := "org.scalafx"
 ThisBuild / organizationName := "ScalaFX"
+ThisBuild / organizationHomepage := Some(url("https://github.com/scalafx"))
 ThisBuild / homepage         := Some(url("https://www.scalafx.org/"))
 ThisBuild / startYear        := Some(2016)
 ThisBuild / licenses         := Seq(("BSD", url("https://github.com/scalafx/scalafx-extras/blob/master/LICENSE.txt")))
-ThisBuild / organizationHomepage := Some(url("https://github.com/scalafx"))
 ThisBuild / scmInfo              := Option(
   ScmInfo(
     url("https://github.com/scalafx/scalafx-extras"),
@@ -31,10 +27,13 @@ ThisBuild / scmInfo              := Option(
 // e.g., 2.11.0-SNAPSHOT
 ThisBuild / resolvers += Resolver.sonatypeCentralSnapshots
 ThisBuild / resolvers += Resolver.mavenLocal
-ThisBuild / Test / publishArtifact := false
 
 publishArtifact := false
 publish / skip  := true
+
+// Set the Java version target for compatibility for the current FIJI distribution
+// We do not want to be over the FIJI Java version.
+lazy val javaTargetVersion = "21"
 
 lazy val libLogbackClassic = "ch.qos.logback"              % "logback-classic" % "1.5.32"
 lazy val libScalaLogging   = "com.typesafe.scala-logging" %% "scala-logging"   % "3.9.6"
@@ -42,25 +41,25 @@ lazy val libScalaFX        = "org.scalafx"                %% "scalafx"         %
 lazy val libScalaTest      = "org.scalatest"              %% "scalatest"       % "3.2.19"
 
 // ScalaFX Extras project
-lazy val scalaFXExtras = (project in file("scalafx-extras")).settings(
-  scalaFXExtrasSettings,
-  name        := "scalafx-extras",
-  description := "The ScalaFX Extras",
-  Compile / doc / scalacOptions ++= Seq(
-    "-sourcepath",
-    baseDirectory.value.toString,
-    "-doc-root-content",
-    baseDirectory.value + "/src/main/scala/root-doc.creole"
-  ),
-  publishArtifact := true,
-  Test / publishArtifact := false
-)
+lazy val scalaFXExtras = project.in(file("scalafx-extras"))
+  .settings(
+    name        := "scalafx-extras",
+    description := "The ScalaFX Extras",
+    commonSettings,
+    Compile / doc / scalacOptions ++= Seq(
+      "-sourcepath",
+      baseDirectory.value.toString,
+      "-doc-root-content",
+      baseDirectory.value + "/src/main/scala/root-doc.creole"
+    ),
+    publishArtifact := true
+  )
 
 // ScalaFX Extras Demos project
-lazy val scalaFXExtrasDemos = (project in file("scalafx-extras-demos")).settings(
-  scalaFXExtrasSettings,
+lazy val scalaFXExtrasDemos = project.in(file("scalafx-extras-demos")).settings(
   name        := "scalafx-extras-demos",
   description := "The ScalaFX Extras demonstrations",
+  commonSettings,
   javaOptions ++= Seq(
     "-Xmx512M",
     "-Djavafx.verbose"
@@ -73,15 +72,13 @@ lazy val scalaFXExtrasDemos = (project in file("scalafx-extras-demos")).settings
 ).dependsOn(scalaFXExtras % "compile;test->test")
 
 // Common settings
-lazy val scalaFXExtrasSettings = Seq(
+lazy val commonSettings = Seq(
   scalacOptions ++= Seq(
+    "-encoding",
+    "UTF-8",
     "-unchecked",
     "-deprecation",
-    "-encoding",
-    "utf8",
     "-feature",
-    "-release",
-    javaTargetVersion,
     "-explain",
     "-explain-types",
     "-rewrite",
@@ -89,12 +86,24 @@ lazy val scalaFXExtrasSettings = Seq(
     "-Wunused:all",
     // To deal with classes implementing `ControllerFX` and using @FXML annotations to passing variables from FXML declarations
     // or "-Wunused:-privates"
-    "-Wconf:msg=unset private var:s"
+    "-Wconf:msg=unset private var:s",
+    "-release",
+    javaTargetVersion
   ),
   Compile / doc / scalacOptions ++= Opts.doc.title("ScalaFX Extras API"),
-  Compile / doc / scalacOptions ++= Opts.doc.version(projectVersion),
-  Compile / doc / scalacOptions ++= Seq("-doc-footer", s"ScalaFX Extras API v.$projectVersion"),
-  // If using Scala 2.12, enable macro processing through a compiler plugin
+  Compile / doc / scalacOptions ++= Opts.doc.version(version.value),
+  Compile / doc / scalacOptions ++= Seq(
+    "-doc-footer",
+    s"ScalaFX Extras API v.${version.value}"
+  ),
+  Compile / doc / scalacOptions ++= (
+    Option(System.getenv("GRAPHVIZ_DOT_PATH")) match {
+      case Some(path) => Seq("-diagrams", "-diagrams-dot-path", path, "-diagrams-debug")
+      case None       => Seq.empty[String]
+    }
+  ),
+  Compile / compile / javacOptions ++= Seq("-deprecation", "-Xlint", "--release", javaTargetVersion),
+  //
   libraryDependencies ++= Seq(
     libScalaFX,
     libScalaTest % "test"
@@ -142,10 +151,18 @@ lazy val manifestSetting = packageOptions += {
   )
 }
 
-// Metadata needed by Maven Central
-// See also http://maven.apache.org/pom.html#Developers
-ThisBuild / publishMavenStyle := true
-ThisBuild / developers        := List(
+//
+// Customize Java style publishing
+//
+// Enables publishing to maven repo
+ThisBuild / publishMavenStyle      := true
+ThisBuild / Test / publishArtifact := false
+ThisBuild / publishTo  := {
+  val centralSnapshots = "https://central.sonatype.com/repository/maven-snapshots/"
+  if (isSnapshot.value) Some("central-snapshots" at centralSnapshots)
+  else localStaging.value
+}
+ThisBuild / developers := List(
   Developer(
     id = "jpsacha",
     name = "Jarek Sacha",
