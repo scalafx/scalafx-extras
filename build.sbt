@@ -7,7 +7,7 @@ import scala.xml.{Node as XmlNode, NodeSeq as XmlNodeSeq, *}
 // JAR_BUILT_BY      - Name to be added to Jar metadata field "Built-By" (defaults to System.getProperty("user.name")
 //
 
-ThisBuild / version          := "0.11.0.2-SNAPSHOT"
+ThisBuild / version          := "0.12.0"
 ThisBuild / scalaVersion     := "3.3.7"
 ThisBuild / organization     := "org.scalafx"
 ThisBuild / organizationName := "ScalaFX"
@@ -52,7 +52,9 @@ lazy val scalaFXExtras = project.in(file("scalafx-extras"))
       "-doc-root-content",
       baseDirectory.value + "/src/main/scala/root-doc.creole"
     ),
-    publishArtifact := true
+    publishArtifact := true,
+    Test / publishArtifact := false,
+    Test / publish / skip  := true
   )
 
 // ScalaFX Extras Demos project
@@ -65,6 +67,7 @@ lazy val scalaFXExtrasDemos = project.in(file("scalafx-extras-demos")).settings(
     "-Djavafx.verbose"
   ),
   publishArtifact := false,
+  publish / skip  := true,
   libraryDependencies ++= Seq(
     libScalaLogging,
     libLogbackClassic % Runtime
