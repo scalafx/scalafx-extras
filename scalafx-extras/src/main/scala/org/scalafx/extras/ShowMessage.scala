@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2025, ScalaFX Project
+ * Copyright (c) 2011-2026, ScalaFX Project
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -79,7 +79,7 @@ object ShowMessage {
     exception(title, message, t, Option(parentWindow))
 
   /**
-   * Show a modal dialog with an expandable details about an exception (stack trace).
+   * Show a modal dialog with expandable details about an exception (stack trace).
    *
    * @param title        dialog title
    * @param message      message shown in the dialog header.
@@ -247,7 +247,7 @@ trait ShowMessage {
    */
   def showException(title: String, message: String, t: Throwable, resizable: Boolean = false): Unit = {
     messageLogger.foreach(_.error(s"<$title> $message", t))
-    ShowMessage.exception(title, message, t, parentWindow)
+    ShowMessage.exception(title, message, t, parentWindow, resizable)
   }
 
   /**
