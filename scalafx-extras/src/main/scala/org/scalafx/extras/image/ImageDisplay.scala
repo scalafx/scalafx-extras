@@ -230,7 +230,7 @@ class ImageDisplay {
       val v = math.abs(transformTarget.scaleY.value)
       transformTarget.scaleY.value = if (newValue) -v else v
 
-    updateFit()
+    updateActualZoom()
 
     // Update fit when zoom or control size changes
     Seq(
@@ -238,14 +238,17 @@ class ImageDisplay {
       zoomToFit,
       scrollPane.viewportBounds,
       image,
-      actualZoom,
       transformTarget.rotate
-    ).foreach(_.onInvalidate {
-      updateFit()
-    })
+    ).foreach(_.onChange { (_, _, _) => updateActualZoom() })
   }
 
-  private def updateFit(): Unit = {
+  /**
+   * Recalculate and set the value of the `actualZoom` property.
+   * Additionally,
+   *   * `transformTarget.scaleX` and `transformTarget.scaleY` are updated based on the new `actualZoom` property.
+   *   * overlays are redrawn.
+   */
+  private def updateActualZoom(): Unit = {
     image().foreach { im =>
       val scale =
         if zoomToFit() then {
@@ -260,9 +263,16 @@ class ImageDisplay {
             }.boundsInParent()
 
           // Compute the zoom-to-fit scale
+          // Attempt to compensate for flicker when `viewportBounds.width` and `viewportBounds.height` are used directly.
+          // We are trying here to address issue #46: "[ImageDisplay] may flicker"
+          val tolerance           = 0.001
+          val actualViewPortWidth = viewportBounds.width -
+            (scrollPane.snappedLeftInset() + scrollPane.snappedRightInset() + tolerance)
+          val actualViewPortHeight = viewportBounds.height -
+            (scrollPane.snappedTopInset() + scrollPane.snappedBottomInset() + tolerance)
           scala.math.min(
-            viewportBounds.width / rotatedImageBounds.width,
-            viewportBounds.height / rotatedImageBounds.height
+            actualViewPortWidth / rotatedImageBounds.width,
+            actualViewPortHeight / rotatedImageBounds.height
           )
         } else
           zoom().scale
