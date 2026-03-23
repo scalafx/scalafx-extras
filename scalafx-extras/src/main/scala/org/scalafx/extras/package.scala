@@ -28,7 +28,6 @@
 package org.scalafx
 
 import javafx.concurrent as jfxc
-import javafx.embed.swing as jfxes
 import scalafx.Includes.*
 import scalafx.application.Platform
 import scalafx.concurrent.Task
@@ -49,13 +48,23 @@ package object extras {
    * When JavaFX toolkit is not initialized, and you attempt to use JavaFX components, you will get an exception:
    * `java.lang.IllegalStateException: Toolkit not initialized`.
    *
-   * In JavaFX 9 and newer, you can use `Platform.startup(() -> {})`.
+   * @param implicitExit If this attribute is `false`,
+   *                     the application will continue to run normally even after the last window is closed,
+   *                     until the application calls exit.
+   *                     If `true`, the JavaFX runtime will implicitly shutdown when the last window is closed;
+   *                     the JavaFX launcher will call the `Application.stop` method and
+   *                     terminate the JavaFX application thread.
    */
-  def initFX(): Unit = {
+  def initFX(implicitExit: Boolean = false): Unit = {
     // Make sure that JavaFX Toolkit is not shutdown implicitly, it may not be possible to restart it.
-    Platform.implicitExit = false
-    // Create SFXPanel() to force initialization of the JavaFX application thread.
-    new jfxes.JFXPanel()
+    Platform.implicitExit = implicitExit
+
+    try
+      // Attempt to start JavaFX runtime. There is no reliable way to check if it is already running.
+      Platform.startup(() => {})
+    catch
+      case ex: IllegalStateException if ex.getMessage.contains("Toolkit already initialized") =>
+      // Ignore, toolkit is already initialized.
   }
 
   /**
