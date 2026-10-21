@@ -28,10 +28,30 @@
 package org.scalafx.extras.generic_pane
 
 import java.awt.Desktop
+import java.io.File
 import java.net.{URI, URL}
+import scala.util.Try
 
 object Utils {
 
+  /**
+    * Returns the cleanest possible form of the `file` path, without throwing exceptions.
+    *
+    * Attempts, in order:
+    *   - canonical path - absolute, with `.` and `..` removed and symbolic links resolved
+    *   - normalized absolute path - absolute, with `.` and `..` removed
+    *   - absolute path
+    *
+    * @param file file to clean, cannot be `null`
+    */
+  private[generic_pane] def cleanFile(file: File): File =
+    Try(file.getCanonicalFile)
+      .orElse(Try(file.toPath.toAbsolutePath.normalize.toFile))
+      .getOrElse(file.getAbsoluteFile)
+
+  /** The `file` followed by its parents, up to the root. */
+  private[generic_pane] def selfAndParents(file: File): Iterator[File] =
+    Iterator.iterate(file)(_.getParentFile).takeWhile(_ != null)
 
   /**
     * Opens URL using the default browser.

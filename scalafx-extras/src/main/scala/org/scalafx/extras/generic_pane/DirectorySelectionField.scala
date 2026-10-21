@@ -27,6 +27,7 @@
 
 package org.scalafx.extras.generic_pane
 
+import org.scalafx.extras.generic_pane.Utils.{cleanFile, selfAndParents}
 import org.scalafx.extras.onFX
 import scalafx.beans.property.StringProperty
 import scalafx.scene.Node
@@ -35,19 +36,22 @@ import scalafx.scene.layout.{HBox, Priority}
 import scalafx.stage.{DirectoryChooser, Window}
 
 import java.io.File
-import scala.annotation.tailrec
 
 object DirectorySelectionField {
 
   /**
-   * Find existing part of the input file path. If the input file exists return that file otherwise look for first
-   * existing parent
-   */
-  //noinspection ScalaWeakerAccess
-  @tailrec
-  def existingOrParent(file: File): File =
-    if (file.exists()) file
-    else existingOrParent(file.getCanonicalFile.getParentFile)
+    * Determine initial directory for the directory chooser.
+    *
+    * @param path          current content of the path field, can be empty or `null`
+    * @param lastDirectory last directory used, used when no existing directory can be found from `path`
+    * @return initial directory, if it can be determined
+    */
+  private[generic_pane] def initialDirectory(path: String, lastDirectory: File): Option[File] =
+    Option(path)
+      .filter(_.trim.nonEmpty)
+      // First existing directory, path may also point to an existing file or not exist at all
+      .flatMap(p => selfAndParents(cleanFile(new File(p))).find(_.isDirectory))
+      .orElse(Option(lastDirectory).filter(_.isDirectory).map(cleanFile))
 }
 
 /**
@@ -93,17 +97,12 @@ class DirectorySelectionField(
 
     val button = new Button("Browse") {
       onAction = _ => {
-        val initialPath = path.value
-        if (initialPath.trim.nonEmpty) {
-          chooser.initialDirectory = existingOrParent(new File(initialPath))
-        } else {
-          chooser.initialDirectory = lastDirectoryHandler.lastDirectory
-        }
+        chooser.initialDirectory = initialDirectory(path.value, lastDirectoryHandler.lastDirectory).orNull
 
         val selection = chooser.showDialog(ownerWindow.orNull)
 
-        Option(selection).foreach { s =>
-          path.value = s.getCanonicalPath
+        Option(selection).map(cleanFile).foreach { s =>
+          path.value = s.getPath
           lastDirectoryHandler.lastDirectory = s
           onFX { textField.positionCaret(textField.text.length.get()) }
         }
