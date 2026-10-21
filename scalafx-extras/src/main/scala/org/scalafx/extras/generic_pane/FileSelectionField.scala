@@ -27,6 +27,8 @@
 
 package org.scalafx.extras.generic_pane
 
+import org.scalafx.extras.generic_pane.FileSelectionField.*
+import org.scalafx.extras.generic_pane.Utils.cleanFile
 import org.scalafx.extras.onFX
 import scalafx.beans.property.StringProperty
 import scalafx.scene.Node
@@ -35,6 +37,31 @@ import scalafx.scene.layout.{HBox, Priority}
 import scalafx.stage.{FileChooser, Window}
 
 import java.io.File
+
+object FileSelectionField {
+
+  import Utils.{cleanFile, selfAndParents}
+
+  /**
+    * Determine initial directory and initial file name for the file chooser.
+    *
+    * @param path          current content of the path field, can be empty or `null`
+    * @param lastDirectory last directory used, used when no existing directory can be found from `path`
+    * @return initial directory, if it can be determined, and initial file name, if `path` names a file
+    */
+  private[generic_pane] def initialLocation(path: String, lastDirectory: File): (Option[File], Option[String]) = {
+    val fallbackDir = Option(lastDirectory).filter(_.isDirectory).map(cleanFile)
+    Option(path).filter(_.trim.nonEmpty).map(p => cleanFile(new File(p))) match {
+      case Some(file) =>
+        // First existing directory, path may also point to an existing file or not exist at all
+        val dir = selfAndParents(file).find(_.isDirectory).orElse(fallbackDir)
+        val name = Option.when(!file.isDirectory)(file.getName).filter(_.nonEmpty)
+        (dir, name)
+      case None =>
+        (fallbackDir, None)
+    }
+  }
+}
 
 /**
  * File selection control, accessible through `view`. The text field shows the path, the button allow browsing to
@@ -75,24 +102,16 @@ class FileSelectionField(
 
     val button = new Button("Browse") {
       onAction = _ => {
-        val initialPath = path.value
-        if (initialPath.trim.nonEmpty) {
-          val file = new File(initialPath)
-          fileChooser.initialFileName = file.getName
-          if (file.getParentFile.exists()) {
-            fileChooser.initialDirectory = file.getParentFile
-          }
-        } else {
-          val parent = lastDirectoryHandler.lastDirectory
-          if (parent.exists())
-            fileChooser.initialDirectory = parent
-        }
+        val (initialDir, initialName) = initialLocation(path.value, lastDirectoryHandler.lastDirectory)
+        fileChooser.initialDirectory = initialDir.orNull
+        fileChooser.initialFileName = initialName.orNull
 
         val selection = fileChooser.showOpenDialog(ownerWindow.orNull)
 
-        Option(selection).foreach { s =>
-          path.value = s.getCanonicalPath
-          lastDirectoryHandler.lastDirectory = s
+        Option(selection).map(cleanFile).foreach { s =>
+          path.value = s.getPath
+          // Remember the directory containing the file, not the file itself
+          Option(s.getParentFile).foreach(lastDirectoryHandler.lastDirectory = _)
           onFX { textField.positionCaret(textField.text.length.get()) }
         }
       }
