@@ -8,7 +8,7 @@ import scala.xml.{Node as XmlNode, NodeSeq as XmlNodeSeq, *}
 //
 
 ThisBuild / version          := "0.12.1.1-SNAPSHOT"
-ThisBuild / scalaVersion     := "3.3.7"
+ThisBuild / scalaVersion     := "3.3.8"
 ThisBuild / organization     := "org.scalafx"
 ThisBuild / organizationName := "ScalaFX"
 ThisBuild / organizationHomepage := Some(url("https://github.com/scalafx"))
@@ -33,12 +33,12 @@ publish / skip  := true
 
 // Set the Java version target for compatibility for the current FIJI distribution
 // We do not want to be over the FIJI Java version.
-lazy val javaTargetVersion = "21"
+lazy val javaTargetVersion = "25"
 
-lazy val libLogbackClassic = "ch.qos.logback"              % "logback-classic" % "1.5.32"
+lazy val libLogbackClassic = "ch.qos.logback"              % "logback-classic" % "1.6.5"
 lazy val libScalaLogging   = "com.typesafe.scala-logging" %% "scala-logging"   % "3.9.6"
-lazy val libScalaFX        = "org.scalafx"                %% "scalafx"         % "25.0.2-R37"
-lazy val libScalaTest      = "org.scalatest"              %% "scalatest"       % "3.2.19"
+lazy val libScalaFX        = "org.scalafx"                %% "scalafx"         % "27.0.0-R39"
+lazy val libScalaTest      = "org.scalatest"              %% "scalatest"       % "3.2.20"
 
 // ScalaFX Extras project
 lazy val scalaFXExtras = project.in(file("scalafx-extras"))
