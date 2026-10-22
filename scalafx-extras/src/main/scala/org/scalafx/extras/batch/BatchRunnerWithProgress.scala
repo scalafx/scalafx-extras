@@ -119,11 +119,12 @@ abstract class BatchRunnerWithProgress[T](
       //        case (name, Failure(e)) => println(s"$name: ERROR  : ${Option(e.getMessage).getOrElse(e.getClass.getName)}")
       //      }
 
+      // Take counts from the runner, the progress dialog is updated asynchronously and may not be current yet
       val counts = CountSummary(
-        total = progressStatus.totalCount.value,
-        successful = progressStatus.successfulCount.value,
-        failed = progressStatus.failedCount.value,
-        cancelled = progressStatus.cancelledCount.value
+        total = items.length,
+        successful = runner.successfulCount,
+        failed = runner.failedCount,
+        cancelled = runner.canceledCount
       )
 
       val errorDetails: Seq[String] =
@@ -141,7 +142,7 @@ abstract class BatchRunnerWithProgress[T](
         for ov <- t.toOption; v <- ov yield TaskResult(name, v)
       }
 
-      assert(completedResults.length == counts.successful.toInt)
+      assert(completedResults.length == counts.successful)
 
       showFinalSummary(counts, errorDetails, Option(progressStatus.window))
       //
@@ -183,9 +184,9 @@ abstract class BatchRunnerWithProgress[T](
         new Label(s):
           alignmentInParent = Pos.CenterRight
 
-      def addRow(label: String, value: String): Unit =
+      def addRow(label: String, value: Long): Unit =
         add(Label(label), 0, rowCount)
-        add(nLabel(value), 1, rowCount)
+        add(nLabel(f"$value%d"), 1, rowCount)
         rowCount += 1
 
       padding = Insets(14, 14, 14, 28)
@@ -237,7 +238,7 @@ abstract class BatchRunnerWithProgress[T](
 
   def createTasks(): Seq[ItemTask[T]]
 
-  private case class CountSummary(total: String, successful: String, failed: String, cancelled: String)
+  private case class CountSummary(total: Long, successful: Long, failed: Long, cancelled: Long)
 end BatchRunnerWithProgress
 
 object BatchRunnerWithProgress:
