@@ -75,8 +75,6 @@ object DialogEncoder:
           .asInstanceOf[List[String]]
           .map(fromCamelCase)
 
-      println(s"Labels: " + labels.mkString(", "))
-
       assert(labels.length == elemGenericBuilders.length)
 
       private val labeledBuilders: Seq[LabeledBuilder] =
