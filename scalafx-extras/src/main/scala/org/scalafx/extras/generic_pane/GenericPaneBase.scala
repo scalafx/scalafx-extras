@@ -79,7 +79,13 @@ trait GenericPaneBase {
 
   protected def parentWindow: Option[Window] = org.scalafx.extras.parentWindow(_grid)
 
+  /**
+    * Restart reading of content from the beginning of the pane, for all types of fields.
+    */
   protected def resetReadout(): Unit = {
+    _checkBoxNextIndex = 0
+    _choiceBoxNextIndex = 0
+    _numberTextFieldNextIndex = 0
     _stringPropertyNextIndex = 0
   }
 

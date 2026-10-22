@@ -111,9 +111,12 @@ class GenericDialogFX(
   }
 
   /**
-   * Display the dialog and block till the dialog is closed
+    * Display the dialog and block till the dialog is closed.
+    * Readout with `next*()` methods restarts from the first field each time the dialog is shown.
    */
   def showDialog(): Unit = {
+
+    resetReadout()
 
     onFXAndWait {
 
