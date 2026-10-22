@@ -161,7 +161,8 @@ trait GenericPaneBase {
   def addDirectoryField(label: String, defaultPath: String, columns: Int): Unit = {
     val label2 = label.replace('_', ' ')
 
-    val directorySelectionField = new DirectorySelectionField(label2, parentWindow, lastDirectoryHandler, columns)
+    val directorySelectionField =
+      new DirectorySelectionField(label2, lastDirectoryHandler = lastDirectoryHandler, columns = columns)
     directorySelectionField.path.value = defaultPath
 
     _grid.add(new Label(label2), 0, _rowIndex)
@@ -183,7 +184,7 @@ trait GenericPaneBase {
   def addFileField(label: String, defaultPath: String = "", columns: Int = 12): Unit = {
     val label2 = label.replace('_', ' ')
 
-    val fileSelectionField = new FileSelectionField(label2, parentWindow, lastDirectoryHandler, columns)
+    val fileSelectionField = new FileSelectionField(label2, lastDirectoryHandler = lastDirectoryHandler, columns = columns)
     fileSelectionField.path.value = defaultPath
 
     _grid.add(new Label(label2), 0, _rowIndex)

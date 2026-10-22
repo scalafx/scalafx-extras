@@ -29,7 +29,7 @@ package org.scalafx.extras.generic_pane
 
 import org.scalafx.extras.generic_pane.FileSelectionField.*
 import org.scalafx.extras.generic_pane.Utils.cleanFile
-import org.scalafx.extras.onFX
+import org.scalafx.extras.{onFX, parentWindow}
 import scalafx.beans.property.StringProperty
 import scalafx.scene.Node
 import scalafx.scene.control.{Button, TextField}
@@ -68,13 +68,14 @@ object FileSelectionField {
  * select the File.
  *
  * @param title                dialogs title
- * @param ownerWindow          the owner window of the displayed dialog
+ * @param ownerWindow          the owner window of the displayed dialog,
+ *                             when `None` the window containing this field is used
  * @param lastDirectoryHandler customize how directory selections are remembered between uses of the dialog.
  * @param columns              width of the text field
  */
 class FileSelectionField(
   val title: String,
-  val ownerWindow: Option[Window],
+  val ownerWindow: Option[Window] = None,
   val lastDirectoryHandler: LastDirectoryHandler = new DefaultLastDirectoryHandler(),
   val columns: Int = 12
 ) {
@@ -106,7 +107,7 @@ class FileSelectionField(
         fileChooser.initialDirectory = initialDir.orNull
         fileChooser.initialFileName = initialName.orNull
 
-        val selection = fileChooser.showOpenDialog(ownerWindow.orNull)
+        val selection = fileChooser.showOpenDialog(ownerWindow.orElse(parentWindow(this)).orNull)
 
         Option(selection).map(cleanFile).foreach { s =>
           path.value = s.getPath
