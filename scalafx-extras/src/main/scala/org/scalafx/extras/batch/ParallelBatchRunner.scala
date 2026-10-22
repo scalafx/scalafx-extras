@@ -62,11 +62,11 @@ class ParallelBatchRunner[T, I <: ItemTask[T]](
     private def state_=(v: TaskState): Unit = _state.set(v)
 
     /**
-     * @return `Success` when ended without exception or `Failure` with the exception.
-     *         The value wrapped by `Success` will be the result computed by the task.
-     *         If the task is able to complete and compute a result, it will return a computed value (non-empty Option).
-     *         If the task is canceled, it will return `None` (`Success(None)`)
-     *         If the task failed, it will return `Failure`.
+     * Return `Success` when ended without exception or `Failure` with the exception.
+     * The value wrapped by `Success` will be the result computed by the task:
+     * - If the task is able to complete and compute a result, it will return a computed value (non-empty Option). Note, that it is possible that it will return `Some(null)` if task result is `null`.
+     * - If the task is canceled, it will return `None` (`Success(None)`)
+     * - If the task failed, it will return `Failure`.
      */
     override def call(): Try[Option[T]] =
       if isCanceled then
@@ -86,7 +86,8 @@ class ParallelBatchRunner[T, I <: ItemTask[T]](
           state = TaskState.Succeeded
           incrementSucceeded()
 
-          Success(Option(result))
+          // Use `Some` rather than `Option` - a `null` result is still a success, `None` marks cancellation
+          Success(Some(result))
         catch
           case t: Throwable =>
             state = TaskState.Failed
