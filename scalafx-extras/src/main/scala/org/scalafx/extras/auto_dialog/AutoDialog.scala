@@ -50,7 +50,7 @@ import scalafx.stage.Window
  *         "Filter Options",
  *         "Fields below were auto generated from `FilterOptions` object")
  *
- *   println(s"Result: result")
+ *   println(s"Result: $result")
  * }}}
  *
  * @param data data that will define the dialog and its initial values
