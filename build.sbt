@@ -8,7 +8,7 @@ import scala.xml.{Node as XmlNode, NodeSeq as XmlNodeSeq, *}
 //
 
 ThisBuild / version          := "0.12.1.1-SNAPSHOT"
-ThisBuild / scalaVersion     := "3.3.8"
+ThisBuild / scalaVersion     := "3.3.9"
 ThisBuild / organization     := "org.scalafx"
 ThisBuild / organizationName := "ScalaFX"
 ThisBuild / organizationHomepage := Some(url("https://github.com/scalafx"))
