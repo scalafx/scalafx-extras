@@ -51,7 +51,7 @@ lazy val scalaFXExtras = project.in(file("scalafx-extras"))
       "-sourcepath",
       baseDirectory.value.toString,
       "-doc-root-content",
-      (baseDirectory.value / "src/main/scala/root-doc.creole").toString
+      (baseDirectory.value / "src/main/scala/root-doc.md").toString
     ),
     publishArtifact := true,
     Test / publishArtifact := false,
