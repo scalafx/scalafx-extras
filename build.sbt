@@ -50,7 +50,7 @@ lazy val scalaFXExtras = project.in(file("scalafx-extras"))
       "-sourcepath",
       baseDirectory.value.toString,
       "-doc-root-content",
-      baseDirectory.value + "/src/main/scala/root-doc.creole"
+      (baseDirectory.value / "src/main/scala/root-doc.creole").toString
     ),
     publishArtifact := true,
     Test / publishArtifact := false,
@@ -115,7 +115,7 @@ lazy val commonSettings = Seq(
   // This is to avoid dependency on a wrong OS version of JavaFX libraries
   // See also [https://stackoverflow.com/questions/27835740/sbt-exclude-certain-dependency-only-during-publish]
   pomPostProcess := {
-    node: XmlNode =>
+    (node: XmlNode) =>
       new RuleTransformer(new RewriteRule {
         override def transform(node: XmlNode): XmlNodeSeq = node match {
           case e: Elem if e.label == "dependency" && e.child.exists(c => c.label == "scope" && c.text == "provided") =>
@@ -159,7 +159,6 @@ lazy val manifestSetting = packageOptions += {
 //
 // Enables publishing to maven repo
 ThisBuild / publishMavenStyle      := true
-ThisBuild / Test / publishArtifact := false
 ThisBuild / publishTo  := {
   val centralSnapshots = "https://central.sonatype.com/repository/maven-snapshots/"
   if (isSnapshot.value) Some("central-snapshots" at centralSnapshots)
