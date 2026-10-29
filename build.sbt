@@ -35,7 +35,7 @@ publish / skip  := true
 // We do not want to be over the FIJI Java version.
 lazy val javaTargetVersion = "25"
 
-lazy val libLogbackClassic = "ch.qos.logback"              % "logback-classic" % "1.6.5"
+lazy val libLogbackClassic = "ch.qos.logback"              % "logback-classic" % "1.6.6"
 lazy val libScalaLogging   = "com.typesafe.scala-logging" %% "scala-logging"   % "3.9.6"
 lazy val libScalaFX        = "org.scalafx"                %% "scalafx"         % "27.0.0-R39"
 lazy val libScalaTest      = "org.scalatest"              %% "scalatest"       % "3.2.20"
