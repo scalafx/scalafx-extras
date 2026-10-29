@@ -66,12 +66,12 @@ object Utils {
     *
     * @param uri the URI to be displayed in the user default browser
     * @throws IllegalArgumentException      if uri is `null`
-    * @throws HeadlessException             if GraphicsEnvironment.isHeadless() returns `true`
+    * @throws java.awt.HeadlessException    if GraphicsEnvironment.isHeadless() returns `true`
     * @throws UnsupportedOperationException if this Java Desktop class is not supported on the current platform or
     *                                       the current platform does not support the Desktop.Action.BROWSE action
-    * @throws IOException                   if the user default browser is not found, or it fails to be launched,
+    * @throws java.io.IOException           if the user default browser is not found, or it fails to be launched,
     *                                       or the default handler application failed to be launched
-    * @throws SecurityException             if a security manager exists and it denies the
+    * @throws java.lang.SecurityException   if a security manager exists and it denies the
     *                                       `AWTPermission("showWindowWithoutWarningBanner")` permission,
     *                                       or the calling thread is not allowed to create a subprocess
     */
